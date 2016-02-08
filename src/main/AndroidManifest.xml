@@ -14,6 +14,12 @@
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
+
+      <!-- put it in Locus menu -> Addons -->
+      <intent-filter>
+        <action android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
     </activity>
   </application>
 
