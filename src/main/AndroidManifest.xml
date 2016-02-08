@@ -6,7 +6,8 @@
 
   <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="16"/>
 
-  <application android:label="@string/app_name" >
+  <application android:icon="@drawable/icon"
+               android:label="@string/app_name" >
     <activity android:name="Main"
               android:label="@string/app_name">
       <intent-filter>
