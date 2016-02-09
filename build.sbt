@@ -8,7 +8,7 @@ scalaVersion := "2.11.7"
 scalacOptions in Compile ++= Seq("-explaintypes", "-unchecked", "-feature", "-deprecation")
 
 updateCheck in Android := {} // disable update check
-proguardCache in Android ++= Seq("org.scaloid")
+proguardCache in Android ++= Seq("org/scaloid", "org.scaloid") // FIXME: just use android-sdk-plugin 1.5.17-SNAPSHOT instead
 
 proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-keepattributes Signature", "-printseeds target/seeds.txt", "-printusage target/usage.txt"
   , "-dontwarn scala.collection.**" // required from Scala 2.11.4
