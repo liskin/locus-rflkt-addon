@@ -12,14 +12,10 @@ import locus.api.android.ActionTools
 class Main extends SActivity with Log {
   val hwCon = new LocalServiceConnection[HardwareConnectorService]
 
-  lazy val meToo = new STextView("Me too")
-
   onCreate {
-    info(s"create")
+    info(s"Main: onCreate")
 
     contentView = new SVerticalLayout {
-      meToo.here
-      SButton(R.string.red).onClick(meToo.text = "pressed")
       SButton("enable discovery").onClick {
         hwCon(_.enableDiscovery(true))
       }
@@ -32,6 +28,8 @@ class Main extends SActivity with Log {
     }
 
     refreshPeriodicUpdateListeners()
+
+    startService(new Intent(ctx, classOf[HardwareConnectorService]))
   }
 
   broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE: IntentFilter) { (context: Context, intent: Intent) =>

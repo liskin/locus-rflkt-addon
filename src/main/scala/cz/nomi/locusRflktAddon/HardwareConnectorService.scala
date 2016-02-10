@@ -4,6 +4,8 @@ import scala.collection.JavaConversions._
 
 import org.scaloid.common._
 
+import android.content.Intent
+
 import java.util.UUID
 
 import com.wahoofitness.connector
@@ -25,22 +27,31 @@ class HardwareConnectorService extends LocalService with Log {
   private var hwCon: HardwareConnector = null
 
   onCreate {
+    info(s"HardwareConnectorService: onCreate")
     hwCon = new HardwareConnector(ctx, Callback)
   }
 
   onDestroy {
+    info(s"HardwareConnectorService: onDestroy")
     hwCon.stopDiscovery(networkType)
     hwCon.shutdown()
+  }
+
+  override def onTaskRemoved(rootIntent: Intent) {
+    if (curSensor.isEmpty)
+      stopSelf()
   }
 
   private object Callback extends HardwareConnector.Callback {
     def connectedSensor(s: SensorConnection): Unit = {
       info(s"connectedSensor: $s")
+      curSensor = Some(s)
       lastSensor() = s.getConnectionParams.serialize
     }
 
     def disconnectedSensor(s: SensorConnection): Unit = {
       info(s"disconnectedSensor: $s")
+      curSensor = None
     }
 
     def connectorStateChanged(nt: NetworkType, state: HardwareConnectorState): Unit = {
@@ -104,7 +115,9 @@ class HardwareConnectorService extends LocalService with Log {
   def connectFirst(): Unit = {
     val params = hwCon.getDiscoveredConnectionParams(networkType, sensorType).headOption orElse lastSensorOption
     params match {
-      case Some(p) => hwCon.requestSensorConnection(p, Connection)
+      case Some(p) =>
+        hwCon.requestSensorConnection(p, Connection)
+        hwCon.stopDiscovery(networkType)
       case None => toast("no sensor to connect to")
     }
   }
@@ -122,6 +135,8 @@ class HardwareConnectorService extends LocalService with Log {
   private val lastSensor = preferenceVar("")
   private def lastSensorOption: Option[ConnectionParams] =
     Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.fromString)
+
+  private var curSensor: Option[SensorConnection] = None
 }
 
 object HardwareConnectorService {
