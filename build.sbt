@@ -2,6 +2,7 @@ name := "locus-rflkt-addon"
 
 import android.Keys._
 android.Plugin.androidBuild
+protifySettings
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
 scalaVersion := "2.11.7"
