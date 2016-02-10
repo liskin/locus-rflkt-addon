@@ -1,36 +1,35 @@
 package cz.nomi.locusRflktAddon
 
 import org.scaloid.common._
-import android.graphics.Color
 
 import android.content.{Context, Intent, IntentFilter}
+
 import locus.api.android.features.periodicUpdates.{PeriodicUpdatesHandler, UpdateContainer}
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
 import locus.api.android.ActionTools
 
-class Main extends SActivity {
+class Main extends SActivity with Log {
+  val hwCon = new LocalServiceConnection[HardwareConnectorService]
+
   lazy val meToo = new STextView("Me too")
-  lazy val redBtn = new SButton(R.string.red)
 
   onCreate {
     info(s"create")
 
     contentView = new SVerticalLayout {
-      style {
-        case b: SButton => b.textColor(Color.RED).onClick(meToo.text = "PRESSED")
-        case t: STextView => t textSize 10.dip
-        case e: SEditText => e.backgroundColor(Color.YELLOW).textColor(Color.BLACK)
-      }
-      STextView("I am 10 dip tall")
       meToo.here
-      STextView("I am 15 dip tall") textSize 15.dip // overriding
-      new SLinearLayout {
-        STextView("Button: ")
-        redBtn.here
-      }.wrap.here
-      SEditText("Yellow input field fills the space").fill
-    } padding 20.dip
+      SButton(R.string.red).onClick(meToo.text = "pressed")
+      SButton("enable discovery").onClick {
+        hwCon(_.enableDiscovery(true))
+      }
+      SButton("disable discovery").onClick {
+        hwCon(_.enableDiscovery(false))
+      }
+      SButton("connect all").onClick {
+        hwCon(_.connectAll())
+      }
+    }
 
     refreshPeriodicUpdateListeners()
   }
@@ -59,6 +58,4 @@ class Main extends SActivity {
       info(s"getGpsSatsAll: ${update.getGpsSatsAll}")
     }
   }
-
-  private[this] implicit lazy val loggerTag = LoggerTag("LocusRflktAddon")
 }

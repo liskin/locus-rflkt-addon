@@ -6,6 +6,14 @@
 
   <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="16"/>
 
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+  <!-- google analytics :-( -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
   <application android:icon="@drawable/icon"
                android:label="@string/app_name" >
     <activity android:name=".Main"
@@ -21,6 +29,8 @@
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </activity>
+
+    <service android:name=".HardwareConnectorService" />
 
     <receiver android:name=".PeriodicUpdateReceiver" >
       <intent-filter>
