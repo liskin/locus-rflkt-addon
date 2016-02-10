@@ -3,16 +3,19 @@ package cz.nomi.locusRflktAddon
 import org.scaloid.common._
 import android.graphics.Color
 
-import android.content.{BroadcastReceiver, Context, Intent}
+import android.content.{Context, Intent, IntentFilter}
 import locus.api.android.features.periodicUpdates.{PeriodicUpdatesHandler, UpdateContainer}
 import locus.api.android.utils.LocusConst
-import locus.api.android.utils.LocusUtils.LocusVersion
+import locus.api.android.utils.LocusUtils
+import locus.api.android.ActionTools
 
 class Main extends SActivity {
   lazy val meToo = new STextView("Me too")
   lazy val redBtn = new SButton(R.string.red)
 
   onCreate {
+    info(s"create")
+
     contentView = new SVerticalLayout {
       style {
         case b: SButton => b.textColor(Color.RED).onClick(meToo.text = "PRESSED")
@@ -29,15 +32,25 @@ class Main extends SActivity {
       SEditText("Yellow input field fills the space").fill
     } padding 20.dip
 
-    info(s"create")
+    refreshPeriodicUpdateListeners()
   }
 
-  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE) { (context: Context, intent: Intent) =>
+  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE: IntentFilter) { (context: Context, intent: Intent) =>
     info(s"periodic update received")
     PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
   }
 
-  object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
+  private def refreshPeriodicUpdateListeners() {
+    info("refreshPeriodicUpdateListeners")
+    val ver = LocusUtils.getActiveVersion(ctx)
+    val locusInfo = ActionTools.getLocusInfo(ctx, ver)
+    info(s"periodic updates: ${locusInfo.isPeriodicUpdatesEnabled}")
+    ActionTools.refreshPeriodicUpdateListeners(ctx, ver)
+  }
+
+  private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
+    import LocusUtils.LocusVersion
+
     def onIncorrectData() {
       // TODO: log something
     }
@@ -47,5 +60,5 @@ class Main extends SActivity {
     }
   }
 
-  private[this] implicit val loggerTag = LoggerTag("LocusRflktAddon")
+  private[this] implicit lazy val loggerTag = LoggerTag("LocusRflktAddon")
 }
