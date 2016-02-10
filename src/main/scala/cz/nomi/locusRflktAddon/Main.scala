@@ -3,6 +3,11 @@ package cz.nomi.locusRflktAddon
 import org.scaloid.common._
 import android.graphics.Color
 
+import android.content.{BroadcastReceiver, Context, Intent}
+import locus.api.android.features.periodicUpdates.{PeriodicUpdatesHandler, UpdateContainer}
+import locus.api.android.utils.LocusConst
+import locus.api.android.utils.LocusUtils.LocusVersion
+
 class Main extends SActivity {
   lazy val meToo = new STextView("Me too")
   lazy val redBtn = new SButton(R.string.red)
@@ -23,5 +28,24 @@ class Main extends SActivity {
       }.wrap.here
       SEditText("Yellow input field fills the space").fill
     } padding 20.dip
+
+    info(s"create")
   }
+
+  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE) { (context: Context, intent: Intent) =>
+    info(s"periodic update received")
+    PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
+  }
+
+  object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
+    def onIncorrectData() {
+      // TODO: log something
+    }
+
+    def onUpdate(version: LocusVersion, update: UpdateContainer) {
+      info(s"getGpsSatsAll: ${update.getGpsSatsAll}")
+    }
+  }
+
+  private[this] implicit val loggerTag = LoggerTag("LocusRflktAddon")
 }
