@@ -26,8 +26,8 @@ class Main extends SActivity with Log {
       SButton("disable discovery").onClick {
         hwCon(_.enableDiscovery(false))
       }
-      SButton("connect all").onClick {
-        hwCon(_.connectAll())
+      SButton("connect first").onClick {
+        hwCon(_.connectFirst())
       }
     }
 

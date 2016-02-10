@@ -4,6 +4,8 @@ import scala.collection.JavaConversions._
 
 import org.scaloid.common._
 
+import java.util.UUID
+
 import com.wahoofitness.connector
 import connector.HardwareConnector
 import connector.HardwareConnectorTypes.{NetworkType, SensorType}
@@ -12,7 +14,9 @@ import connector.conn.connections
 import connections.SensorConnection
 import connections.params.ConnectionParams
 import connector.listeners.discovery.DiscoveryListener
-import connector.capabilities.Capability.CapabilityType
+import connector.capabilities
+import capabilities.Capability.CapabilityType
+import capabilities.ConfirmConnection
 import connector.HardwareConnectorEnums.{SensorConnectionError, SensorConnectionState}
 
 class HardwareConnectorService extends LocalService with Log {
@@ -32,7 +36,7 @@ class HardwareConnectorService extends LocalService with Log {
   private object Callback extends HardwareConnector.Callback {
     def connectedSensor(s: SensorConnection): Unit = {
       info(s"connectedSensor: $s")
-      // TODO: save it somewhere and connect to it next time
+      lastSensor() = s.getConnectionParams.serialize
     }
 
     def disconnectedSensor(s: SensorConnection): Unit = {
@@ -71,6 +75,12 @@ class HardwareConnectorService extends LocalService with Log {
   private object Connection extends SensorConnection.Listener {
     def onNewCapabilityDetected(s: SensorConnection, typ: CapabilityType): Unit = {
       info(s"onNewCapabilityDetected: $s, $typ")
+
+      s.getCurrentCapability(typ) match {
+        case confirm: ConfirmConnection =>
+          confirm.requestConfirmation(ConfirmConnection.Role.MASTER, "Locus", getUuid, "LocusRflktAddon")
+        case _ =>
+      }
     }
 
     def onSensorConnectionError(s: SensorConnection, e: SensorConnectionError): Unit = {
@@ -91,11 +101,27 @@ class HardwareConnectorService extends LocalService with Log {
       hwCon.stopDiscovery(networkType)
   }
 
-  def connectAll(): Unit = {
-    for (params <- hwCon.getDiscoveredConnectionParams(networkType, sensorType)) {
-      hwCon.requestSensorConnection(params, Connection)
+  def connectFirst(): Unit = {
+    val params = hwCon.getDiscoveredConnectionParams(networkType, sensorType).headOption orElse lastSensorOption
+    params match {
+      case Some(p) => hwCon.requestSensorConnection(p, Connection)
+      case None => toast("no sensor to connect to")
     }
   }
+
+  private val uuid = preferenceVar("")
+  private def getUuid: UUID = uuid() match {
+    case s if s.nonEmpty =>
+      UUID.fromString(s)
+    case "" =>
+      val u = UUID.randomUUID()
+      uuid() = u.toString
+      u
+  }
+
+  private val lastSensor = preferenceVar("")
+  private def lastSensorOption: Option[ConnectionParams] =
+    Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.fromString)
 }
 
 object HardwareConnectorService {
