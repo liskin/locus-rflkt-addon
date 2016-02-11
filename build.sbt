@@ -16,11 +16,7 @@ proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-keepattr
   , "-dontwarn org.scaloid.**" // this can be omitted if current Android Build target is android-16
 )
 
-resolvers += "Arcao" at "http://maven.arcao.com/"
-
 libraryDependencies += "org.scaloid" %% "scaloid" % "4.1"
-libraryDependencies += "menion" % "locus-api" % "1.37"
-libraryDependencies += "menion" % "locus-api-android" % "1.37.41"
 
 run <<= run in Android
 install <<= install in Android
