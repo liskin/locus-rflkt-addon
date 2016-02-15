@@ -125,7 +125,18 @@ class HardwareConnectorService extends LocalService with Log {
 
     def onAutoPageScrollRecieved() {}
     def onBacklightPercentReceived(p: Int) {}
-    def onButtonPressed(pos: DisplayButtonPosition, typ: ButtonPressType) {}
+    def onButtonPressed(pos: DisplayButtonPosition, typ: ButtonPressType) {
+      getCapRflkt() foreach { rflkt =>
+        val buttonCfg = rflkt.getDisplayConfiguration().getButtonCfg()
+        (buttonCfg.getButtonFunction(pos), typ) match {
+          case ("PAGE_RIGHT", ButtonPressType.SINGLE) =>
+            switchPage(rflkt, 1)
+          case ("PAGE_LEFT", ButtonPressType.SINGLE) =>
+            switchPage(rflkt, -1)
+          case _ =>
+        }
+      }
+    }
     def onButtonStateChanged(pos: DisplayButtonPosition, pressed: Boolean) {}
     def onColorInvertedReceived(inverted: Boolean) {}
     def onConfigVersionsReceived(ver: Array[Int]) {}
@@ -142,6 +153,19 @@ class HardwareConnectorService extends LocalService with Log {
     }
     def onPageIndexReceived(index: Int) {}
     def onSleepOnDisconnectReceived(state: Boolean) {}
+
+    private def switchPage(rflkt: Rflkt, offset: Int) {
+      val cfg = rflkt.getDisplayConfiguration()
+      val visiblePages = cfg.getVisiblePages()
+      val countPages = visiblePages.size()
+
+      if (countPages > 1) {
+        val page = rflkt.getPage()
+        val visibleIndex = visiblePages.indexOf(page)
+        val wantedIndex = ((visibleIndex + offset) % countPages + countPages) % countPages
+        rflkt.sendSetPageIndex(visiblePages(wantedIndex).getPageIndex())
+      }
+    }
   }
 
   def enableDiscovery(enable: Boolean): Unit = enable match {
