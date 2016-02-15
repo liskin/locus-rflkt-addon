@@ -1,0 +1,2677 @@
+{
+    "id": "RFLKT DEFAULT (auto gen)",
+    "strings": [],
+    "buttons": {
+        "buttonSouthWestTouched": "PAGE_LEFT",
+        "buttonSouthEastTouched": "PAGE_RIGHT",
+        "buttonNorthWestTouched": "START_STOP_WORKOUT",
+        "buttonNorthEastTouched": "LAP"
+    },
+    "pages": [
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        26,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        26
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
+                            "frame": [
+                                1,
+                                1,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                2,
+                                128,
+                                0
+                            ],
+                            "maxLength": 8,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "1:23:51",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "TIME_WORKOUT"
+                },
+                {
+                    "frame": [
+                        0,
+                        77,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        64,
+                        26,
+                        0,
+                        51
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        64,
+                        77,
+                        0,
+                        51
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        26,
+                        64,
+                        51
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
+                            "frame": [
+                                3,
+                                29,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                29,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "KPH",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                44,
+                                64,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "35.8",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "SPEED_CURRENT"
+                },
+                {
+                    "frame": [
+                        64,
+                        26,
+                        64,
+                        51
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////8P///wD///8A/P//AMD//wMA//8DAPD/DwDA////A/z////w////D//////8////////",
+                            "frame": [
+                                67,
+                                29,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                64,
+                                29,
+                                61,
+                                0
+                            ],
+                            "maxLength": 2,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "KM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                64,
+                                44,
+                                64,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "45.1",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "DISTANCE_WORKOUT"
+                },
+                {
+                    "frame": [
+                        0,
+                        77,
+                        64,
+                        51
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
+                            "frame": [
+                                3,
+                                80,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                80,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "RPM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                95,
+                                64,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "67",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "BIKE_CAD_CURRENT"
+                },
+                {
+                    "frame": [
+                        64,
+                        77,
+                        64,
+                        51
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                67,
+                                80,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                64,
+                                80,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "BPM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                64,
+                                95,
+                                64,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "125",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_CURRENT"
+                }
+            ],
+            "key": "Page0",
+            "pageIndex": 0,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        42
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "/z//////w///DwDw/z8AAAzwAwDwADz8w//Dwz//Pzz8///Dw///PzwAAADADwAAAP//////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAP NUM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                18,
+                                128,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "67",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "LAP_NUMBER"
+                },
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
+                            "frame": [
+                                3,
+                                45,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                45,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAP",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                60,
+                                128,
+                                0
+                            ],
+                            "maxLength": 8,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "11:43",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "TIME_LAP"
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////8P///wD///8A/P//AMD//wMA//8DAPD/DwDA////A/z////w////D//////8////////",
+                            "frame": [
+                                3,
+                                88,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                88,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAP",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                103,
+                                128,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "5.1",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "DISTANCE_LAP"
+                }
+            ],
+            "key": "Page1",
+            "pageIndex": 1,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        64,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        64,
+                        64,
+                        0,
+                        64
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "KPH",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                22,
+                                128,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System33",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "35.8",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "SPEED_CURRENT"
+                },
+                {
+                    "frame": [
+                        0,
+                        64,
+                        64,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
+                            "frame": [
+                                3,
+                                67,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                67,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "AVG",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                89,
+                                64,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "23.4",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "SPEED_WORKOUT_AV"
+                },
+                {
+                    "frame": [
+                        64,
+                        64,
+                        64,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
+                            "frame": [
+                                67,
+                                67,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                64,
+                                67,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "MAX",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                64,
+                                89,
+                                64,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "45.3",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "SPEED_WORKOUT_MAX"
+                }
+            ],
+            "key": "Page2",
+            "pageIndex": 2,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        42
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "WORKOUT",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                18,
+                                128,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "23.4 / 45.3",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "SPEED_WORKOUT_AVMAX"
+                },
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
+                            "frame": [
+                                3,
+                                45,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                45,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAP",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                60,
+                                128,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "23.4 / 45.3",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "SPEED_LAP_AVMAX"
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
+                            "frame": [
+                                3,
+                                88,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                88,
+                                125,
+                                0
+                            ],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAST",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                103,
+                                128,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "23.4 / 45.3",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "SPEED_PREVLAP_AVMAX"
+                }
+            ],
+            "key": "Page3",
+            "pageIndex": 3,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        64,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        64,
+                        64,
+                        0,
+                        64
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "BPM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                22,
+                                128,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System33",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "125",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_CURRENT"
+                },
+                {
+                    "frame": [
+                        0,
+                        64,
+                        64,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                67,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                67,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "AVG",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                89,
+                                64,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "114",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_WORKOUT_AV"
+                },
+                {
+                    "frame": [
+                        64,
+                        64,
+                        64,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                67,
+                                67,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                64,
+                                67,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "MAX",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                64,
+                                89,
+                                64,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "150",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_WORKOUT_MAX"
+                }
+            ],
+            "key": "Page4",
+            "pageIndex": 4,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        42
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "WORKOUT",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                18,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "123 / 150",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_WORKOUT_AVMAX"
+                },
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                45,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                45,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAP",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                60,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "123 / 150",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_LAP_AVMAX"
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                88,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                88,
+                                125,
+                                0
+                            ],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAST",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                103,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "123 / 150",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_PREVLAP_AVMAX"
+                }
+            ],
+            "key": "Page5",
+            "pageIndex": 5,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        42
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "BPM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                18,
+                                128,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "125",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "HR_CURRENT"
+                },
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                45,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                45,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "CAL",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                60,
+                                128,
+                                0
+                            ],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "1254",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "CALORIES"
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
+                            "frame": [
+                                3,
+                                88,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                88,
+                                125,
+                                0
+                            ],
+                            "maxLength": 6,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "CAL/HR",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                103,
+                                128,
+                                0
+                            ],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "12",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "CALORIES_PER_HR"
+                }
+            ],
+            "key": "Page6",
+            "pageIndex": 6,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        64,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        64,
+                        64,
+                        0,
+                        64
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "RPM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                22,
+                                128,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System33",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "67",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "BIKE_CAD_CURRENT"
+                },
+                {
+                    "frame": [
+                        0,
+                        64,
+                        64,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
+                            "frame": [
+                                3,
+                                67,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                67,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "AVG",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                89,
+                                64,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "55",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "BIKE_CAD_WORKOUT_AV"
+                },
+                {
+                    "frame": [
+                        64,
+                        64,
+                        64,
+                        64
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
+                            "frame": [
+                                67,
+                                67,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                64,
+                                67,
+                                61,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "MAX",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                64,
+                                89,
+                                64,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "78",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "BIKE_CAD_WORKOUT_MAX"
+                }
+            ],
+            "key": "Page7",
+            "pageIndex": 7,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        42
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "WORKOUT",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                18,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "55 / 78",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "BIKE_CAD_WORKOUT_AVMAX"
+                },
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
+                            "frame": [
+                                3,
+                                45,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                45,
+                                125,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAP",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                60,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "55 / 78",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "BIKE_CAD_LAP_AVMAX"
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
+                            "frame": [
+                                3,
+                                88,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                88,
+                                125,
+                                0
+                            ],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAST",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                103,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "55 / 78",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "BIKE_CAD_PREVLAP_AVMAX"
+                }
+            ],
+            "key": "Page8",
+            "pageIndex": 8,
+            "custom": {}
+        },
+        {
+            "hidden": true,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        128
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "WORKOUT",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                53,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System48",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "STARTED",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "PLAIN_TEXT"
+                }
+            ],
+            "key": "Page9",
+            "pageIndex": 9,
+            "custom": {
+                "trigger": "WORKOUT_START"
+            }
+        },
+        {
+            "hidden": true,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        128
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "WORKOUT",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                53,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System48",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "PAUSED",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "PLAIN_TEXT"
+                }
+            ],
+            "key": "Page10",
+            "pageIndex": 10,
+            "custom": {
+                "trigger": "WORKOUT_PAUSE"
+            }
+        },
+        {
+            "hidden": true,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        128
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "WORKOUT",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                53,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System48",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "RESUMED",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "PLAIN_TEXT"
+                }
+            ],
+            "key": "Page11",
+            "pageIndex": 11,
+            "custom": {
+                "trigger": "WORKOUT_RESUME"
+            }
+        },
+        {
+            "hidden": true,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        128
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System26",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "WORKOUT",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                53,
+                                128,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System48",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "STOPPED",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "PLAIN_TEXT"
+                }
+            ],
+            "key": "Page12",
+            "pageIndex": 12,
+            "custom": {
+                "trigger": "WORKOUT_STOP"
+            }
+        },
+        {
+            "hidden": true,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        0
+                    ],
+                    "fillColor": "",
+                    "type": "rect",
+                    "color": "",
+                    "hidden": false,
+                    "key": ""
+                },
+                {
+                    "frame": [
+                        0,
+                        0,
+                        128,
+                        42
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "/z//////w///DwDw/z8AAAzwAwDwADz8w//Dwz//Pzz8///Dw///PzwAAADADwAAAP//////",
+                            "frame": [
+                                3,
+                                3,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                3,
+                                125,
+                                0
+                            ],
+                            "maxLength": 7,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAP NUM",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                18,
+                                128,
+                                0
+                            ],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "67",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "LAP_NUMBER"
+                },
+                {
+                    "frame": [
+                        0,
+                        42,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
+                            "frame": [
+                                3,
+                                45,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                45,
+                                125,
+                                0
+                            ],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAST",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                60,
+                                128,
+                                0
+                            ],
+                            "maxLength": 8,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "12:54",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "TIME_PREVLAP"
+                },
+                {
+                    "frame": [
+                        0,
+                        85,
+                        128,
+                        43
+                    ],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "value": "////8P///wD///8A/P//AMD//wMA//8DAPD/DwDA////A/z////w////D//////8////////",
+                            "frame": [
+                                3,
+                                88,
+                                18,
+                                12
+                            ],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [
+                                0,
+                                88,
+                                125,
+                                0
+                            ],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "LAST",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [
+                                0,
+                                103,
+                                128,
+                                0
+                            ],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "4.4",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "DISTANCE_PREVLAP"
+                }
+            ],
+            "key": "Page13",
+            "pageIndex": 13,
+            "custom": {
+                "trigger": "LAP"
+            }
+        }
+    ],
+    "name": "RFLKT DEFAULT (auto gen)"
+}

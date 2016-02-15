@@ -10,6 +10,8 @@ import locus.api.android.ActionTools
 import LocusUtils.LocusVersion
 
 class LocusService extends LocalService with Log {
+  val hwCon = new LocalServiceConnection[HardwareConnectorService]
+
   onCreate {
     info(s"LocusService: onCreate")
   }
@@ -60,6 +62,8 @@ class LocusService extends LocalService with Log {
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
       info(s"getGpsSatsAll: ${update.getGpsSatsAll}")
+      val vars = Map("a" -> "b") // TODO
+      hwCon(_.setRflkt(vars))
     }
   }
 }
