@@ -186,7 +186,7 @@ class HardwareConnectorService extends LocalService with Log {
   }
 
   private def getCap[T](typ: CapabilityType): Option[T] =
-    curSensor map { s => s.getCurrentCapability(typ).asInstanceOf[T] }
+    curSensor.map(_.getCurrentCapability(typ).asInstanceOf[T]).filter(_ != null)
 
   private def getCapConfirm(): Option[ConfirmConnection] =
     getCap(CapabilityType.ConfirmConnection)

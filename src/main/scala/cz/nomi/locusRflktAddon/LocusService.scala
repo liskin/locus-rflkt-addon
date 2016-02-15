@@ -62,12 +62,23 @@ class LocusService extends LocalService with Log {
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
       val now = java.util.Calendar.getInstance().getTime()
+      val trackRecord = Option(update.getTrackRecordContainer())
       val vars = Map(
-        "TIME_WORKOUT.value" -> timeFormat.format(now)
+        "CLOCK.value" -> timeFormat.format(now),
+        "SPEED_CURRENT.value" -> formatFloat(trackRecord.map(_.getSpeedAvg() * 36 / 10)), // FIXME: current, not avg
+        "DISTANCE_WORKOUT.value" -> formatDouble(trackRecord.map(_.getDistance() / 1000)),
+        "BIKE_CAD_CURRENT.value" -> "--",
+        "HR_CURRENT.value" -> "--"
       )
       hwCon(_.setRflkt(vars))
     }
 
     private val timeFormat = new java.text.SimpleDateFormat("HH:mm:ss")
+
+    private def formatFloat(f: Option[Float]): String =
+      f.map(v => f"$v%.1f").getOrElse("--")
+
+    private def formatDouble(f: Option[Double]): String =
+      f.map(v => f"$v%.1f").getOrElse("--")
   }
 }
