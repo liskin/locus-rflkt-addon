@@ -62,18 +62,31 @@ class LocusService extends LocalService with Log {
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
       val now = java.util.Calendar.getInstance().getTime()
+
+      val loc = update.getLocMyLocation()
+      val curSpeed = Option(loc.getSpeed()).filter(_ != 0).map(_ * 36 / 10)
+      val curHeartRate = Option(loc.getSensorHeartRate()).filter(_ != 0)
+      val curCadence = Option(loc.getSensorCadence()).filter(_ != 0)
+
       val trackRecord = Option(update.getTrackRecordContainer())
+      val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
+      val distance = trackRecord.map(_.getDistance() / 1000)
+
       val vars = Map(
         "CLOCK.value" -> timeFormat.format(now),
-        "SPEED_CURRENT.value" -> formatFloat(trackRecord.map(_.getSpeedAvg() * 36 / 10)), // FIXME: current, not avg
-        "DISTANCE_WORKOUT.value" -> formatDouble(trackRecord.map(_.getDistance() / 1000)),
-        "BIKE_CAD_CURRENT.value" -> "--",
-        "HR_CURRENT.value" -> "--"
+        "SPEED_CURRENT.value" -> formatFloat(curSpeed),
+        "SPEED_WORKOUT_AV.value" -> formatFloat(avgSpeed),
+        "DISTANCE_WORKOUT.value" -> formatDouble(distance),
+        "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
+        "HR_CURRENT.value" -> formatInt(curHeartRate)
       )
       hwCon(_.setRflkt(vars))
     }
 
     private val timeFormat = new java.text.SimpleDateFormat("HH:mm:ss")
+
+    private def formatInt(f: Option[Int]): String =
+      f.map(v => f"$v%d").getOrElse("--")
 
     private def formatFloat(f: Option[Float]): String =
       f.map(v => f"$v%.1f").getOrElse("--")
