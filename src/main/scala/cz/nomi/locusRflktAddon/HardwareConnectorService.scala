@@ -4,7 +4,9 @@ import scala.collection.JavaConversions._
 
 import org.scaloid.common._
 
-import android.content.Intent
+import android.app.{NotificationManager, PendingIntent}
+import android.content.{Intent, Context}
+import android.support.v4.app.NotificationCompat
 
 import java.util.UUID
 
@@ -33,6 +35,7 @@ class HardwareConnectorService extends LocalService with Log {
   onCreate {
     info(s"HardwareConnectorService: onCreate")
     hwCon = new HardwareConnector(ctx, Callback)
+    startForeground()
   }
 
   onDestroy {
@@ -45,6 +48,32 @@ class HardwareConnectorService extends LocalService with Log {
     if (curSensor.isEmpty)
       stopSelf()
   }
+
+  private val notificationId: Int = 1 // unique within app
+
+  private lazy val notificationBuilder = new NotificationCompat.Builder(ctx)
+    .setSmallIcon(R.drawable.icon)
+    .setContentTitle("Locus Wahoo RFLKT addon")
+    .setContentText("ready")
+    .setContentIntent(pendingMainIntent)
+    // TODO: add some actions, e.g. disconnect
+
+  private lazy val mainIntent = new Intent(ctx, classOf[Main])
+
+  private lazy val pendingMainIntent =
+    PendingIntent.getActivity(ctx, 0, mainIntent, Intent.FLAG_ACTIVITY_NEW_TASK)
+
+  private def startForeground() {
+    startForeground(notificationId, notificationBuilder.build())
+  }
+
+  private def updateNotification(text: String) {
+    getNotificationManager().notify(notificationId,
+      notificationBuilder.setContentText(text).build())
+  }
+
+  private def getNotificationManager(): NotificationManager =
+    getSystemService(Context.NOTIFICATION_SERVICE).asInstanceOf[NotificationManager]
 
   private object Callback extends HardwareConnector.Callback {
     def connectedSensor(s: SensorConnection) {
@@ -103,6 +132,7 @@ class HardwareConnectorService extends LocalService with Log {
     def onSensorConnectionStateChanged(s: SensorConnection, state: SensorConnectionState) {
       info(s"onSensorConnectionStateChanged: $s, $state")
       toast(s"${s.getDeviceName}: $state")
+      updateNotification(s"$state")
     }
   }
 

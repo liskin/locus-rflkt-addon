@@ -17,6 +17,7 @@ proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-keepattr
 )
 
 libraryDependencies += "org.scaloid" %% "scaloid" % "4.1"
+libraryDependencies += "com.android.support" % "support-v4" % "23.1.1"
 
 run <<= run in Android
 install <<= install in Android
