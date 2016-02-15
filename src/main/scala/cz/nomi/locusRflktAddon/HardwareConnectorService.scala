@@ -20,6 +20,7 @@ import connector.capabilities
 import capabilities.Capability.CapabilityType
 import capabilities.ConfirmConnection
 import capabilities.Rflkt
+import Rflkt.{ButtonPressType, LoadConfigResult}
 import connector.HardwareConnectorEnums.{SensorConnectionError, SensorConnectionState}
 import com.wahoofitness.common.display
 import display.{DisplayConfiguration, DisplayButtonPosition}
@@ -120,7 +121,6 @@ class HardwareConnectorService extends LocalService with Log {
   }
 
   private object RFLKT extends Rflkt.Listener {
-    import Rflkt.{ButtonPressType, LoadConfigResult}
     import connector.packets.dcp.response.DCPR_DateDisplayOptionsPacket._
 
     def onAutoPageScrollRecieved() {}
@@ -185,6 +185,12 @@ class HardwareConnectorService extends LocalService with Log {
 
   def setRflkt(vars: Map[String, String]) {
     info(s"setRflkt: $vars")
+    getCapRflkt() foreach { rflkt =>
+      if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
+        info(s"setRflkt: doing setValues")
+        vars.foreach((rflkt.setValue _).tupled)
+      }
+    }
   }
 
   private val uuid = preferenceVar("")

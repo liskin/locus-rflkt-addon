@@ -61,9 +61,13 @@ class LocusService extends LocalService with Log {
     }
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
-      info(s"getGpsSatsAll: ${update.getGpsSatsAll}")
-      val vars = Map("a" -> "b") // TODO
+      val now = java.util.Calendar.getInstance().getTime()
+      val vars = Map(
+        "TIME_WORKOUT.value" -> timeFormat.format(now)
+      )
       hwCon(_.setRflkt(vars))
     }
+
+    private val timeFormat = new java.text.SimpleDateFormat("HH:mm:ss")
   }
 }
