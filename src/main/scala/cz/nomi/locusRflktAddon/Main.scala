@@ -2,15 +2,11 @@ package cz.nomi.locusRflktAddon
 
 import org.scaloid.common._
 
-import android.content.{Context, Intent, IntentFilter}
-
-import locus.api.android.features.periodicUpdates.{PeriodicUpdatesHandler, UpdateContainer}
-import locus.api.android.utils.{LocusConst, LocusUtils}
-import locus.api.android.ActionTools
-import LocusUtils.LocusVersion
+import android.content.Intent
 
 class Main extends SActivity with Log {
   val hwCon = new LocalServiceConnection[HardwareConnectorService]
+  val locus = new LocalServiceConnection[LocusService]
 
   onCreate {
     info(s"Main: onCreate")
@@ -25,49 +21,21 @@ class Main extends SActivity with Log {
       SButton("connect first").onClick {
         hwCon(_.connectFirst())
       }
+      SButton("stop services").onClick {
+        stopServices()
+      }
     }
 
+    startServices()
+  }
+
+  private def startServices() {
     startService(new Intent(ctx, classOf[HardwareConnectorService]))
+    startService(new Intent(ctx, classOf[LocusService]))
   }
 
-  onRegister {
-    enablePeriodicUpdatesReceiver()
-  }
-
-  onUnregister {
-    disablePeriodicUpdatesReceiver()
-  }
-
-  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE: IntentFilter) { (context: Context, intent: Intent) =>
-    info(s"periodic update received")
-    PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
-  }
-
-  private def locusVer: LocusVersion = {
-    //val locusInfo = ActionTools.getLocusInfo(ctx, ver)
-    //info(s"periodic updates: ${locusInfo.isPeriodicUpdatesEnabled}")
-    LocusUtils.getActiveVersion(ctx)
-  }
-
-  private def enablePeriodicUpdatesReceiver() {
-    info("enablePeriodicUpdatesReceiver")
-    ActionTools.enablePeriodicUpdatesReceiver(ctx, locusVer, classOf[PeriodicUpdateReceiver])
-  }
-
-  private def disablePeriodicUpdatesReceiver() {
-    info("disablePeriodicUpdatesReceiver")
-    ActionTools.disablePeriodicUpdatesReceiver(ctx, locusVer, classOf[PeriodicUpdateReceiver])
-  }
-
-  private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
-    import LocusUtils.LocusVersion
-
-    def onIncorrectData() {
-      // TODO: log something
-    }
-
-    def onUpdate(version: LocusVersion, update: UpdateContainer) {
-      info(s"getGpsSatsAll: ${update.getGpsSatsAll}")
-    }
+  private def stopServices() {
+    stopService(new Intent(ctx, classOf[HardwareConnectorService]))
+    stopService(new Intent(ctx, classOf[LocusService]))
   }
 }
