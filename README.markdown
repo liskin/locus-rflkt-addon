@@ -7,7 +7,7 @@ An addon that enables [Wahoo RFLKT][rflkt] to be used with the awesome Android
 - ☑ clock
 - ☑ current speed, heart rate, cadence
 - ☑ track recording (start/pause/resume via button; show distance, average speed)
-- ☐ navigation instructions
+- ☑ navigation instructions
 - ☐ possibly even an interval timer for training
 
 [rflkt]: http://eu.wahoofitness.com/devices/rflkt.html

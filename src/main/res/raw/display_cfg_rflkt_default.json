@@ -1,6 +1,6 @@
 {
-    "id": "RFLKT DEFAULT (auto gen)",
-    "name": "RFLKT DEFAULT (auto gen)",
+    "id": "LocusRflktAddon",
+    "name": "LocusRflktAddon",
     "strings": [],
     "buttons": {
         "buttonSouthWestTouched": "PAGE_LEFT",
@@ -266,8 +266,248 @@
                     "key": "HR_CURRENT"
                 }
             ],
-            "key": "Page0",
+            "key": "OVERVIEW",
             "pageIndex": 0,
+            "custom": {}
+        },
+        {
+            "hidden": false,
+            "buttons": {},
+            "soundKey": "",
+            "comment": "",
+            "elements": [
+                {
+                    "frame": [0, 0, 128, 22],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "frame": [0, 0, 128, 22],
+                            "fillColor": "",
+                            "type": "rect",
+                            "color": "",
+                            "hidden": false,
+                            "key": ""
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [0, 0, 128, 0],
+                            "maxLength": 8,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "--:--:--",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "CLOCK"
+                },
+                {
+                    "frame": [0, 21, 54, 33],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "frame": [0, 21, 54, 33],
+                            "fillColor": "",
+                            "type": "rect",
+                            "color": "",
+                            "hidden": false,
+                            "key": ""
+                        },
+                        {
+                            "bold": true,
+                            "constant": false,
+                            "frame": [0, 21, 54, 0],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System33",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "M <-",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "NAV1_ACTION"
+                },
+                {
+                    "frame": [53, 21, 75, 33],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "frame": [53, 21, 75, 33],
+                            "fillColor": "",
+                            "type": "rect",
+                            "color": "",
+                            "hidden": false,
+                            "key": ""
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [106, 42, 20, 0],
+                            "maxLength": 2,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "km",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [53, 27, 53, 0],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "--",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "NAV1_DIST"
+                },
+                {
+                    "frame": [0, 53, 128, 22],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "frame": [0, 53, 128, 22],
+                            "fillColor": "",
+                            "type": "rect",
+                            "color": "",
+                            "hidden": false,
+                            "key": ""
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [0, 53, 128, 0],
+                            "maxLength": 8,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "--:--:--",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "NAV1_NAME"
+                },
+                {
+                    "frame": [0, 74, 54, 33],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "frame": [0, 74, 54, 33],
+                            "fillColor": "",
+                            "type": "rect",
+                            "color": "",
+                            "hidden": false,
+                            "key": ""
+                        },
+                        {
+                            "bold": true,
+                            "constant": false,
+                            "frame": [0, 74, 54, 0],
+                            "maxLength": 4,
+                            "color": "None",
+                            "font": "System33",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "M <-",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "NAV2_ACTION"
+                },
+                {
+                    "frame": [53, 74, 75, 33],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "frame": [53, 74, 75, 33],
+                            "fillColor": "",
+                            "type": "rect",
+                            "color": "",
+                            "hidden": false,
+                            "key": ""
+                        },
+                        {
+                            "bold": false,
+                            "constant": true,
+                            "frame": [106, 95, 20, 0],
+                            "maxLength": 2,
+                            "color": "None",
+                            "font": "System10",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "km",
+                            "type": "string",
+                            "key": "units"
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [53, 80, 53, 0],
+                            "maxLength": 5,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "right",
+                            "value": "--",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "NAV2_DIST"
+                },
+                {
+                    "frame": [0, 106, 128, 22],
+                    "type": "group",
+                    "elements": [
+                        {
+                            "frame": [0, 106, 128, 22],
+                            "fillColor": "",
+                            "type": "rect",
+                            "color": "",
+                            "hidden": false,
+                            "key": ""
+                        },
+                        {
+                            "bold": false,
+                            "constant": false,
+                            "frame": [0, 106, 128, 0],
+                            "maxLength": 8,
+                            "color": "None",
+                            "font": "System19",
+                            "hidden": false,
+                            "align": "center",
+                            "value": "--:--:--",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "NAV2_NAME"
+                }
+            ],
+            "key": "NAVIGATION",
+            "pageIndex": 1,
             "custom": {}
         }
     ]
