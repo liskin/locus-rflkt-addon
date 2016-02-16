@@ -6,7 +6,7 @@
         "buttonSouthWestTouched": "PAGE_LEFT",
         "buttonSouthEastTouched": "PAGE_RIGHT",
         "buttonNorthWestTouched": "START_STOP_WORKOUT",
-        "buttonNorthEastTouched": "LAP"
+        "buttonNorthEastTouched": "BACKLIGHT"
     },
     "pages": [
         {

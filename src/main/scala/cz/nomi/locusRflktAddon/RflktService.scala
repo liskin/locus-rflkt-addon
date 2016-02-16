@@ -8,6 +8,7 @@ import android.app.{NotificationManager, PendingIntent}
 import android.content.{Intent, Context}
 import android.support.v4.app.NotificationCompat
 import android.bluetooth.BluetoothAdapter
+import android.os.CountDownTimer
 
 import java.util.UUID
 
@@ -157,6 +158,7 @@ trait RflktService extends LocalService with Log with RflktApi
     def onUserAccept() {
       info(s"onUserAccept")
       loadConfig()
+      getCapRflkt().foreach(_.sendSetBacklightPercent(0))
     }
   }
 
@@ -172,6 +174,7 @@ trait RflktService extends LocalService with Log with RflktApi
         val fun =
           buttonCfgPage.flatMap(c => Option(c.getButtonFunction(pos))) orElse
           buttonCfg.flatMap(c => Option(c.getButtonFunction(pos))) getOrElse null
+        info(s"onButtonPressed: $pos, $fun, $typ")
         (fun, typ) match {
           case ("PAGE_RIGHT", ButtonPressType.SINGLE) =>
             switchPage(rflkt, 1)
@@ -179,6 +182,8 @@ trait RflktService extends LocalService with Log with RflktApi
             switchPage(rflkt, -1)
           case ("START_STOP_WORKOUT", ButtonPressType.SINGLE) =>
             toggleRecording()
+          case ("BACKLIGHT", ButtonPressType.SINGLE) =>
+            backlight()
           case _ =>
         }
       }
@@ -275,6 +280,23 @@ trait RflktService extends LocalService with Log with RflktApi
           rflkt.setValue(k, v.take(15))
         }
       }
+    }
+  }
+
+  private var backlightTimer: Option[CountDownTimer] = None
+
+  private def backlight() {
+    backlightTimer.foreach(_.cancel())
+    backlightTimer = Some {
+      new CountDownTimer(5000, 5000) {
+        def onTick(millisLeft: Long) {
+          getCapRflkt().foreach(_.sendSetBacklightPercent(100))
+        }
+        def onFinish() {
+          getCapRflkt().foreach(_.sendSetBacklightPercent(0))
+          backlightTimer = None
+        }
+      }.start()
     }
   }
 
