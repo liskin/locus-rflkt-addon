@@ -276,8 +276,8 @@ trait RflktService extends LocalService with Log with RflktApi
       if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
         info(s"setRflkt: doing setValues")
         vars foreach { case (k, v) =>
-          // XXX: check if take(15) really is the right thing to do
-          rflkt.setValue(k, v.take(15))
+          // XXX: check if take(14) really is the right thing to do
+          rflkt.setValue(k, v.take(14))
         }
       }
     }
