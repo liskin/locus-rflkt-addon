@@ -9,8 +9,12 @@ import locus.api.android.utils.{LocusConst, LocusUtils}
 import locus.api.android.ActionTools
 import LocusUtils.LocusVersion
 
-class LocusService extends LocalService with Log {
-  val hwCon = new LocalServiceConnection[HardwareConnectorService]
+trait LocusApi {
+  // nothing yet
+}
+
+trait LocusService extends LocalService with Log with LocusApi
+{ this: RflktApi =>
 
   onCreate {
     info(s"LocusService: onCreate")
@@ -18,10 +22,6 @@ class LocusService extends LocalService with Log {
 
   onDestroy {
     info(s"LocusService: onDestroy")
-  }
-
-  override def onTaskRemoved(rootIntent: Intent) {
-    stopSelf()
   }
 
   onRegister {
@@ -72,7 +72,7 @@ class LocusService extends LocalService with Log {
       val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
       val distance = trackRecord.map(_.getDistance() / 1000)
 
-      val vars = Map(
+      setRflkt(
         "CLOCK.value" -> timeFormat.format(now),
         "SPEED_CURRENT.value" -> formatFloat(curSpeed),
         "SPEED_WORKOUT_AV.value" -> formatFloat(avgSpeed),
@@ -80,7 +80,6 @@ class LocusService extends LocalService with Log {
         "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
         "HR_CURRENT.value" -> formatInt(curHeartRate)
       )
-      hwCon(_.setRflkt(vars))
     }
 
     private val timeFormat = new java.text.SimpleDateFormat("HH:mm:ss")

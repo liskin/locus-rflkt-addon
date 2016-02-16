@@ -5,24 +5,24 @@ import org.scaloid.common._
 import android.content.Intent
 
 class Main extends SActivity with Log {
-  val hwCon = new LocalServiceConnection[HardwareConnectorService]
-  val locus = new LocalServiceConnection[LocusService]
+  val service = new LocalServiceConnection[MainService]
 
   onCreate {
     info(s"Main: onCreate")
 
     contentView = new SVerticalLayout {
       SButton("enable discovery").onClick {
-        hwCon(_.enableDiscovery(true))
+        service(_.enableDiscovery(true))
       }
       SButton("disable discovery").onClick {
-        hwCon(_.enableDiscovery(false))
+        service(_.enableDiscovery(false))
       }
       SButton("connect first").onClick {
-        hwCon(_.connectFirst())
+        service(_.connectFirst())
       }
-      SButton("stop services").onClick {
+      SButton("stop all").onClick {
         stopServices()
+        finish()
       }
     }
 
@@ -30,12 +30,12 @@ class Main extends SActivity with Log {
   }
 
   private def startServices() {
-    startService(new Intent(ctx, classOf[HardwareConnectorService]))
-    startService(new Intent(ctx, classOf[LocusService]))
+    startService(new Intent(ctx, classOf[MainService]))
   }
 
   private def stopServices() {
-    stopService(new Intent(ctx, classOf[HardwareConnectorService]))
-    stopService(new Intent(ctx, classOf[LocusService]))
+    stopService(new Intent(ctx, classOf[MainService]))
   }
 }
+
+class MainService extends RflktService with LocusService

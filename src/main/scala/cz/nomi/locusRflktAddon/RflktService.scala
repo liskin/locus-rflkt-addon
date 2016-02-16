@@ -27,29 +27,37 @@ import connector.HardwareConnectorEnums.{SensorConnectionError, SensorConnection
 import com.wahoofitness.common.display
 import display.{DisplayConfiguration, DisplayButtonPosition}
 
-class HardwareConnectorService extends LocalService with Log {
-  import HardwareConnectorService._
+trait RflktApi {
+  def enableDiscovery(enable: Boolean): Unit
+  def connectFirst(): Unit
+  def setRflkt(vars: (String, String)*): Unit
+}
+
+trait RflktService extends LocalService with Log with RflktApi
+{ this: LocusApi =>
+
+  import RflktService._
 
   private var hwCon: HardwareConnector = null
 
   onCreate {
-    info(s"HardwareConnectorService: onCreate")
+    info(s"RflktService: onCreate")
     hwCon = new HardwareConnector(ctx, Callback)
     startForeground()
   }
 
   onDestroy {
-    info(s"HardwareConnectorService: onDestroy")
+    info(s"RflktService: onDestroy")
     hwCon.stopDiscovery(networkType)
     hwCon.shutdown()
   }
 
   override def onTaskRemoved(rootIntent: Intent) {
+    super.onTaskRemoved(rootIntent)
+
     if (curSensor.isEmpty)
       stopSelf()
   }
-
-  private val notificationId: Int = 1 // unique within app
 
   private lazy val notificationBuilder = new NotificationCompat.Builder(ctx)
     .setSmallIcon(R.drawable.icon)
@@ -237,7 +245,7 @@ class HardwareConnectorService extends LocalService with Log {
     }
   }
 
-  def setRflkt(vars: Map[String, String]) {
+  def setRflkt(vars: (String, String)*) {
     info(s"setRflkt: $vars")
     getCapRflkt() foreach { rflkt =>
       if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
@@ -267,7 +275,8 @@ class HardwareConnectorService extends LocalService with Log {
   private var curSensor: Option[SensorConnection] = None
 }
 
-object HardwareConnectorService {
+object RflktService {
   private val sensorType = SensorType.DISPLAY
   private val networkType = NetworkType.BTLE
+  private val notificationId: Int = 1 // unique within app
 }

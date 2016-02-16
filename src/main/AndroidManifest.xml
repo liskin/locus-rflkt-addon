@@ -30,8 +30,7 @@
       </intent-filter>
     </activity>
 
-    <service android:name=".HardwareConnectorService" />
-    <service android:name=".LocusService" />
+    <service android:name=".MainService" />
 
     <receiver android:name=".PeriodicUpdateReceiver"
               android:enabled="false">
