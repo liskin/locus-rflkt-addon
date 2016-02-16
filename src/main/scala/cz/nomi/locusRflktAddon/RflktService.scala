@@ -167,8 +167,12 @@ trait RflktService extends LocalService with Log with RflktApi
     def onBacklightPercentReceived(p: Int) {}
     def onButtonPressed(pos: DisplayButtonPosition, typ: ButtonPressType) {
       getCapRflkt() foreach { rflkt =>
-        val buttonCfg = rflkt.getDisplayConfiguration().getButtonCfg()
-        (buttonCfg.getButtonFunction(pos), typ) match {
+        val buttonCfg = Option(rflkt.getDisplayConfiguration()).map(_.getButtonCfg())
+        val buttonCfgPage = Option(rflkt.getPage()).map(_.getButtonCfg())
+        val fun =
+          buttonCfgPage.flatMap(c => Option(c.getButtonFunction(pos))) orElse
+          buttonCfg.flatMap(c => Option(c.getButtonFunction(pos))) getOrElse null
+        (fun, typ) match {
           case ("PAGE_RIGHT", ButtonPressType.SINGLE) =>
             switchPage(rflkt, 1)
           case ("PAGE_LEFT", ButtonPressType.SINGLE) =>
