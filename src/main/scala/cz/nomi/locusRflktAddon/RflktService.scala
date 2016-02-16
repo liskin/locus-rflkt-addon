@@ -7,6 +7,7 @@ import org.scaloid.common._
 import android.app.{NotificationManager, PendingIntent}
 import android.content.{Intent, Context}
 import android.support.v4.app.NotificationCompat
+import android.bluetooth.BluetoothAdapter
 
 import java.util.UUID
 
@@ -43,6 +44,7 @@ trait RflktService extends LocalService with Log with RflktApi
   onCreate {
     info(s"RflktService: onCreate")
     hwCon = new HardwareConnector(ctx, Callback)
+    hwCon.setSampleTimerDataCheck(true)
     startForeground()
   }
 
@@ -206,20 +208,32 @@ trait RflktService extends LocalService with Log with RflktApi
     }
   }
 
-  def enableDiscovery(enable: Boolean): Unit = enable match {
-    case true =>
-      hwCon.startDiscovery(sensorType, networkType, Discovery)
-    case false =>
-      hwCon.stopDiscovery(networkType)
+  def enableDiscovery(enable: Boolean) {
+    enableBluetooth()
+    enable match {
+      case true =>
+        hwCon.startDiscovery(sensorType, networkType, Discovery)
+      case false =>
+        hwCon.stopDiscovery(networkType)
+    }
   }
 
   def connectFirst() {
+    enableBluetooth()
     val params = hwCon.getDiscoveredConnectionParams(networkType, sensorType).headOption orElse lastSensorOption
     params match {
       case Some(p) =>
         hwCon.requestSensorConnection(p, Connection)
         hwCon.stopDiscovery(networkType)
       case None => toast("no sensor to connect to")
+    }
+  }
+
+  private def enableBluetooth() {
+    if (hwCon.getHardwareConnectorState(networkType) == HardwareConnectorState.HARDWARE_NOT_ENABLED) {
+      val intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      startActivity(intent)
     }
   }
 
