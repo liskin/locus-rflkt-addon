@@ -10,7 +10,7 @@ import locus.api.android.ActionTools
 import LocusUtils.LocusVersion
 
 trait LocusApi {
-  // nothing yet
+  def toggleRecording(): Unit
 }
 
 trait LocusService extends LocalService with Log with LocusApi
@@ -37,10 +37,13 @@ trait LocusService extends LocalService with Log with LocusApi
     PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
   }
 
-  private def locusVer: LocusVersion = {
-    //val locusInfo = ActionTools.getLocusInfo(ctx, ver)
-    //info(s"periodic updates: ${locusInfo.isPeriodicUpdatesEnabled}")
-    LocusUtils.getActiveVersion(ctx)
+  private lazy val locusVer: LocusVersion = {
+    val ver = LocusUtils.getActiveVersion(ctx)
+    val locusInfo = ActionTools.getLocusInfo(ctx, ver)
+    if (!locusInfo.isPeriodicUpdatesEnabled) {
+      toast("periodic updates in Locus disabled :-(")
+    }
+    ver
   }
 
   private def enablePeriodicUpdatesReceiver() {
@@ -61,6 +64,8 @@ trait LocusService extends LocalService with Log with LocusApi
     }
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
+      lastUpdate = Some(update)
+
       val now = java.util.Calendar.getInstance().getTime()
 
       val loc = update.getLocMyLocation()
@@ -72,13 +77,18 @@ trait LocusService extends LocalService with Log with LocusApi
       val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
       val distance = trackRecord.map(_.getDistance() / 1000)
 
+      val recStatus = trackRecord.map(tr =>
+          if (tr.isTrackRecPaused()) "hold" else "rec"
+      ).getOrElse("")
+
       setRflkt(
         "CLOCK.value" -> timeFormat.format(now),
         "SPEED_CURRENT.value" -> formatFloat(curSpeed),
         "SPEED_WORKOUT_AV.value" -> formatFloat(avgSpeed),
         "DISTANCE_WORKOUT.value" -> formatDouble(distance),
         "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
-        "HR_CURRENT.value" -> formatInt(curHeartRate)
+        "HR_CURRENT.value" -> formatInt(curHeartRate),
+        "REC_STATUS.value" -> recStatus
       )
     }
 
@@ -92,5 +102,17 @@ trait LocusService extends LocalService with Log with LocusApi
 
     private def formatDouble(f: Option[Double]): String =
       f.map(v => f"$v%.1f").getOrElse("--")
+  }
+
+  private var lastUpdate: Option[UpdateContainer] = None
+
+  def toggleRecording() {
+    lastUpdate match {
+      case Some(u) if u.isTrackRecRecording()
+                   && !u.getTrackRecordContainer().isTrackRecPaused() =>
+        ActionTools.actionTrackRecordPause(ctx, locusVer)
+      case _ =>
+        ActionTools.actionTrackRecordStart(ctx, locusVer)
+    }
   }
 }

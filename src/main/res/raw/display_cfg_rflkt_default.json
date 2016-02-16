@@ -16,12 +16,7 @@
             "comment": "",
             "elements": [
                 {
-                    "frame": [
-                        0,
-                        26,
-                        128,
-                        0
-                    ],
+                    "frame": [0, 26, 128, 0],
                     "fillColor": "",
                     "type": "rect",
                     "color": "",
@@ -29,36 +24,42 @@
                     "key": ""
                 },
                 {
-                    "frame": [
-                        0,
-                        0,
-                        128,
-                        26
-                    ],
+                    "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
+                    "frame": [6, 1, 18, 12],
+                    "type": "bitmap",
+                    "transparentColor": "white",
+                    "hidden": false,
+                    "key": "icon"
+                },
+                {
+                    "frame": [0, 14, 30, 10],
                     "type": "group",
                     "elements": [
                         {
-                            "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
-                            "frame": [
-                                1,
-                                1,
-                                18,
-                                12
-                            ],
-                            "type": "bitmap",
-                            "transparentColor": "white",
+                            "bold": false,
+                            "constant": false,
+                            "frame": [0, 14, 30, 0],
+                            "maxLength": 3,
+                            "color": "None",
+                            "font": "System10",
                             "hidden": false,
-                            "key": "icon"
-                        },
+                            "align": "center",
+                            "value": "",
+                            "type": "string",
+                            "key": "value"
+                        }
+                    ],
+                    "hidden": false,
+                    "key": "REC_STATUS"
+                },
+                {
+                    "frame": [30, 2, 98, 26],
+                    "type": "group",
+                    "elements": [
                         {
                             "bold": false,
                             "constant": false,
-                            "frame": [
-                                0,
-                                2,
-                                128,
-                                0
-                            ],
+                            "frame": [28, 2, 100, 0],
                             "maxLength": 8,
                             "color": "None",
                             "font": "System19",
@@ -73,12 +74,7 @@
                     "key": "CLOCK"
                 },
                 {
-                    "frame": [
-                        0,
-                        77,
-                        128,
-                        0
-                    ],
+                    "frame": [0, 77, 128, 0],
                     "fillColor": "",
                     "type": "rect",
                     "color": "",
@@ -86,12 +82,7 @@
                     "key": ""
                 },
                 {
-                    "frame": [
-                        64,
-                        26,
-                        0,
-                        51
-                    ],
+                    "frame": [64, 26, 0, 51],
                     "fillColor": "",
                     "type": "rect",
                     "color": "",
@@ -99,12 +90,7 @@
                     "key": ""
                 },
                 {
-                    "frame": [
-                        64,
-                        77,
-                        0,
-                        51
-                    ],
+                    "frame": [64, 77, 0, 51],
                     "fillColor": "",
                     "type": "rect",
                     "color": "",
@@ -112,22 +98,12 @@
                     "key": ""
                 },
                 {
-                    "frame": [
-                        0,
-                        26,
-                        64,
-                        51
-                    ],
+                    "frame": [0, 26, 64, 51],
                     "type": "group",
                     "elements": [
                         {
                             "value": "////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////",
-                            "frame": [
-                                3,
-                                29,
-                                18,
-                                12
-                            ],
+                            "frame": [3, 29, 18, 12],
                             "type": "bitmap",
                             "transparentColor": "white",
                             "hidden": false,
@@ -136,12 +112,7 @@
                         {
                             "bold": false,
                             "constant": true,
-                            "frame": [
-                                0,
-                                29,
-                                61,
-                                0
-                            ],
+                            "frame": [0, 29, 61, 0],
                             "maxLength": 3,
                             "color": "None",
                             "font": "System10",
@@ -154,12 +125,7 @@
                         {
                             "bold": false,
                             "constant": false,
-                            "frame": [
-                                0,
-                                44,
-                                64,
-                                0
-                            ],
+                            "frame": [0, 44, 64, 0],
                             "maxLength": 5,
                             "color": "None",
                             "font": "System26",
@@ -174,22 +140,12 @@
                     "key": "SPEED_CURRENT"
                 },
                 {
-                    "frame": [
-                        64,
-                        26,
-                        64,
-                        51
-                    ],
+                    "frame": [64, 26, 64, 51],
                     "type": "group",
                     "elements": [
                         {
                             "value": "////8P///wD///8A/P//AMD//wMA//8DAPD/DwDA////A/z////w////D//////8////////",
-                            "frame": [
-                                67,
-                                29,
-                                18,
-                                12
-                            ],
+                            "frame": [67, 29, 18, 12],
                             "type": "bitmap",
                             "transparentColor": "white",
                             "hidden": false,
@@ -198,12 +154,7 @@
                         {
                             "bold": false,
                             "constant": true,
-                            "frame": [
-                                64,
-                                29,
-                                61,
-                                0
-                            ],
+                            "frame": [64, 29, 61, 0],
                             "maxLength": 2,
                             "color": "None",
                             "font": "System10",
@@ -216,12 +167,7 @@
                         {
                             "bold": false,
                             "constant": false,
-                            "frame": [
-                                64,
-                                44,
-                                64,
-                                0
-                            ],
+                            "frame": [64, 44, 64, 0],
                             "maxLength": 5,
                             "color": "None",
                             "font": "System26",
@@ -236,22 +182,12 @@
                     "key": "DISTANCE_WORKOUT"
                 },
                 {
-                    "frame": [
-                        0,
-                        77,
-                        64,
-                        51
-                    ],
+                    "frame": [0, 77, 64, 51],
                     "type": "group",
                     "elements": [
                         {
                             "value": "//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////",
-                            "frame": [
-                                3,
-                                80,
-                                18,
-                                12
-                            ],
+                            "frame": [3, 80, 18, 12],
                             "type": "bitmap",
                             "transparentColor": "white",
                             "hidden": false,
@@ -260,12 +196,7 @@
                         {
                             "bold": false,
                             "constant": true,
-                            "frame": [
-                                0,
-                                80,
-                                61,
-                                0
-                            ],
+                            "frame": [0, 80, 61, 0],
                             "maxLength": 3,
                             "color": "None",
                             "font": "System10",
@@ -278,12 +209,7 @@
                         {
                             "bold": false,
                             "constant": false,
-                            "frame": [
-                                0,
-                                95,
-                                64,
-                                0
-                            ],
+                            "frame": [0, 95, 64, 0],
                             "maxLength": 3,
                             "color": "None",
                             "font": "System26",
@@ -298,22 +224,12 @@
                     "key": "BIKE_CAD_CURRENT"
                 },
                 {
-                    "frame": [
-                        64,
-                        77,
-                        64,
-                        51
-                    ],
+                    "frame": [64, 77, 64, 51],
                     "type": "group",
                     "elements": [
                         {
                             "value": "P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///",
-                            "frame": [
-                                67,
-                                80,
-                                18,
-                                12
-                            ],
+                            "frame": [67, 80, 18, 12],
                             "type": "bitmap",
                             "transparentColor": "white",
                             "hidden": false,
@@ -322,12 +238,7 @@
                         {
                             "bold": false,
                             "constant": true,
-                            "frame": [
-                                64,
-                                80,
-                                61,
-                                0
-                            ],
+                            "frame": [64, 80, 61, 0],
                             "maxLength": 3,
                             "color": "None",
                             "font": "System10",
@@ -340,12 +251,7 @@
                         {
                             "bold": false,
                             "constant": false,
-                            "frame": [
-                                64,
-                                95,
-                                64,
-                                0
-                            ],
+                            "frame": [64, 95, 64, 0],
                             "maxLength": 3,
                             "color": "None",
                             "font": "System26",
@@ -363,306 +269,6 @@
             "key": "Page0",
             "pageIndex": 0,
             "custom": {}
-        },
-        {
-            "hidden": true,
-            "buttons": {},
-            "soundKey": "",
-            "comment": "",
-            "elements": [
-                {
-                    "frame": [
-                        0,
-                        0,
-                        128,
-                        128
-                    ],
-                    "type": "group",
-                    "elements": [
-                        {
-                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
-                            "frame": [
-                                3,
-                                3,
-                                18,
-                                12
-                            ],
-                            "type": "bitmap",
-                            "transparentColor": "white",
-                            "hidden": false,
-                            "key": "icon"
-                        },
-                        {
-                            "bold": false,
-                            "constant": true,
-                            "frame": [
-                                0,
-                                3,
-                                125,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System26",
-                            "hidden": false,
-                            "align": "right",
-                            "value": "WORKOUT",
-                            "type": "string",
-                            "key": "units"
-                        },
-                        {
-                            "bold": false,
-                            "constant": false,
-                            "frame": [
-                                0,
-                                53,
-                                128,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System48",
-                            "hidden": false,
-                            "align": "center",
-                            "value": "STARTED",
-                            "type": "string",
-                            "key": "value"
-                        }
-                    ],
-                    "hidden": false,
-                    "key": "PLAIN_TEXT"
-                }
-            ],
-            "key": "Page9",
-            "pageIndex": 9,
-            "custom": {
-                "trigger": "WORKOUT_START"
-            }
-        },
-        {
-            "hidden": true,
-            "buttons": {},
-            "soundKey": "",
-            "comment": "",
-            "elements": [
-                {
-                    "frame": [
-                        0,
-                        0,
-                        128,
-                        128
-                    ],
-                    "type": "group",
-                    "elements": [
-                        {
-                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
-                            "frame": [
-                                3,
-                                3,
-                                18,
-                                12
-                            ],
-                            "type": "bitmap",
-                            "transparentColor": "white",
-                            "hidden": false,
-                            "key": "icon"
-                        },
-                        {
-                            "bold": false,
-                            "constant": true,
-                            "frame": [
-                                0,
-                                3,
-                                125,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System26",
-                            "hidden": false,
-                            "align": "right",
-                            "value": "WORKOUT",
-                            "type": "string",
-                            "key": "units"
-                        },
-                        {
-                            "bold": false,
-                            "constant": false,
-                            "frame": [
-                                0,
-                                53,
-                                128,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System48",
-                            "hidden": false,
-                            "align": "center",
-                            "value": "PAUSED",
-                            "type": "string",
-                            "key": "value"
-                        }
-                    ],
-                    "hidden": false,
-                    "key": "PLAIN_TEXT"
-                }
-            ],
-            "key": "Page10",
-            "pageIndex": 10,
-            "custom": {
-                "trigger": "WORKOUT_PAUSE"
-            }
-        },
-        {
-            "hidden": true,
-            "buttons": {},
-            "soundKey": "",
-            "comment": "",
-            "elements": [
-                {
-                    "frame": [
-                        0,
-                        0,
-                        128,
-                        128
-                    ],
-                    "type": "group",
-                    "elements": [
-                        {
-                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
-                            "frame": [
-                                3,
-                                3,
-                                18,
-                                12
-                            ],
-                            "type": "bitmap",
-                            "transparentColor": "white",
-                            "hidden": false,
-                            "key": "icon"
-                        },
-                        {
-                            "bold": false,
-                            "constant": true,
-                            "frame": [
-                                0,
-                                3,
-                                125,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System26",
-                            "hidden": false,
-                            "align": "right",
-                            "value": "WORKOUT",
-                            "type": "string",
-                            "key": "units"
-                        },
-                        {
-                            "bold": false,
-                            "constant": false,
-                            "frame": [
-                                0,
-                                53,
-                                128,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System48",
-                            "hidden": false,
-                            "align": "center",
-                            "value": "RESUMED",
-                            "type": "string",
-                            "key": "value"
-                        }
-                    ],
-                    "hidden": false,
-                    "key": "PLAIN_TEXT"
-                }
-            ],
-            "key": "Page11",
-            "pageIndex": 11,
-            "custom": {
-                "trigger": "WORKOUT_RESUME"
-            }
-        },
-        {
-            "hidden": true,
-            "buttons": {},
-            "soundKey": "",
-            "comment": "",
-            "elements": [
-                {
-                    "frame": [
-                        0,
-                        0,
-                        128,
-                        128
-                    ],
-                    "type": "group",
-                    "elements": [
-                        {
-                            "value": "//////8/APD/P/z/8P/wADz8wwMADz8PAMDz8wAAPD88APDwDw/Aw//D/w///wMA////////",
-                            "frame": [
-                                3,
-                                3,
-                                18,
-                                12
-                            ],
-                            "type": "bitmap",
-                            "transparentColor": "white",
-                            "hidden": false,
-                            "key": "icon"
-                        },
-                        {
-                            "bold": false,
-                            "constant": true,
-                            "frame": [
-                                0,
-                                3,
-                                125,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System26",
-                            "hidden": false,
-                            "align": "right",
-                            "value": "WORKOUT",
-                            "type": "string",
-                            "key": "units"
-                        },
-                        {
-                            "bold": false,
-                            "constant": false,
-                            "frame": [
-                                0,
-                                53,
-                                128,
-                                0
-                            ],
-                            "maxLength": 7,
-                            "color": "None",
-                            "font": "System48",
-                            "hidden": false,
-                            "align": "center",
-                            "value": "STOPPED",
-                            "type": "string",
-                            "key": "value"
-                        }
-                    ],
-                    "hidden": false,
-                    "key": "PLAIN_TEXT"
-                }
-            ],
-            "key": "Page12",
-            "pageIndex": 12,
-            "custom": {
-                "trigger": "WORKOUT_STOP"
-            }
         }
     ]
 }

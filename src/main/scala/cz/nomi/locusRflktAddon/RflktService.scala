@@ -173,6 +173,8 @@ trait RflktService extends LocalService with Log with RflktApi
             switchPage(rflkt, 1)
           case ("PAGE_LEFT", ButtonPressType.SINGLE) =>
             switchPage(rflkt, -1)
+          case ("START_STOP_WORKOUT", ButtonPressType.SINGLE) =>
+            toggleRecording()
           case _ =>
         }
       }
