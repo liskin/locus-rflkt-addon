@@ -242,7 +242,10 @@ class HardwareConnectorService extends LocalService with Log {
     getCapRflkt() foreach { rflkt =>
       if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
         info(s"setRflkt: doing setValues")
-        vars.foreach((rflkt.setValue _).tupled)
+        vars foreach { case (k, v) =>
+          // XXX: check if take(15) really is the right thing to do
+          rflkt.setValue(k, v.take(15))
+        }
       }
     }
   }
