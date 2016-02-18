@@ -326,7 +326,7 @@
                             "font": "System33",
                             "hidden": false,
                             "align": "center",
-                            "value": "M <-",
+                            "value": "--",
                             "type": "string",
                             "key": "value"
                         }
@@ -397,7 +397,7 @@
                             "font": "System19",
                             "hidden": false,
                             "align": "center",
-                            "value": "--:--:--",
+                            "value": "--",
                             "type": "string",
                             "key": "value"
                         }
@@ -426,7 +426,7 @@
                             "font": "System33",
                             "hidden": false,
                             "align": "center",
-                            "value": "M <-",
+                            "value": "--",
                             "type": "string",
                             "key": "value"
                         }
@@ -497,7 +497,7 @@
                             "font": "System19",
                             "hidden": false,
                             "align": "center",
-                            "value": "--:--:--",
+                            "value": "--",
                             "type": "string",
                             "key": "value"
                         }
