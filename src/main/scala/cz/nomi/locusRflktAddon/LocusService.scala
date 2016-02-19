@@ -94,7 +94,8 @@ trait LocusService extends LocalService with Log with LocusApi
       ).getOrElse("")
       val clock = Seq(
         "CLOCK.value" -> formatTime(now),
-        "CLOCK.rec_status" -> Str(recStatus)
+        "CLOCK.rec_stopped" -> Vis(trackRecord.isEmpty),
+        "CLOCK.rec_paused" -> Vis(trackRecord.exists(_.isTrackRecPaused()))
       )
 
       val guideTrack = Option(update.getGuideTypeTrack())

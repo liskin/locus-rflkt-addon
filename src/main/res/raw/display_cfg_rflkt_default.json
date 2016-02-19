@@ -29,29 +29,32 @@
                     "elements": [
                         {
                             "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
-                            "frame": [6, 1, 18, 12],
+                            "frame": [1, 1, 18, 12],
                             "type": "bitmap",
                             "transparentColor": "white",
                             "hidden": false,
                             "key": "icon"
                         },
                         {
-                            "bold": false,
-                            "constant": false,
-                            "frame": [0, 14, 30, 0],
-                            "maxLength": 3,
-                            "color": "None",
-                            "font": "System10",
+                            "value": "////////////PwAAwP8DAAD8PwAAwP8DAAD8PwAAwP8DAAD8PwAAwP8DAAD8////////////",
+                            "frame": [1, 13, 18, 12],
+                            "type": "bitmap",
+                            "transparentColor": "white",
                             "hidden": false,
-                            "align": "center",
-                            "value": "",
-                            "type": "string",
-                            "key": "rec_status"
+                            "key": "rec_stopped"
+                        },
+                        {
+                            "value": "/////////////8A/8P8P/AP//8A/8P8P/AP//8A/8P8P/AP//8A/8P8P/AP/////////////",
+                            "frame": [1, 13, 18, 12],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": true,
+                            "key": "rec_paused"
                         },
                         {
                             "bold": false,
                             "constant": false,
-                            "frame": [28, 2, 100, 0],
+                            "frame": [20, 2, 108, 0],
                             "maxLength": 8,
                             "color": "None",
                             "font": "System19",

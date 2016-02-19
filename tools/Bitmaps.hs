@@ -3,6 +3,7 @@ import Data.List.Split (chunksOf)
 import Data.Word (Word8)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Base64 as B64
+import qualified Data.ByteString.Char8 as BC8
 
 decode :: Int -> B.ByteString -> [[Word8]]
 decode width =
@@ -22,3 +23,16 @@ printBitmap = mapM_ putStrLn . map (map f)
         f 1 = '▒'
         f 2 = '░'
         f 3 = ' '
+
+-- assumes output from pnmtoplainpnm
+fromPbm :: String -> [[Word8]]
+fromPbm = map (map f) . drop 2 . lines
+    where
+        f '0' = 3
+        f '1' = 0
+
+-- xbmtopbm file.xbm | pnmtoplainpnm | runhaskell tools/Bitmaps.hs
+main :: IO ()
+main = do
+    pbm <- getContents
+    BC8.putStrLn $ encode $ fromPbm pbm
