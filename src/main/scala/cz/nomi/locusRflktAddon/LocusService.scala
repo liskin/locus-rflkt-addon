@@ -61,13 +61,14 @@ trait LocusService extends LocalService with Log with LocusApi
 
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
     import LocusUtils.LocusVersion
-    import RflktApi.{Str, Vis}
+    import RflktApi.{Val, Str, Vis}
 
     def onIncorrectData() {
       // TODO: log something
     }
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
+      // TODO: move to the end, maybe skip some updates
       lastUpdate = Some(update)
 
       val loc = update.getLocMyLocation()
@@ -105,14 +106,14 @@ trait LocusService extends LocalService with Log with LocusApi
       val nav2Action = guideTrack.map(_.getNavPoint2Action())
       val nav2Name = guideTrack.flatMap(g => Option(g.getNavPoint2Name()))
       val nav2Dist = guideTrack.map(_.getNavPoint2Dist() / 1000).filter(_ != 0)
+      val nav1Icon = setNavIcon("NAV1_ACTION", nav1Action)
+      val nav2Icon = setNavIcon("NAV2_ACTION", nav2Action)
       val nav = Seq(
-        "NAV1_ACTION.value" -> formatAction(nav1Action),
         "NAV1_NAME.value" -> formatString(nav1Name.map(normalizeString)),
         "NAV1_DIST.value" -> formatDouble(nav1Dist),
-        "NAV2_ACTION.value" -> formatAction(nav2Action),
         "NAV2_NAME.value" -> formatString(nav2Name.map(normalizeString)),
         "NAV2_DIST.value" -> formatDouble(nav2Dist)
-      )
+      ) ++ nav1Icon ++ nav2Icon
 
       setRflkt((clock ++ current ++ workout ++ nav): _*)
     }
@@ -150,44 +151,12 @@ trait LocusService extends LocalService with Log with LocusApi
       "\\p{M}".r.replaceAllIn(split, "")
     }
 
-    private def formatAction(a: Option[Int]): Str = formatString(a collect {
-      case ExtraData.VALUE_RTE_ACTION_NO_MANEUVER => ""
-      case ExtraData.VALUE_RTE_ACTION_CONTINUE_STRAIGHT => "|"
-      case ExtraData.VALUE_RTE_ACTION_NO_MANEUVER_NAME_CHANGE => ""
-      case ExtraData.VALUE_RTE_ACTION_LEFT_SLIGHT => "<"
-      case ExtraData.VALUE_RTE_ACTION_LEFT => "<="
-      case ExtraData.VALUE_RTE_ACTION_LEFT_SHARP => "<=="
-      case ExtraData.VALUE_RTE_ACTION_RIGHT_SLIGHT => ">"
-      case ExtraData.VALUE_RTE_ACTION_RIGHT => "=>"
-      case ExtraData.VALUE_RTE_ACTION_RIGHT_SHARP => "==>"
-      case ExtraData.VALUE_RTE_ACTION_STAY_LEFT => "<= S"
-      case ExtraData.VALUE_RTE_ACTION_STAY_RIGHT => "S =>"
-      case ExtraData.VALUE_RTE_ACTION_STAY_STRAIGHT => "S |"
-      case ExtraData.VALUE_RTE_ACTION_U_TURN => "U"
-      case ExtraData.VALUE_RTE_ACTION_U_TURN_LEFT => "<= U"
-      case ExtraData.VALUE_RTE_ACTION_U_TURN_RIGHT => "U =>"
-      case ExtraData.VALUE_RTE_ACTION_EXIT_LEFT => "<= E"
-      case ExtraData.VALUE_RTE_ACTION_EXIT_RIGHT => "E =>"
-      case ExtraData.VALUE_RTE_ACTION_RAMP_ON_LEFT => "<= R"
-      case ExtraData.VALUE_RTE_ACTION_RAMP_ON_RIGHT => "R =>"
-      case ExtraData.VALUE_RTE_ACTION_RAMP_STRAIGHT => "R |"
-      case ExtraData.VALUE_RTE_ACTION_MERGE_LEFT => "<= M"
-      case ExtraData.VALUE_RTE_ACTION_MERGE_RIGHT => "M =>"
-      case ExtraData.VALUE_RTE_ACTION_MERGE => "M"
-      case ExtraData.VALUE_RTE_ACTION_ENTER_STATE => ""
-      case ExtraData.VALUE_RTE_ACTION_ARRIVE_DEST => "."
-      case ExtraData.VALUE_RTE_ACTION_ARRIVE_DEST_LEFT => "<= ."
-      case ExtraData.VALUE_RTE_ACTION_ARRIVE_DEST_RIGHT => ". =>"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_1 => "(1)"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_2 => "(2)"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_3 => "(3)"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_4 => "(4)"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_5 => "(5)"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_6 => "(6)"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_7 => "(7)"
-      case ExtraData.VALUE_RTE_ACTION_ROUNDABOUT_EXIT_8 => "(8)"
-      case ExtraData.VALUE_RTE_ACTION_PASS_PLACE => "POI"
-    })
+    private def setNavIcon(group: String, action: Option[Int]): Seq[(String, Val)] = {
+      val visibleIcon = action.map(LocusService.actionIcons)
+      LocusService.navIcons.map { icon =>
+        (s"$group.$icon", Vis(visibleIcon.exists(_ == icon)))
+      }
+    }
   }
 
   private var lastUpdate: Option[UpdateContainer] = None
@@ -201,4 +170,49 @@ trait LocusService extends LocalService with Log with LocusApi
         ActionTools.actionTrackRecordStart(ctx, locusVer)
     }
   }
+}
+
+object LocusService {
+  import ExtraData._
+
+  private lazy val actionIcons: Map[Int, String] = Map(
+    VALUE_RTE_ACTION_NO_MANEUVER -> "nav_unknown",
+    VALUE_RTE_ACTION_CONTINUE_STRAIGHT -> "nav_straight",
+    VALUE_RTE_ACTION_NO_MANEUVER_NAME_CHANGE -> "nav_unknown",
+    VALUE_RTE_ACTION_LEFT_SLIGHT -> "nav_left_1",
+    VALUE_RTE_ACTION_LEFT -> "nav_left_2",
+    VALUE_RTE_ACTION_LEFT_SHARP -> "nav_left_3",
+    VALUE_RTE_ACTION_RIGHT_SLIGHT -> "nav_right_1",
+    VALUE_RTE_ACTION_RIGHT -> "nav_right_2",
+    VALUE_RTE_ACTION_RIGHT_SHARP -> "nav_right_3",
+    VALUE_RTE_ACTION_STAY_LEFT -> "nav_stay_left",
+    VALUE_RTE_ACTION_STAY_RIGHT -> "nav_stay_right",
+    VALUE_RTE_ACTION_STAY_STRAIGHT -> "nav_straight",
+    VALUE_RTE_ACTION_U_TURN -> "nav_turnaround",
+    VALUE_RTE_ACTION_U_TURN_LEFT -> "nav_turnaround",
+    VALUE_RTE_ACTION_U_TURN_RIGHT -> "nav_turnaround",
+    VALUE_RTE_ACTION_EXIT_LEFT -> "nav_exit_left",
+    VALUE_RTE_ACTION_EXIT_RIGHT -> "nav_exit_right",
+    VALUE_RTE_ACTION_RAMP_ON_LEFT -> "nav_left_1",
+    VALUE_RTE_ACTION_RAMP_ON_RIGHT -> "nav_right_1",
+    VALUE_RTE_ACTION_RAMP_STRAIGHT -> "nav_straight",
+    VALUE_RTE_ACTION_MERGE_LEFT -> "nav_merge_left",
+    VALUE_RTE_ACTION_MERGE_RIGHT -> "nav_merge_right",
+    VALUE_RTE_ACTION_MERGE -> "nav_straight",
+    VALUE_RTE_ACTION_ENTER_STATE -> "nav_unknown",
+    VALUE_RTE_ACTION_ARRIVE_DEST -> "nav_finish",
+    VALUE_RTE_ACTION_ARRIVE_DEST_LEFT -> "nav_finish",
+    VALUE_RTE_ACTION_ARRIVE_DEST_RIGHT -> "nav_finish",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_1 -> "nav_roundabout_1",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_2 -> "nav_roundabout_2",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_3 -> "nav_roundabout_3",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_4 -> "nav_roundabout_4",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_5 -> "nav_roundabout_5",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_6 -> "nav_roundabout_6",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_7 -> "nav_roundabout_7",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_8 -> "nav_roundabout_8",
+    VALUE_RTE_ACTION_PASS_PLACE -> "nav_waypoint"
+  )
+
+  private lazy val navIcons: Seq[String] = actionIcons.values.toSeq.distinct
 }
