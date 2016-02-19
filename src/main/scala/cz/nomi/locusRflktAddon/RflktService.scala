@@ -44,14 +44,13 @@ trait RflktService extends LocalService with Log with RflktApi
 
   onCreate {
     info(s"RflktService: onCreate")
-    hwCon = new HardwareConnector(ctx, Callback)
-    hwCon.setSampleTimerDataCheck(true)
+    hwCon = new HardwareConnector(ctx, Hardware)
     startForeground()
   }
 
   onDestroy {
     info(s"RflktService: onDestroy")
-    hwCon.stopDiscovery(networkType)
+    hwCon.stopDiscovery()
     hwCon.shutdown()
   }
 
@@ -86,8 +85,9 @@ trait RflktService extends LocalService with Log with RflktApi
   private def getNotificationManager(): NotificationManager =
     getSystemService(Context.NOTIFICATION_SERVICE).asInstanceOf[NotificationManager]
 
-  private object Callback extends HardwareConnector.Callback {
-    def connectedSensor(s: SensorConnection) {
+  private object Hardware extends HardwareConnector.Listener {
+    // FIXME: deprecated, use onSensorConnectionStateChanged instead
+    override def connectedSensor(s: SensorConnection) {
       info(s"connectedSensor: $s")
       curSensor = Some(s)
       lastSensor() = s.getConnectionParams.serialize
@@ -98,49 +98,54 @@ trait RflktService extends LocalService with Log with RflktApi
       requestConfirmation()
     }
 
-    def disconnectedSensor(s: SensorConnection) {
+    // FIXME: deprecated, use onSensorConnectionStateChanged instead
+    override def disconnectedSensor(s: SensorConnection) {
       info(s"disconnectedSensor: $s")
       curSensor = None
     }
 
-    def connectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
+    override def connectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
       info(s"connectorStateChanged: $nt, $state")
     }
 
-    def hasData() {}
-
-    def onFirmwareUpdateRequired(s: SensorConnection, current: String, recommended: String) {
+    override def onFirmwareUpdateRequired(s: SensorConnection, current: String, recommended: String) {
       info(s"onFirmwareUpdateRequired: $s, $current, $recommended")
     }
   }
 
   private object Discovery extends DiscoveryListener {
-    def onDeviceDiscovered(params: ConnectionParams) {
+    override def onDeviceDiscovered(params: ConnectionParams) {
+      if (!params.hasCapability(CapabilityType.Rflkt))
+        return
+
       info(s"onDeviceDiscovered: $params")
       toast(s"discovered: ${params.getName}")
     }
 
-    def onDiscoveredDeviceLost(params: ConnectionParams) {
+    override def onDiscoveredDeviceLost(params: ConnectionParams) {
+      if (!params.hasCapability(CapabilityType.Rflkt))
+        return
+
       info(s"onDiscoveredDeviceLost: $params")
       toast(s"lost: ${params.getName}")
     }
 
-    def onDiscoveredDeviceRssiChanged(params: ConnectionParams, rssi: Int) {
+    override def onDiscoveredDeviceRssiChanged(params: ConnectionParams, rssi: Int) {
       info(s"onDiscoveredDeviceRssiChanged: $params, $rssi")
     }
   }
 
   private object Connection extends SensorConnection.Listener {
-    def onNewCapabilityDetected(s: SensorConnection, typ: CapabilityType) {
+    override def onNewCapabilityDetected(s: SensorConnection, typ: CapabilityType) {
       info(s"onNewCapabilityDetected: $s, $typ")
     }
 
-    def onSensorConnectionError(s: SensorConnection, e: SensorConnectionError) {
+    override def onSensorConnectionError(s: SensorConnection, e: SensorConnectionError) {
       info(s"onSensorConnectionError: $s, $e")
       toast(s"${s.getDeviceName}: $e")
     }
 
-    def onSensorConnectionStateChanged(s: SensorConnection, state: SensorConnectionState) {
+    override def onSensorConnectionStateChanged(s: SensorConnection, state: SensorConnectionState) {
       info(s"onSensorConnectionStateChanged: $s, $state")
       toast(s"${s.getDeviceName}: $state")
       updateNotification(s"$state")
@@ -148,14 +153,14 @@ trait RflktService extends LocalService with Log with RflktApi
   }
 
   private object Confirmation extends ConfirmConnection.Listener {
-    def onConfirmationProcedureStateChange(state: ConfirmConnection.State, error: ConfirmConnection.Error) {
+    override def onConfirmationProcedureStateChange(state: ConfirmConnection.State, error: ConfirmConnection.Error) {
       info(s"onConfirmationProcedureStateChange: $state, $error")
       if (state == ConfirmConnection.State.FAILED) {
         requestConfirmation()
       }
     }
 
-    def onUserAccept() {
+    override def onUserAccept() {
       info(s"onUserAccept")
       loadConfig()
       getCapRflkt().foreach(_.sendSetBacklightPercent(0))
@@ -165,9 +170,9 @@ trait RflktService extends LocalService with Log with RflktApi
   private object RFLKT extends Rflkt.Listener {
     import connector.packets.dcp.response.DCPR_DateDisplayOptionsPacket._
 
-    def onAutoPageScrollRecieved() {}
-    def onBacklightPercentReceived(p: Int) {}
-    def onButtonPressed(pos: DisplayButtonPosition, typ: ButtonPressType) {
+    override def onAutoPageScrollRecieved() {}
+    override def onBacklightPercentReceived(p: Int) {}
+    override def onButtonPressed(pos: DisplayButtonPosition, typ: ButtonPressType) {
       getCapRflkt() foreach { rflkt =>
         val buttonCfg = Option(rflkt.getDisplayConfiguration()).map(_.getButtonCfg())
         val buttonCfgPage = Option(rflkt.getPage()).map(_.getButtonCfg())
@@ -177,9 +182,9 @@ trait RflktService extends LocalService with Log with RflktApi
         info(s"onButtonPressed: $pos, $fun, $typ")
         (fun, typ) match {
           case ("PAGE_RIGHT", ButtonPressType.SINGLE) =>
-            switchPage(rflkt, 1)
+            rflkt.sendShowNextPage()
           case ("PAGE_LEFT", ButtonPressType.SINGLE) =>
-            switchPage(rflkt, -1)
+            rflkt.sendShowPreviousPage()
           case ("START_STOP_WORKOUT", ButtonPressType.SINGLE) =>
             toggleRecording()
           case ("BACKLIGHT", ButtonPressType.SINGLE) =>
@@ -188,60 +193,47 @@ trait RflktService extends LocalService with Log with RflktApi
         }
       }
     }
-    def onButtonStateChanged(pos: DisplayButtonPosition, pressed: Boolean) {}
-    def onColorInvertedReceived(inverted: Boolean) {}
-    def onConfigVersionsReceived(ver: Array[Int]) {}
-    def onDateReceived(date: java.util.Calendar) {}
-    def onDisplayOptionsReceived(x1: DisplayDateFormat, x2: DisplayTimeFormat, x3: DisplayDayOfWeek, x4: DisplayWatchFaceStyle) {}
-    def onLoadComplete() {
+    override def onColorInvertedReceived(inverted: Boolean) {}
+    override def onConfigVersionsReceived(ver: Array[Int]) {}
+    override def onDateReceived(date: java.util.Calendar) {}
+    override def onDisplayOptionsReceived(x1: DisplayDateFormat, x2: DisplayTimeFormat, x3: DisplayDayOfWeek, x4: DisplayWatchFaceStyle) {}
+    override def onLoadComplete() {
       info(s"onLoadComplete")
     }
-    def onLoadFailed(result: LoadConfigResult) {
+    override def onLoadFailed(result: LoadConfigResult) {
       info(s"onLoadFailed: $result")
     }
-    def onLoadProgressChanged(progress: Int) {
+    override def onLoadProgressChanged(progress: Int) {
       info(s"onLoadProgressChanged: $progress")
     }
-    def onPageIndexReceived(index: Int) {}
-    def onSleepOnDisconnectReceived(state: Boolean) {}
-
-    private def switchPage(rflkt: Rflkt, offset: Int) {
-      val cfg = rflkt.getDisplayConfiguration()
-      val visiblePages = cfg.getVisiblePages()
-      val countPages = visiblePages.size()
-
-      if (countPages > 1) {
-        val page = rflkt.getPage()
-        val visibleIndex = visiblePages.indexOf(page)
-        val wantedIndex = ((visibleIndex + offset) % countPages + countPages) % countPages
-        rflkt.sendSetPageIndex(visiblePages(wantedIndex).getPageIndex())
-      }
-    }
+    override def onPageIndexReceived(index: Int) {}
   }
 
   def enableDiscovery(enable: Boolean) {
     enableBluetooth()
     enable match {
       case true =>
-        hwCon.startDiscovery(sensorType, networkType, Discovery)
+        hwCon.startDiscovery(Discovery)
       case false =>
-        hwCon.stopDiscovery(networkType)
+        hwCon.stopDiscovery()
     }
   }
 
   def connectFirst() {
     enableBluetooth()
-    val params = hwCon.getDiscoveredConnectionParams(networkType, sensorType).headOption orElse lastSensorOption
+    val rflkts = hwCon.getDiscoveredConnectionParams()
+      .filter(_.hasCapability(CapabilityType.Rflkt))
+    val params = rflkts.headOption orElse lastSensorOption
     params match {
       case Some(p) =>
         hwCon.requestSensorConnection(p, Connection)
-        hwCon.stopDiscovery(networkType)
+        hwCon.stopDiscovery()
       case None => toast("no sensor to connect to")
     }
   }
 
   private def enableBluetooth() {
-    if (hwCon.getHardwareConnectorState(networkType) == HardwareConnectorState.HARDWARE_NOT_ENABLED) {
+    if (hwCon.getHardwareConnectorState(NetworkType.BTLE) == HardwareConnectorState.HARDWARE_NOT_ENABLED) {
       val intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       startActivity(intent)
@@ -276,7 +268,6 @@ trait RflktService extends LocalService with Log with RflktApi
       if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
         info(s"setRflkt: doing setValues")
         vars foreach { case (k, v) =>
-          // XXX: check if take(14) really is the right thing to do
           rflkt.setValue(k, v.take(14))
         }
       }
@@ -312,13 +303,11 @@ trait RflktService extends LocalService with Log with RflktApi
 
   private val lastSensor = preferenceVar("")
   private def lastSensorOption: Option[ConnectionParams] =
-    Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.fromString)
+    Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.deserialize)
 
   private var curSensor: Option[SensorConnection] = None
 }
 
 object RflktService {
-  private val sensorType = SensorType.DISPLAY
-  private val networkType = NetworkType.BTLE
   private val notificationId: Int = 1 // unique within app
 }
