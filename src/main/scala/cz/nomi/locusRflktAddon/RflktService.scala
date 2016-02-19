@@ -33,6 +33,7 @@ trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
   def connectFirst(): Unit
   def setRflkt(vars: (String, String)*): Unit
+  def setRflktVisibility(vars: (String, Boolean)*): Unit
 }
 
 trait RflktService extends LocalService with Log with RflktApi
@@ -277,6 +278,16 @@ trait RflktService extends LocalService with Log with RflktApi
         vars foreach { case (k, v) =>
           rflkt.setValue(k, v.take(14))
         }
+      }
+    }
+  }
+
+  def setRflktVisibility(vars: (String, Boolean)*) {
+    info(s"setRflktVisibility: $vars")
+    getCapRflkt() foreach { rflkt =>
+      if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
+        info(s"setRflkt: doing setVisibilities")
+        vars.foreach((rflkt.setVisisble _).tupled)
       }
     }
   }
