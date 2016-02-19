@@ -77,7 +77,7 @@ trait LocusService extends LocalService with Log with LocusApi
       val curCadence = Option(loc.getSensorCadence()).filter(_ != 0)
 
       val trackRecord = Option(update.getTrackRecordContainer())
-      val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
+      //val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
       val distance = trackRecord.map(_.getDistance() / 1000)
 
       val recStatus = trackRecord.map(tr =>
@@ -85,7 +85,6 @@ trait LocusService extends LocalService with Log with LocusApi
       ).getOrElse("")
 
       val guideTrack = Option(update.getGuideTypeTrack())
-      val distToFinish = guideTrack.map(_.getDistToFinish() / 1000)
       val nav1Action = guideTrack.map(_.getNavPoint1Action())
       val nav1Name = guideTrack.flatMap(g => Option(g.getNavPoint1Name()))
       val nav1Dist = guideTrack.map(_.getNavPoint1Dist() / 1000).filter(_ != 0)
@@ -96,12 +95,11 @@ trait LocusService extends LocalService with Log with LocusApi
       setRflkt(
         "CLOCK.value" -> timeFormat.format(now),
         "SPEED_CURRENT.value" -> formatFloatFixed(curSpeed),
-        "SPEED_WORKOUT_AV.value" -> formatFloatFixed(avgSpeed),
+        //"SPEED_WORKOUT_AV.value" -> formatFloatFixed(avgSpeed),
         "DISTANCE_WORKOUT.value" -> formatDoubleFixed(distance),
         "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
         "HR_CURRENT.value" -> formatInt(curHeartRate),
         "CLOCK.rec_status" -> recStatus,
-        "DISTANCE_TO_FINISH.value" -> formatDoubleFixed(distToFinish),
         "NAV1_ACTION.value" -> formatAction(nav1Action),
         "NAV1_NAME.value" -> formatString(nav1Name.map(normalizeString)),
         "NAV1_DIST.value" -> formatDouble(nav1Dist),
