@@ -15,6 +15,7 @@ encode :: [[Word8]] -> B.ByteString
 encode = B64.encode . B.pack . map f . chunksOf 4 . concat
     where
         f [a, b, c, d] = (((((d `shiftL` 2) .|. c) `shiftL` 2) .|. b) `shiftL` 2) .|. a
+        f l = f $ take 4 $ l ++ repeat 0
 
 printBitmap :: [[Word8]] -> IO ()
 printBitmap = mapM_ putStrLn . map (map f)
