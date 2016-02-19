@@ -70,20 +70,32 @@ trait LocusService extends LocalService with Log with LocusApi
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
       lastUpdate = Some(update)
 
-      val now = java.util.Calendar.getInstance().getTime()
-
       val loc = update.getLocMyLocation()
       val curSpeed = Option(loc.getSpeed()).filter(_ != 0).map(_ * 36 / 10)
       val curHeartRate = Option(loc.getSensorHeartRate()).filter(_ != 0)
       val curCadence = Option(loc.getSensorCadence()).filter(_ != 0)
+      val current = Seq(
+        "SPEED_CURRENT.value" -> formatFloatFixed(curSpeed),
+        "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
+        "HR_CURRENT.value" -> formatInt(curHeartRate)
+      )
 
       val trackRecord = Option(update.getTrackRecordContainer())
       //val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
       val distance = trackRecord.map(_.getDistance() / 1000)
+      val workout = Seq(
+        //"SPEED_WORKOUT_AV.value" -> formatFloatFixed(avgSpeed),
+        "DISTANCE_WORKOUT.value" -> formatDoubleFixed(distance)
+      )
 
+      val now = java.util.Calendar.getInstance().getTime()
       val recStatus = trackRecord.map(tr =>
           if (tr.isTrackRecPaused()) "hold" else "rec"
       ).getOrElse("")
+      val clock = Seq(
+        "CLOCK.value" -> formatTime(now),
+        "CLOCK.rec_status" -> Str(recStatus)
+      )
 
       val guideTrack = Option(update.getGuideTypeTrack())
       val nav1Action = guideTrack.map(_.getNavPoint1Action())
@@ -92,15 +104,7 @@ trait LocusService extends LocalService with Log with LocusApi
       val nav2Action = guideTrack.map(_.getNavPoint2Action())
       val nav2Name = guideTrack.flatMap(g => Option(g.getNavPoint2Name()))
       val nav2Dist = guideTrack.map(_.getNavPoint2Dist() / 1000).filter(_ != 0)
-
-      setRflkt(
-        "CLOCK.value" -> formatTime(now),
-        "SPEED_CURRENT.value" -> formatFloatFixed(curSpeed),
-        //"SPEED_WORKOUT_AV.value" -> formatFloatFixed(avgSpeed),
-        "DISTANCE_WORKOUT.value" -> formatDoubleFixed(distance),
-        "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
-        "HR_CURRENT.value" -> formatInt(curHeartRate),
-        "CLOCK.rec_status" -> Str(recStatus),
+      val nav = Seq(
         "NAV1_ACTION.value" -> formatAction(nav1Action),
         "NAV1_NAME.value" -> formatString(nav1Name.map(normalizeString)),
         "NAV1_DIST.value" -> formatDouble(nav1Dist),
@@ -108,6 +112,8 @@ trait LocusService extends LocalService with Log with LocusApi
         "NAV2_NAME.value" -> formatString(nav2Name.map(normalizeString)),
         "NAV2_DIST.value" -> formatDouble(nav2Dist)
       )
+
+      setRflkt((clock ++ current ++ workout ++ nav): _*)
     }
 
     private val timeFormat = new java.text.SimpleDateFormat("HH:mm:ss")
