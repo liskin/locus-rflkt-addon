@@ -86,22 +86,12 @@ trait RflktService extends LocalService with Log with RflktApi
     getSystemService(Context.NOTIFICATION_SERVICE).asInstanceOf[NotificationManager]
 
   private object Hardware extends HardwareConnector.Listener {
-    // FIXME: deprecated, use onSensorConnectionStateChanged instead
     override def connectedSensor(s: SensorConnection) {
       info(s"connectedSensor: $s")
-      curSensor = Some(s)
-      lastSensor() = s.getConnectionParams.serialize
-
-      getCapConfirm().get.addListener(Confirmation)
-      getCapRflkt().get.addListener(RFLKT)
-
-      requestConfirmation()
     }
 
-    // FIXME: deprecated, use onSensorConnectionStateChanged instead
     override def disconnectedSensor(s: SensorConnection) {
       info(s"disconnectedSensor: $s")
-      curSensor = None
     }
 
     override def connectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
@@ -138,6 +128,15 @@ trait RflktService extends LocalService with Log with RflktApi
   private object Connection extends SensorConnection.Listener {
     override def onNewCapabilityDetected(s: SensorConnection, typ: CapabilityType) {
       info(s"onNewCapabilityDetected: $s, $typ")
+
+      typ match {
+        case CapabilityType.ConfirmConnection =>
+          getCapConfirm().get.addListener(Confirmation)
+          requestConfirmation()
+        case CapabilityType.Rflkt =>
+          getCapRflkt().get.addListener(RFLKT)
+        case _ =>
+      }
     }
 
     override def onSensorConnectionError(s: SensorConnection, e: SensorConnectionError) {
@@ -147,6 +146,14 @@ trait RflktService extends LocalService with Log with RflktApi
 
     override def onSensorConnectionStateChanged(s: SensorConnection, state: SensorConnectionState) {
       info(s"onSensorConnectionStateChanged: $s, $state")
+
+      if (state == SensorConnectionState.CONNECTED) {
+        curSensor = Some(s)
+        lastSensor() = s.getConnectionParams.serialize
+      } else {
+        curSensor = None
+      }
+
       toast(s"${s.getDeviceName}: $state")
       updateNotification(s"$state")
     }
