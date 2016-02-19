@@ -15,3 +15,11 @@ An addon that enables [Wahoo RFLKT][rflkt] to be used with the awesome Android
 [rflkt]: http://eu.wahoofitness.com/devices/rflkt.html
 [locus]: http://www.locusmap.eu/
 [releases]: https://github.com/liskin/locus-rflkt-addon/releases
+
+# What it looks like?
+
+![overview](
+https://cloud.githubusercontent.com/assets/300342/13191955/07d7ea46-d768-11e5-93ac-fba1159539d2.jpg
+) ![navigation](
+https://cloud.githubusercontent.com/assets/300342/13191956/07d9238e-d768-11e5-8405-1127e4695b56.jpg
+)
