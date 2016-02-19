@@ -61,6 +61,7 @@ trait LocusService extends LocalService with Log with LocusApi
 
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
     import LocusUtils.LocusVersion
+    import RflktApi.{Str, Vis}
 
     def onIncorrectData() {
       // TODO: log something
@@ -93,13 +94,13 @@ trait LocusService extends LocalService with Log with LocusApi
       val nav2Dist = guideTrack.map(_.getNavPoint2Dist() / 1000).filter(_ != 0)
 
       setRflkt(
-        "CLOCK.value" -> timeFormat.format(now),
+        "CLOCK.value" -> formatTime(now),
         "SPEED_CURRENT.value" -> formatFloatFixed(curSpeed),
         //"SPEED_WORKOUT_AV.value" -> formatFloatFixed(avgSpeed),
         "DISTANCE_WORKOUT.value" -> formatDoubleFixed(distance),
         "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
         "HR_CURRENT.value" -> formatInt(curHeartRate),
-        "CLOCK.rec_status" -> recStatus,
+        "CLOCK.rec_status" -> Str(recStatus),
         "NAV1_ACTION.value" -> formatAction(nav1Action),
         "NAV1_NAME.value" -> formatString(nav1Name.map(normalizeString)),
         "NAV1_DIST.value" -> formatDouble(nav1Dist),
@@ -111,18 +112,20 @@ trait LocusService extends LocalService with Log with LocusApi
 
     private val timeFormat = new java.text.SimpleDateFormat("HH:mm:ss")
 
-    private def formatString(s: Option[String]): String = s.getOrElse("--")
+    private def formatString(s: Option[String]): Str = Str(s.getOrElse("--"))
 
-    private def formatInt(i: Option[Int]): String =
+    private def formatTime(t: java.util.Date): Str = Str(timeFormat.format(t))
+
+    private def formatInt(i: Option[Int]): Str =
       formatString(i.map(v => f"$v%d"))
 
-    private def formatFloatFixed(f: Option[Float]): String =
+    private def formatFloatFixed(f: Option[Float]): Str =
       formatString(f.map(v => f"$v%.1f"))
 
-    private def formatDoubleFixed(d: Option[Double]): String =
+    private def formatDoubleFixed(d: Option[Double]): Str =
       formatString(d.map(v => f"$v%.1f"))
 
-    private def formatDouble(d: Option[Double]): String =
+    private def formatDouble(d: Option[Double]): Str =
       formatString {
         d.map { v =>
           if (v.abs > 99) {
@@ -140,7 +143,7 @@ trait LocusService extends LocalService with Log with LocusApi
       "\\p{M}".r.replaceAllIn(split, "")
     }
 
-    private def formatAction(a: Option[Int]): String = formatString(a collect {
+    private def formatAction(a: Option[Int]): Str = formatString(a collect {
       case ExtraData.VALUE_RTE_ACTION_NO_MANEUVER => ""
       case ExtraData.VALUE_RTE_ACTION_CONTINUE_STRAIGHT => "|"
       case ExtraData.VALUE_RTE_ACTION_NO_MANEUVER_NAME_CHANGE => ""

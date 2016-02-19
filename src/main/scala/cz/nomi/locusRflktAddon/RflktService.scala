@@ -32,8 +32,13 @@ import display.{DisplayConfiguration, DisplayButtonPosition}
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
   def connectFirst(): Unit
-  def setRflkt(vars: (String, String)*): Unit
-  def setRflktVisibility(vars: (String, Boolean)*): Unit
+  def setRflkt(vars: (String, RflktApi.Val)*): Unit
+}
+
+object RflktApi {
+  sealed abstract class Val
+  case class Str(s: String) extends Val
+  case class Vis(v: Boolean) extends Val
 }
 
 trait RflktService extends LocalService with Log with RflktApi
@@ -270,24 +275,15 @@ trait RflktService extends LocalService with Log with RflktApi
     }
   }
 
-  def setRflkt(vars: (String, String)*) {
+  def setRflkt(vars: (String, RflktApi.Val)*) {
     info(s"setRflkt: $vars")
     getCapRflkt() foreach { rflkt =>
       if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
-        info(s"setRflkt: doing setValues")
-        vars foreach { case (k, v) =>
-          rflkt.setValue(k, v.take(14))
+        info(s"setRflkt: setting")
+        vars foreach {
+          case (k, RflktApi.Str(v)) => rflkt.setValue(k, v.take(14))
+          case (k, RflktApi.Vis(v)) => rflkt.setVisisble(k, v)
         }
-      }
-    }
-  }
-
-  def setRflktVisibility(vars: (String, Boolean)*) {
-    info(s"setRflktVisibility: $vars")
-    getCapRflkt() foreach { rflkt =>
-      if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
-        info(s"setRflkt: doing setVisibilities")
-        vars.foreach((rflkt.setVisisble _).tupled)
       }
     }
   }
