@@ -100,7 +100,7 @@ trait LocusService extends LocalService with Log with LocusApi
         "DISTANCE_WORKOUT.value" -> formatDoubleFixed(distance),
         "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
         "HR_CURRENT.value" -> formatInt(curHeartRate),
-        "REC_STATUS.value" -> recStatus,
+        "CLOCK.rec_status" -> recStatus,
         "DISTANCE_TO_FINISH.value" -> formatDoubleFixed(distToFinish),
         "NAV1_ACTION.value" -> formatAction(nav1Action),
         "NAV1_NAME.value" -> formatString(nav1Name.map(normalizeString)),

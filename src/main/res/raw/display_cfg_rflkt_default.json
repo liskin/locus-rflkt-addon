@@ -24,17 +24,17 @@
                     "key": ""
                 },
                 {
-                    "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
-                    "frame": [6, 1, 18, 12],
-                    "type": "bitmap",
-                    "transparentColor": "white",
-                    "hidden": false,
-                    "key": "icon"
-                },
-                {
-                    "frame": [0, 14, 30, 10],
+                    "frame": [0, 0, 128, 26],
                     "type": "group",
                     "elements": [
+                        {
+                            "value": "/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/",
+                            "frame": [6, 1, 18, 12],
+                            "type": "bitmap",
+                            "transparentColor": "white",
+                            "hidden": false,
+                            "key": "icon"
+                        },
                         {
                             "bold": false,
                             "constant": false,
@@ -46,16 +46,8 @@
                             "align": "center",
                             "value": "",
                             "type": "string",
-                            "key": "value"
-                        }
-                    ],
-                    "hidden": false,
-                    "key": "REC_STATUS"
-                },
-                {
-                    "frame": [30, 2, 98, 26],
-                    "type": "group",
-                    "elements": [
+                            "key": "rec_status"
+                        },
                         {
                             "bold": false,
                             "constant": false,
