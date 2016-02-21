@@ -1,3 +1,7 @@
+-- Copyright (C) 2016 Tomáš Janoušek
+-- This file is a part of locus-rflkt-addon.
+-- See the COPYING and LICENSE files in the project root directory.
+
 import Data.Bits
 import Data.List.Split (chunksOf)
 import Data.Word (Word8)

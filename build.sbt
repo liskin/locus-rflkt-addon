@@ -1,3 +1,8 @@
+/* Copyright (C) 2016 Tomáš Janoušek
+ * This file is a part of locus-rflkt-addon.
+ * See the COPYING and LICENSE files in the project root directory.
+ */
+
 name := "locus-rflkt-addon"
 
 import android.Keys._
