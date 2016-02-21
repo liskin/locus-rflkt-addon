@@ -73,7 +73,7 @@ trait RflktService extends LocalService with Log with RflktApi
   }
 
   private lazy val notificationBuilder = new NotificationCompat.Builder(ctx)
-    .setSmallIcon(R.drawable.icon)
+    .setSmallIcon(R.drawable.ic_notification)
     .setContentTitle("Locus Wahoo RFLKT addon")
     .setContentText("ready")
     .setContentIntent(pendingMainIntent)

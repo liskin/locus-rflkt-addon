@@ -21,7 +21,7 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-  <application android:icon="@drawable/icon"
+  <application android:icon="@drawable/ic_launcher"
                android:label="@string/app_name">
     <activity android:name=".Main"
               android:label="@string/app_name">
@@ -31,7 +31,7 @@
       </intent-filter>
 
       <!-- put it in Locus menu -> Addons -->
-      <intent-filter>
+      <intent-filter android:icon="@drawable/ic_notification">
         <action android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
