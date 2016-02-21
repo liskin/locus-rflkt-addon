@@ -1,8 +1,9 @@
 # Locus addon for Wahoo RFLKT
 
 An addon that enables [Wahoo RFLKT][rflkt] to be used with the awesome Android
- multifunctional outdoor navigation app [Locus][locus]. An alpha version may
- be downloaded [here][releases]. The goal is to support all of:
+multifunctional outdoor navigation app [Locus][locus]. It may be downloaded
+either [here][releases] or via [Google Play][playstore]. The goal is to
+support all of:
 
 - ☑ clock
 - ☑ current speed, heart rate, cadence
@@ -15,6 +16,7 @@ An addon that enables [Wahoo RFLKT][rflkt] to be used with the awesome Android
 [rflkt]: http://eu.wahoofitness.com/devices/rflkt.html
 [locus]: http://www.locusmap.eu/
 [releases]: https://github.com/liskin/locus-rflkt-addon/releases
+[playstore]: https://play.google.com/store/apps/details?id=cz.nomi.locusRflktAddon
 
 # What it looks like?
 
