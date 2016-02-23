@@ -1,5 +1,7 @@
 # Locus addon for Wahoo RFLKT
 
+[![Gitter](https://badges.gitter.im/liskin/locus-rflkt-addon.svg)](https://gitter.im/liskin/locus-rflkt-addon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 An addon that enables [Wahoo RFLKT][rflkt] to be used with the awesome Android
 multifunctional outdoor navigation app [Locus][locus]. It may be downloaded
 either [here][releases] or via [Google Play][playstore]. The goal is to
