@@ -31,8 +31,7 @@ import capabilities.ConfirmConnection
 import capabilities.Rflkt
 import Rflkt.{ButtonPressType, LoadConfigResult}
 import connector.HardwareConnectorEnums.{SensorConnectionError, SensorConnectionState}
-import com.wahoofitness.common.display
-import display.{DisplayConfiguration, DisplayButtonPosition}
+import com.wahoofitness.common.display.{DisplayConfiguration, DisplayButtonPosition}
 
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
