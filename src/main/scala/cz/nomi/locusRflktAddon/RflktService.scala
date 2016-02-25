@@ -274,11 +274,7 @@ trait RflktService extends LocalService with Log with RflktApi
 
   private def loadConfig() {
     getCapRflkt() foreach {
-      val config = DisplayConfiguration.fromRawResource(getResources, R.raw.display_cfg_rflkt_default)
-      dropPages.foreach{ page =>
-        Option(config.getPage(page)).foreach(config.removePage)
-      }
-      _.loadConfig(config)
+      _.loadConfig(display.Pages.conf)
     }
   }
 
@@ -330,9 +326,4 @@ trait RflktService extends LocalService with Log with RflktApi
 
 object RflktService {
   private val notificationId: Int = 1 // unique within app
-
-  // makes loadConfig considerably faster (for development)
-  private val dropPages: Seq[String] = Seq(
-    //"NAVIGATION"
-  )
 }
