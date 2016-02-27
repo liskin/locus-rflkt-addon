@@ -32,6 +32,7 @@ import connector.HardwareConnectorEnums.{SensorConnectionError, SensorConnection
 import com.wahoofitness.common.display.{DisplayConfiguration, DisplayButtonPosition}
 
 import Log._
+import Preferences._
 
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
@@ -50,7 +51,7 @@ trait RflktService extends org.scaloid.common.SService
 { this: LocusApi =>
   import RflktService._
 
-  import org.scaloid.common.{preferenceVar, toast, defaultSharedPreferences}
+  import org.scaloid.common.toast
 
   private var hwCon: HardwareConnector = null
 
@@ -309,7 +310,7 @@ trait RflktService extends org.scaloid.common.SService
     }
   }
 
-  private val uuid = preferenceVar("")
+  private val uuid = preferenceVar("uuid", "")
   private def getUuid: UUID = uuid() match {
     case s if s.nonEmpty =>
       UUID.fromString(s)
@@ -319,7 +320,7 @@ trait RflktService extends org.scaloid.common.SService
       u
   }
 
-  private val lastSensor = preferenceVar("")
+  private val lastSensor = preferenceVar("lastSensor", "")
   private def lastSensorOption: Option[ConnectionParams] =
     Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.deserialize)
 

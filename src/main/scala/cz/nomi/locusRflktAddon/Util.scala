@@ -9,7 +9,9 @@ import scala.reflect.Manifest
 
 import android.app.Service
 import android.os.{Binder, IBinder}
-import android.content.{Context, Intent, ServiceConnection, ComponentName, IntentFilter, BroadcastReceiver}
+import android.content.{Context, Intent, ServiceConnection, ComponentName,
+  IntentFilter, BroadcastReceiver, SharedPreferences}
+import android.preference.PreferenceManager
 
 // inspired by scaloid
 object Log {
@@ -107,4 +109,39 @@ object Broadcasts {
   }
 
   // TODO: local broadcasts
+}
+
+// inspired by scaloid
+abstract class PreferenceVar[T](key: String, defaultValue: T) {
+  protected def get(value: T, pref: SharedPreferences): T
+  protected def put(value: T, editor: SharedPreferences.Editor): Unit
+
+  final def apply()(implicit pref: SharedPreferences): T =
+    get(defaultValue, pref)
+
+  final def update(value: T)(implicit pref: SharedPreferences) {
+    val editor = pref.edit()
+    put(value, editor)
+    editor.apply()
+  }
+
+  final def remove()(implicit pref: SharedPreferences) {
+    pref.edit().remove(key).apply()
+  }
+}
+
+// inspired by scaloid
+object Preferences {
+  implicit def defaultSharedPreferences(implicit context: Context): SharedPreferences =
+    PreferenceManager.getDefaultSharedPreferences(context)
+
+  def preferenceVar[T](key: String, defaultVal: T): PreferenceVar[T] =
+    defaultVal match {
+      case v: String => new PreferenceVar[String](key, v) {
+        def get(value: String, pref: SharedPreferences): String =
+          pref.getString(key, value)
+        def put(value: String, editor: SharedPreferences.Editor): Unit =
+          editor.putString(key, value)
+      }.asInstanceOf[PreferenceVar[T]]
+    }
 }
