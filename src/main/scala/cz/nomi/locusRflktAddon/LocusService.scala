@@ -14,6 +14,7 @@ import LocusUtils.LocusVersion
 import locus.api.objects.extra.ExtraData
 
 import Log._
+import Broadcasts._
 
 trait LocusApi {
   def toggleRecording(): Unit
@@ -39,7 +40,7 @@ trait LocusService extends org.scaloid.common.SService
     disablePeriodicUpdatesReceiver()
   }
 
-  org.scaloid.common.broadcastReceiver(new IntentFilter(LocusConst.ACTION_PERIODIC_UPDATE)) { (context: Context, intent: Intent) =>
+  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE) { (context: Context, intent: Intent) =>
     info(s"periodic update received")
     PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
   }

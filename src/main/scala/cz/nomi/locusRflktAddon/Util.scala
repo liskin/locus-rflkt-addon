@@ -9,7 +9,7 @@ import scala.reflect.Manifest
 
 import android.app.Service
 import android.os.{Binder, IBinder}
-import android.content.{Context, Intent, ServiceConnection, ComponentName}
+import android.content.{Context, Intent, ServiceConnection, ComponentName, IntentFilter, BroadcastReceiver}
 
 // inspired by scaloid
 object Log {
@@ -84,4 +84,27 @@ final class LocalServiceConnection[S <: LocalService[S]]
       ctx.unbindService(this)
     }
   }
+}
+
+// inspired by scaloid
+object Broadcasts {
+  import scala.language.implicitConversions
+
+  implicit def strToIntentFilter(str: String): IntentFilter =
+    new IntentFilter(str)
+
+  def broadcastReceiver(filter: IntentFilter)
+    (onReceiveBody: (Context, Intent) => Unit)
+    (implicit ctx: Context, reg: Registerable)
+  {
+    val receiver = new BroadcastReceiver {
+      def onReceive(context: Context, intent: Intent) {
+        onReceiveBody(context, intent)
+      }
+    }
+    reg.onRegister(ctx.registerReceiver(receiver, filter))
+    reg.onUnregister(ctx.unregisterReceiver(receiver))
+  }
+
+  // TODO: local broadcasts
 }
