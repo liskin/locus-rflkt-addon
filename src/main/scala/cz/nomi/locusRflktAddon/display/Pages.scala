@@ -100,7 +100,7 @@ object Pages {
   lazy val conf =
     Configuration(overview, navigation)
       .id("LocusRflktAddon")
-      .id("LocusRflktAddon")
+      .name("LocusRflktAddon")
       .button(SOUTH_WEST, "PAGE_LEFT")
       .button(SOUTH_EAST, "PAGE_RIGHT")
       .button(NORTH_WEST, "START_STOP_WORKOUT")
