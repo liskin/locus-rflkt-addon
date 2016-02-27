@@ -13,6 +13,8 @@ import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
 
+import macroid.{Contexts, ContextWrapper}
+
 object Log {
   val logger = org.log4s.getLogger("LocusRflktAddon")
 }
@@ -153,8 +155,16 @@ trait OnResumePause {
   }
 }
 
+trait Notice {
+  def notice(s: String)(implicit ctx: ContextWrapper) {
+    import macroid.FullDsl._
+    (toast(s) <~ fry).run
+  }
+}
+
 // inspired by scaloid
-trait RService extends Service with OnCreateDestroy with Registerable
+trait RService extends Service with Contexts[Service]
+  with OnCreateDestroy with Registerable with Notice
 {
   protected implicit val implicitContext: Context = this
 

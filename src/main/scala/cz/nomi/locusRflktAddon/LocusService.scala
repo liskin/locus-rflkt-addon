@@ -24,8 +24,6 @@ trait LocusService extends RService
   with LocalService[LocusService] with LocusApi
 { this: RflktApi =>
 
-  import org.scaloid.common.toast
-
   onRegister {
     logger.info(s"LocusService: onRegister")
     enablePeriodicUpdatesReceiver()
@@ -45,7 +43,7 @@ trait LocusService extends RService
     val ver = LocusUtils.getActiveVersion(this)
     val locusInfo = ActionTools.getLocusInfo(this, ver)
     if (!locusInfo.isPeriodicUpdatesEnabled) {
-      toast("periodic updates in Locus disabled :-(")
+      notice("periodic updates in Locus disabled :-(")
     }
     ver
   }

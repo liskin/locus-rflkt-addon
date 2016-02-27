@@ -51,8 +51,6 @@ trait RflktService extends RService
 { this: LocusApi =>
   import RflktService._
 
-  import org.scaloid.common.toast
-
   private var hwCon: HardwareConnector = null
 
   onRegister {
@@ -122,7 +120,7 @@ trait RflktService extends RService
         return
 
       logger.info(s"onDeviceDiscovered: $params")
-      toast(s"discovered: ${params.getName}")
+      notice(s"discovered: ${params.getName}")
     }
 
     override def onDiscoveredDeviceLost(params: ConnectionParams) {
@@ -130,7 +128,7 @@ trait RflktService extends RService
         return
 
       logger.info(s"onDiscoveredDeviceLost: $params")
-      toast(s"lost: ${params.getName}")
+      notice(s"lost: ${params.getName}")
     }
 
     override def onDiscoveredDeviceRssiChanged(params: ConnectionParams, rssi: Int) {
@@ -154,7 +152,7 @@ trait RflktService extends RService
 
     override def onSensorConnectionError(s: SensorConnection, e: SensorConnectionError) {
       logger.info(s"onSensorConnectionError: $s, $e")
-      toast(s"${s.getDeviceName}: $e")
+      notice(s"${s.getDeviceName}: $e")
     }
 
     override def onSensorConnectionStateChanged(s: SensorConnection, state: SensorConnectionState) {
@@ -167,7 +165,7 @@ trait RflktService extends RService
         curSensor = None
       }
 
-      toast(s"${s.getDeviceName}: $state")
+      notice(s"${s.getDeviceName}: $state")
       updateNotification(s"$state")
     }
   }
@@ -248,7 +246,7 @@ trait RflktService extends RService
       case Some(p) =>
         hwCon.requestSensorConnection(p, Connection)
         hwCon.stopDiscovery()
-      case None => toast("no sensor to connect to")
+      case None => notice("no sensor to connect to")
     }
   }
 

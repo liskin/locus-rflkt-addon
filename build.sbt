@@ -16,6 +16,7 @@ scalacOptions in Compile ++= Seq("-explaintypes", "-unchecked", "-feature", "-de
 updateCheck in Android := {} // disable update check
 proguardCache in Android ++= Seq(
   "org.scaloid",
+  "macroid",
   "org.slf4j",
   "org.log4s",
   "com.google",
@@ -40,6 +41,9 @@ proguardConfig in Android := {
   }
 }
 
+resolvers += "jcenter" at "http://jcenter.bintray.com"
+
+libraryDependencies += aar("org.macroid" %% "macroid" % "2.0.0-20150427")
 libraryDependencies += "org.scaloid" %% "scaloid" % "4.1"
 libraryDependencies += "com.android.support" % "support-v4" % "23.1.1"
 libraryDependencies += "org.log4s" %% "log4s" % "1.2.1"
