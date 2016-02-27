@@ -21,7 +21,8 @@ trait LocusApi {
   def toggleRecording(): Unit
 }
 
-trait LocusService extends LocalService with Log with LocusApi
+trait LocusService extends SService with Log
+  with LocalService[LocusService] with LocusApi
 { this: RflktApi =>
 
   onCreate {

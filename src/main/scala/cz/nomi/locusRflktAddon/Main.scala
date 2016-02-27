@@ -17,13 +17,13 @@ class Main extends SActivity with Log {
 
     contentView = new SVerticalLayout {
       SButton("enable discovery").onClick {
-        service(_.enableDiscovery(true))
+        service(_.enableDiscovery(true)).get
       }
       SButton("disable discovery").onClick {
-        service(_.enableDiscovery(false))
+        service(_.enableDiscovery(false)).get
       }
       SButton("connect first").onClick {
-        service(_.connectFirst())
+        service(_.connectFirst()).get
       }
       SButton("stop all").onClick {
         stopServices()
@@ -43,4 +43,5 @@ class Main extends SActivity with Log {
   }
 }
 
-class MainService extends RflktService with LocusService
+class MainService extends LocalService[MainService]
+  with RflktService with LocusService
