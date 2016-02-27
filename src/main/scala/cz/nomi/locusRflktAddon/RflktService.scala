@@ -46,7 +46,7 @@ object RflktApi {
   case class Vis(v: Boolean) extends Val
 }
 
-trait RflktService extends org.scaloid.common.SService
+trait RflktService extends RService
   with LocalService[RflktService] with RflktApi
 { this: LocusApi =>
   import RflktService._
@@ -55,13 +55,13 @@ trait RflktService extends org.scaloid.common.SService
 
   private var hwCon: HardwareConnector = null
 
-  onCreate {
+  onRegister {
     logger.info(s"RflktService: onCreate")
-    hwCon = new HardwareConnector(ctx, Hardware)
+    hwCon = new HardwareConnector(this, Hardware)
     startForeground()
   }
 
-  onDestroy {
+  onUnregister {
     logger.info(s"RflktService: onDestroy")
     hwCon.stopDiscovery()
     hwCon.shutdown()
@@ -74,17 +74,17 @@ trait RflktService extends org.scaloid.common.SService
       stopSelf()
   }
 
-  private lazy val notificationBuilder = new NotificationCompat.Builder(ctx)
+  private lazy val notificationBuilder = new NotificationCompat.Builder(this)
     .setSmallIcon(R.drawable.ic_notification)
     .setContentTitle("Locus Wahoo RFLKT addon")
     .setContentText("ready")
     .setContentIntent(pendingMainIntent)
     // TODO: add some actions, e.g. disconnect
 
-  private lazy val mainIntent = new Intent(ctx, classOf[Main])
+  private lazy val mainIntent = new Intent(this, classOf[Main])
 
   private lazy val pendingMainIntent =
-    PendingIntent.getActivity(ctx, 0, mainIntent, Intent.FLAG_ACTIVITY_NEW_TASK)
+    PendingIntent.getActivity(this, 0, mainIntent, Intent.FLAG_ACTIVITY_NEW_TASK)
 
   private def startForeground() {
     startForeground(notificationId, notificationBuilder.build())

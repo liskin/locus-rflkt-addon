@@ -9,27 +9,28 @@ import android.content.Intent
 
 import Log._
 
-class Main extends org.scaloid.common.SActivity {
+class Main extends RActivity {
   val service = new LocalServiceConnection[MainService]
 
   onCreate {
-    import org.scaloid.common.{SVerticalLayout, SButton}
-
     logger.info(s"Main: onCreate")
 
-    contentView = new SVerticalLayout {
-      SButton("enable discovery").onClick {
-        service(_.enableDiscovery(true)).get
-      }
-      SButton("disable discovery").onClick {
-        service(_.enableDiscovery(false)).get
-      }
-      SButton("connect first").onClick {
-        service(_.connectFirst()).get
-      }
-      SButton("stop all").onClick {
-        stopServices()
-        finish()
+    setContentView{
+      import org.scaloid.common.{SVerticalLayout, SButton}
+      new SVerticalLayout {
+        SButton("enable discovery").onClick {
+          service(_.enableDiscovery(true)).get
+        }
+        SButton("disable discovery").onClick {
+          service(_.enableDiscovery(false)).get
+        }
+        SButton("connect first").onClick {
+          service(_.connectFirst()).get
+        }
+        SButton("stop all").onClick {
+          stopServices()
+          finish()
+        }
       }
     }
 
@@ -37,11 +38,11 @@ class Main extends org.scaloid.common.SActivity {
   }
 
   private def startServices() {
-    startService(new Intent(ctx, classOf[MainService]))
+    startService(new Intent(this, classOf[MainService]))
   }
 
   private def stopServices() {
-    stopService(new Intent(ctx, classOf[MainService]))
+    stopService(new Intent(this, classOf[MainService]))
   }
 }
 

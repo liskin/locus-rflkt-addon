@@ -20,23 +20,19 @@ trait LocusApi {
   def toggleRecording(): Unit
 }
 
-trait LocusService extends org.scaloid.common.SService
+trait LocusService extends RService
   with LocalService[LocusService] with LocusApi
 { this: RflktApi =>
 
-  onCreate {
-    logger.info(s"LocusService: onCreate")
-  }
-
-  onDestroy {
-    logger.info(s"LocusService: onDestroy")
-  }
+  import org.scaloid.common.toast
 
   onRegister {
+    logger.info(s"LocusService: onRegister")
     enablePeriodicUpdatesReceiver()
   }
 
   onUnregister {
+    logger.info(s"LocusService: onUnregister")
     disablePeriodicUpdatesReceiver()
   }
 
@@ -46,22 +42,22 @@ trait LocusService extends org.scaloid.common.SService
   }
 
   private lazy val locusVer: LocusVersion = {
-    val ver = LocusUtils.getActiveVersion(ctx)
-    val locusInfo = ActionTools.getLocusInfo(ctx, ver)
+    val ver = LocusUtils.getActiveVersion(this)
+    val locusInfo = ActionTools.getLocusInfo(this, ver)
     if (!locusInfo.isPeriodicUpdatesEnabled) {
-      org.scaloid.common.toast("periodic updates in Locus disabled :-(")
+      toast("periodic updates in Locus disabled :-(")
     }
     ver
   }
 
   private def enablePeriodicUpdatesReceiver() {
     logger.info("enablePeriodicUpdatesReceiver")
-    ActionTools.enablePeriodicUpdatesReceiver(ctx, locusVer, classOf[PeriodicUpdateReceiver])
+    ActionTools.enablePeriodicUpdatesReceiver(this, locusVer, classOf[PeriodicUpdateReceiver])
   }
 
   private def disablePeriodicUpdatesReceiver() {
     logger.info("disablePeriodicUpdatesReceiver")
-    ActionTools.disablePeriodicUpdatesReceiver(ctx, locusVer, classOf[PeriodicUpdateReceiver])
+    ActionTools.disablePeriodicUpdatesReceiver(this, locusVer, classOf[PeriodicUpdateReceiver])
   }
 
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
@@ -171,9 +167,9 @@ trait LocusService extends org.scaloid.common.SService
     lastUpdate match {
       case Some(u) if u.isTrackRecRecording()
                    && !u.getTrackRecordContainer().isTrackRecPaused() =>
-        ActionTools.actionTrackRecordPause(ctx, locusVer)
+        ActionTools.actionTrackRecordPause(this, locusVer)
       case _ =>
-        ActionTools.actionTrackRecordStart(ctx, locusVer)
+        ActionTools.actionTrackRecordStart(this, locusVer)
     }
   }
 }

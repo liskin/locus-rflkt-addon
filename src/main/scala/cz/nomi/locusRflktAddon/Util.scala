@@ -7,8 +7,8 @@ package cz.nomi.locusRflktAddon
 
 import scala.reflect.Manifest
 
-import android.app.Service
-import android.os.{Binder, IBinder}
+import android.app.{Service, Activity}
+import android.os.{Binder, IBinder, Bundle}
 import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
@@ -115,4 +115,89 @@ object Preferences {
           editor.putString(key, value)
       }.asInstanceOf[PreferenceVar[T]]
     }
+}
+
+// inspired by scaloid
+trait Registerable {
+  protected implicit val implicitRegisterable: Registerable = this
+
+  def onRegister(body: => Unit): Unit
+  def onUnregister(body: => Unit): Unit
+}
+
+// inspired by scaloid
+trait OnCreateDestroy {
+  protected var onCreateBodies: List[() => Unit] = Nil
+  protected var onDestroyBodies: List[() => Unit] = Nil
+
+  def onCreate(body: => Unit) = {
+    onCreateBodies ::= body _
+  }
+
+  def onDestroy(body: => Unit) = {
+    onDestroyBodies ::= body _
+  }
+}
+
+// inspired by scaloid
+trait OnResumePause {
+  protected var onResumeBodies: List[() => Unit] = Nil
+  protected var onPauseBodies: List[() => Unit] = Nil
+
+  def onResume(body: => Unit) = {
+    onResumeBodies ::= body _
+  }
+
+  def onPause(body: => Unit) = {
+    onPauseBodies ::= body _
+  }
+}
+
+// inspired by scaloid
+trait RService extends Service with OnCreateDestroy with Registerable
+{
+  protected implicit val implicitContext: Context = this
+
+  override def onCreate() {
+    super.onCreate()
+    onCreateBodies.reverse.foreach(_())
+  }
+
+  override def onDestroy() {
+    onDestroyBodies.foreach(_())
+    super.onDestroy()
+  }
+
+  def onRegister(body: => Unit): Unit = onCreate(body)
+  def onUnregister(body: => Unit): Unit = onDestroy(body)
+}
+
+// inspired by scaloid
+trait RActivity extends Activity
+  with OnCreateDestroy with OnResumePause with Registerable
+{
+  protected implicit val implicitContext: Context = this
+
+  override def onCreate(b: Bundle) {
+    super.onCreate(b)
+    onCreateBodies.reverse.foreach(_())
+  }
+
+  override def onDestroy() {
+    onDestroyBodies.foreach(_())
+    super.onDestroy()
+  }
+
+  override def onResume() {
+    super.onResume()
+    onResumeBodies.reverse.foreach(_())
+  }
+
+  override def onPause() {
+    onPauseBodies.foreach(_())
+    super.onPause()
+  }
+
+  def onRegister(body: => Unit): Unit = onResume(body)
+  def onUnregister(body: => Unit): Unit = onPause(body)
 }
