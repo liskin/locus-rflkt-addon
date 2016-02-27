@@ -21,9 +21,11 @@ trait LocusApi {
   def toggleRecording(): Unit
 }
 
-trait LocusService extends SService with Log
+trait LocusService extends SService
   with LocalService[LocusService] with LocusApi
 { this: RflktApi =>
+  // move to top level once scaloid is gone
+  import Log._
 
   onCreate {
     info(s"LocusService: onCreate")

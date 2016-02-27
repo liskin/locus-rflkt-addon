@@ -45,9 +45,11 @@ object RflktApi {
   case class Vis(v: Boolean) extends Val
 }
 
-trait RflktService extends SService with Log
+trait RflktService extends SService
   with LocalService[RflktService] with RflktApi
 { this: LocusApi =>
+  // move to top level once scaloid is gone
+  import Log._
 
   import RflktService._
 

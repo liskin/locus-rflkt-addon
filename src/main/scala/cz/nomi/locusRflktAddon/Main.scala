@@ -9,7 +9,10 @@ import org.scaloid.common._
 
 import android.content.Intent
 
-class Main extends SActivity with Log {
+class Main extends SActivity {
+  // move to top level once scaloid is gone
+  import Log._
+
   val service = new LocalServiceConnection[MainService]
 
   onCreate {

@@ -10,9 +10,10 @@ import org.scaloid.common._
 import android.content.{BroadcastReceiver, Context, Intent}
 
 class PeriodicUpdateReceiver extends BroadcastReceiver {
+  // move to top level once scaloid is gone
+  import Log._
+
   override def onReceive(context: Context, intent: Intent) {
     info(s"PeriodicUpdateReceiver.onReceive called")
   }
-
-  private[this] implicit lazy val loggerTag = LoggerTag("LocusRflktAddon")
 }
