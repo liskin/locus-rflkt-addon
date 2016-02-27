@@ -25,11 +25,11 @@ trait LocusService extends org.scaloid.common.SService
 { this: RflktApi =>
 
   onCreate {
-    info(s"LocusService: onCreate")
+    logger.info(s"LocusService: onCreate")
   }
 
   onDestroy {
-    info(s"LocusService: onDestroy")
+    logger.info(s"LocusService: onDestroy")
   }
 
   onRegister {
@@ -41,7 +41,7 @@ trait LocusService extends org.scaloid.common.SService
   }
 
   broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE) { (context: Context, intent: Intent) =>
-    info(s"periodic update received")
+    logger.info(s"periodic update received")
     PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
   }
 
@@ -55,12 +55,12 @@ trait LocusService extends org.scaloid.common.SService
   }
 
   private def enablePeriodicUpdatesReceiver() {
-    info("enablePeriodicUpdatesReceiver")
+    logger.info("enablePeriodicUpdatesReceiver")
     ActionTools.enablePeriodicUpdatesReceiver(ctx, locusVer, classOf[PeriodicUpdateReceiver])
   }
 
   private def disablePeriodicUpdatesReceiver() {
-    info("disablePeriodicUpdatesReceiver")
+    logger.info("disablePeriodicUpdatesReceiver")
     ActionTools.disablePeriodicUpdatesReceiver(ctx, locusVer, classOf[PeriodicUpdateReceiver])
   }
 

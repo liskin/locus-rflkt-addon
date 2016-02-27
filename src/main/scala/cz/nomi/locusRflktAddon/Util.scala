@@ -13,37 +13,8 @@ import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
 
-// inspired by scaloid
 object Log {
-  import android.util.{Log => L}
-
-  private val tag = "LocusRflktAddon"
-
-  private def loggingText(str: String, t: Throwable) = str + (if (t == null) "" else "\n" + L.getStackTraceString(t))
-
-  def verbose(str: => String, t: Throwable = null): Unit =
-    if (L.isLoggable(tag, L.VERBOSE))
-      L.v(tag, loggingText(str, t))
-
-  def debug(str: => String, t: Throwable = null): Unit =
-    if (L.isLoggable(tag, L.DEBUG))
-      L.d(tag, loggingText(str, t))
-
-  def info(str: => String, t: Throwable = null): Unit =
-    if (L.isLoggable(tag, L.INFO))
-      L.i(tag, loggingText(str, t))
-
-  def warn(str: => String, t: Throwable = null): Unit =
-    if (L.isLoggable(tag, L.WARN))
-      L.w(tag, loggingText(str, t))
-
-  def error(str: => String, t: Throwable = null): Unit =
-    if (L.isLoggable(tag, L.ERROR))
-      L.e(tag, loggingText(str, t))
-
-  def wtf(str: => String, t: Throwable = null): Unit =
-    if (L.isLoggable(tag, L.ASSERT))
-      L.wtf(tag, loggingText(str, t))
+  val logger = org.log4s.getLogger("LocusRflktAddon")
 }
 
 // inspired by scaloid

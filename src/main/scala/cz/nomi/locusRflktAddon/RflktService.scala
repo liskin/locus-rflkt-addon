@@ -56,13 +56,13 @@ trait RflktService extends org.scaloid.common.SService
   private var hwCon: HardwareConnector = null
 
   onCreate {
-    info(s"RflktService: onCreate")
+    logger.info(s"RflktService: onCreate")
     hwCon = new HardwareConnector(ctx, Hardware)
     startForeground()
   }
 
   onDestroy {
-    info(s"RflktService: onDestroy")
+    logger.info(s"RflktService: onDestroy")
     hwCon.stopDiscovery()
     hwCon.shutdown()
   }
@@ -100,19 +100,19 @@ trait RflktService extends org.scaloid.common.SService
 
   private object Hardware extends HardwareConnector.Listener {
     override def connectedSensor(s: SensorConnection) {
-      info(s"connectedSensor: $s")
+      logger.info(s"connectedSensor: $s")
     }
 
     override def disconnectedSensor(s: SensorConnection) {
-      info(s"disconnectedSensor: $s")
+      logger.info(s"disconnectedSensor: $s")
     }
 
     override def connectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
-      info(s"connectorStateChanged: $nt, $state")
+      logger.info(s"connectorStateChanged: $nt, $state")
     }
 
     override def onFirmwareUpdateRequired(s: SensorConnection, current: String, recommended: String) {
-      info(s"onFirmwareUpdateRequired: $s, $current, $recommended")
+      logger.info(s"onFirmwareUpdateRequired: $s, $current, $recommended")
     }
   }
 
@@ -121,7 +121,7 @@ trait RflktService extends org.scaloid.common.SService
       if (!params.hasCapability(CapabilityType.Rflkt))
         return
 
-      info(s"onDeviceDiscovered: $params")
+      logger.info(s"onDeviceDiscovered: $params")
       toast(s"discovered: ${params.getName}")
     }
 
@@ -129,18 +129,18 @@ trait RflktService extends org.scaloid.common.SService
       if (!params.hasCapability(CapabilityType.Rflkt))
         return
 
-      info(s"onDiscoveredDeviceLost: $params")
+      logger.info(s"onDiscoveredDeviceLost: $params")
       toast(s"lost: ${params.getName}")
     }
 
     override def onDiscoveredDeviceRssiChanged(params: ConnectionParams, rssi: Int) {
-      info(s"onDiscoveredDeviceRssiChanged: $params, $rssi")
+      logger.info(s"onDiscoveredDeviceRssiChanged: $params, $rssi")
     }
   }
 
   private object Connection extends SensorConnection.Listener {
     override def onNewCapabilityDetected(s: SensorConnection, typ: CapabilityType) {
-      info(s"onNewCapabilityDetected: $s, $typ")
+      logger.info(s"onNewCapabilityDetected: $s, $typ")
 
       typ match {
         case CapabilityType.ConfirmConnection =>
@@ -153,12 +153,12 @@ trait RflktService extends org.scaloid.common.SService
     }
 
     override def onSensorConnectionError(s: SensorConnection, e: SensorConnectionError) {
-      info(s"onSensorConnectionError: $s, $e")
+      logger.info(s"onSensorConnectionError: $s, $e")
       toast(s"${s.getDeviceName}: $e")
     }
 
     override def onSensorConnectionStateChanged(s: SensorConnection, state: SensorConnectionState) {
-      info(s"onSensorConnectionStateChanged: $s, $state")
+      logger.info(s"onSensorConnectionStateChanged: $s, $state")
 
       if (state == SensorConnectionState.CONNECTED) {
         curSensor = Some(s)
@@ -174,14 +174,14 @@ trait RflktService extends org.scaloid.common.SService
 
   private object Confirmation extends ConfirmConnection.Listener {
     override def onConfirmationProcedureStateChange(state: ConfirmConnection.State, error: ConfirmConnection.Error) {
-      info(s"onConfirmationProcedureStateChange: $state, $error")
+      logger.info(s"onConfirmationProcedureStateChange: $state, $error")
       if (state == ConfirmConnection.State.FAILED) {
         requestConfirmation()
       }
     }
 
     override def onUserAccept() {
-      info(s"onUserAccept")
+      logger.info(s"onUserAccept")
       loadConfig()
       getCapRflkt().foreach(_.sendSetBacklightPercent(0))
     }
@@ -199,7 +199,7 @@ trait RflktService extends org.scaloid.common.SService
         val fun =
           buttonCfgPage.flatMap(c => Option(c.getButtonFunction(pos))) orElse
           buttonCfg.flatMap(c => Option(c.getButtonFunction(pos))) getOrElse null
-        info(s"onButtonPressed: $pos, $fun, $typ")
+        logger.info(s"onButtonPressed: $pos, $fun, $typ")
         (fun, typ) match {
           case ("PAGE_RIGHT", ButtonPressType.SINGLE) =>
             rflkt.sendShowNextPage()
@@ -218,13 +218,13 @@ trait RflktService extends org.scaloid.common.SService
     override def onDateReceived(date: java.util.Calendar) {}
     override def onDisplayOptionsReceived(x1: DisplayDateFormat, x2: DisplayTimeFormat, x3: DisplayDayOfWeek, x4: DisplayWatchFaceStyle) {}
     override def onLoadComplete() {
-      info(s"onLoadComplete")
+      logger.info(s"onLoadComplete")
     }
     override def onLoadFailed(result: LoadConfigResult) {
-      info(s"onLoadFailed: $result")
+      logger.info(s"onLoadFailed: $result")
     }
     override def onLoadProgressChanged(progress: Int) {
-      info(s"onLoadProgressChanged: $progress")
+      logger.info(s"onLoadProgressChanged: $progress")
     }
     override def onPageIndexReceived(index: Int) {}
   }
@@ -284,7 +284,7 @@ trait RflktService extends org.scaloid.common.SService
   def setRflkt(vars: (String, RflktApi.Val)*) {
     getCapRflkt() foreach { rflkt =>
       if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
-        info(s"setRflkt: setting")
+        logger.info(s"setRflkt: setting")
         vars foreach {
           case (k, RflktApi.Str(v)) => rflkt.setValue(k, v.take(14))
           case (k, RflktApi.Vis(v)) => rflkt.setVisisble(k, v)

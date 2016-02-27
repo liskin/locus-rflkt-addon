@@ -15,7 +15,7 @@ class Main extends org.scaloid.common.SActivity {
   onCreate {
     import org.scaloid.common.{SVerticalLayout, SButton}
 
-    info(s"Main: onCreate")
+    logger.info(s"Main: onCreate")
 
     contentView = new SVerticalLayout {
       SButton("enable discovery").onClick {

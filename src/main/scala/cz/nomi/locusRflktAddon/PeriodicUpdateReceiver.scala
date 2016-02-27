@@ -12,6 +12,6 @@ import Log._
 class PeriodicUpdateReceiver extends BroadcastReceiver {
 
   override def onReceive(context: Context, intent: Intent) {
-    info(s"PeriodicUpdateReceiver.onReceive called")
+    logger.info(s"PeriodicUpdateReceiver.onReceive called")
   }
 }

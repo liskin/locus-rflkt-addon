@@ -16,6 +16,8 @@ scalacOptions in Compile ++= Seq("-explaintypes", "-unchecked", "-feature", "-de
 updateCheck in Android := {} // disable update check
 proguardCache in Android ++= Seq(
   "org.scaloid",
+  "org.slf4j",
+  "org.log4s",
   "com.google",
   "com.wahoofitness",
   "com.dsi",
@@ -40,6 +42,8 @@ proguardConfig in Android := {
 
 libraryDependencies += "org.scaloid" %% "scaloid" % "4.1"
 libraryDependencies += "com.android.support" % "support-v4" % "23.1.1"
+libraryDependencies += "org.log4s" %% "log4s" % "1.2.1"
+libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.18"
 
 run <<= run in Android
 install <<= install in Android
