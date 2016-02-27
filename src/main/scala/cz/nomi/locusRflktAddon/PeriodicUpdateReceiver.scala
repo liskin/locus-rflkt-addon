@@ -5,13 +5,11 @@
 
 package cz.nomi.locusRflktAddon
 
-import org.scaloid.common._
-
 import android.content.{BroadcastReceiver, Context, Intent}
 
+import Log._
+
 class PeriodicUpdateReceiver extends BroadcastReceiver {
-  // move to top level once scaloid is gone
-  import Log._
 
   override def onReceive(context: Context, intent: Intent) {
     info(s"PeriodicUpdateReceiver.onReceive called")

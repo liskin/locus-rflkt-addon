@@ -5,10 +5,6 @@
 
 package cz.nomi.locusRflktAddon
 
-import org.scaloid.common._
-
-import java.text.Normalizer
-
 import android.content.{Context, Intent, IntentFilter}
 
 import locus.api.android.features.periodicUpdates.{PeriodicUpdatesHandler, UpdateContainer}
@@ -17,15 +13,15 @@ import locus.api.android.ActionTools
 import LocusUtils.LocusVersion
 import locus.api.objects.extra.ExtraData
 
+import Log._
+
 trait LocusApi {
   def toggleRecording(): Unit
 }
 
-trait LocusService extends SService
+trait LocusService extends org.scaloid.common.SService
   with LocalService[LocusService] with LocusApi
 { this: RflktApi =>
-  // move to top level once scaloid is gone
-  import Log._
 
   onCreate {
     info(s"LocusService: onCreate")
@@ -43,7 +39,7 @@ trait LocusService extends SService
     disablePeriodicUpdatesReceiver()
   }
 
-  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE: IntentFilter) { (context: Context, intent: Intent) =>
+  org.scaloid.common.broadcastReceiver(new IntentFilter(LocusConst.ACTION_PERIODIC_UPDATE)) { (context: Context, intent: Intent) =>
     info(s"periodic update received")
     PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
   }
@@ -52,7 +48,7 @@ trait LocusService extends SService
     val ver = LocusUtils.getActiveVersion(ctx)
     val locusInfo = ActionTools.getLocusInfo(ctx, ver)
     if (!locusInfo.isPeriodicUpdatesEnabled) {
-      toast("periodic updates in Locus disabled :-(")
+      org.scaloid.common.toast("periodic updates in Locus disabled :-(")
     }
     ver
   }
@@ -155,6 +151,7 @@ trait LocusService extends SService
       }
 
     private def normalizeString(s: String): String = {
+      import java.text.Normalizer
       val split = Normalizer.normalize(s, Normalizer.Form.NFD)
       "\\p{M}".r.replaceAllIn(split, "")
     }

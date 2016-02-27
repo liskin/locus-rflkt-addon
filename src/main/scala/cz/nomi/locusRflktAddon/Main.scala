@@ -5,17 +5,16 @@
 
 package cz.nomi.locusRflktAddon
 
-import org.scaloid.common._
-
 import android.content.Intent
 
-class Main extends SActivity {
-  // move to top level once scaloid is gone
-  import Log._
+import Log._
 
+class Main extends org.scaloid.common.SActivity {
   val service = new LocalServiceConnection[MainService]
 
   onCreate {
+    import org.scaloid.common.{SVerticalLayout, SButton}
+
     info(s"Main: onCreate")
 
     contentView = new SVerticalLayout {

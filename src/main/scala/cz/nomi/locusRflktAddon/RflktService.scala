@@ -7,8 +7,6 @@ package cz.nomi.locusRflktAddon
 
 import scala.collection.JavaConversions._
 
-import org.scaloid.common._
-
 import android.app.{NotificationManager, PendingIntent}
 import android.content.{Intent, Context}
 import android.support.v4.app.NotificationCompat
@@ -33,6 +31,8 @@ import Rflkt.{ButtonPressType, LoadConfigResult}
 import connector.HardwareConnectorEnums.{SensorConnectionError, SensorConnectionState}
 import com.wahoofitness.common.display.{DisplayConfiguration, DisplayButtonPosition}
 
+import Log._
+
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
   def connectFirst(): Unit
@@ -45,13 +45,12 @@ object RflktApi {
   case class Vis(v: Boolean) extends Val
 }
 
-trait RflktService extends SService
+trait RflktService extends org.scaloid.common.SService
   with LocalService[RflktService] with RflktApi
 { this: LocusApi =>
-  // move to top level once scaloid is gone
-  import Log._
-
   import RflktService._
+
+  import org.scaloid.common.{preferenceVar, toast, defaultSharedPreferences}
 
   private var hwCon: HardwareConnector = null
 
