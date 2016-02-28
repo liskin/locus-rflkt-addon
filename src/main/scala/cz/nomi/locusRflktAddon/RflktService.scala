@@ -7,7 +7,7 @@ package cz.nomi.locusRflktAddon
 
 import scala.collection.JavaConversions._
 
-import android.app.{NotificationManager, PendingIntent}
+import android.app.{NotificationManager, PendingIntent, Service}
 import android.content.{Intent, Context}
 import android.support.v4.app.NotificationCompat
 import android.bluetooth.BluetoothAdapter
@@ -41,6 +41,7 @@ trait RflktApi {
   def isDiscovering(): Boolean
   def connectFirst(): Unit
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
+  def stopUnneeded(): Unit
 }
 
 object RflktApi {
@@ -52,11 +53,12 @@ object RflktApi {
 trait RflktService extends RService with RflktApi
 { this: LocusApi =>
   private var hwCon: HardwareConnector = null
+  private var curSensor: Option[SensorConnection] = None
+  private var stayForeground: Boolean = false
 
   onRegister {
     logger.info(s"RflktService: onCreate")
     hwCon = new HardwareConnector(this, Hardware)
-    startForeground()
   }
 
   onUnregister {
@@ -70,10 +72,24 @@ trait RflktService extends RService with RflktApi
     stopSelf()
   }
 
+  override def onStartCommand(intent: Intent, flags: Int, startId: Int): Int = {
+    super.onStartCommand(intent, flags, startId)
+
+    /* Maybe not a good idea if we ever really get killed in a
+     * low-memory situation, but then the service doesn't reconnect when
+     * restarted so not sticky is fine for now.  A better solution would
+     * be to remember what state we should be in and if restarted after
+     * a disconnect, just stopSelf(). */
+    Service.START_NOT_STICKY
+  }
+
   override def onTaskRemoved(rootIntent: Intent) {
     super.onTaskRemoved(rootIntent)
+    stopUnneeded()
+  }
 
-    if (curSensor.isEmpty)
+  def stopUnneeded() {
+    if (!stayForeground)
       stopSelf()
   }
 
@@ -95,6 +111,7 @@ trait RflktService extends RService with RflktApi
     PendingIntent.getBroadcast(this, 0, quitIntent, 0)
 
   private def startForeground() {
+    stayForeground = true
     startForeground(Gen.Id.notification, notificationBuilder.build())
   }
 
@@ -252,6 +269,7 @@ trait RflktService extends RService with RflktApi
   def isDiscovering(): Boolean = hwCon.isDiscovering()
 
   def connectFirst() {
+    startForeground()
     enableBluetooth()
     val rflkts = hwCon.getDiscoveredConnectionParams()
       .filter(_.hasCapability(CapabilityType.Rflkt))
@@ -335,6 +353,4 @@ trait RflktService extends RService with RflktApi
   private val lastSensor = preferenceVar("lastSensor", "")
   private def lastSensorOption: Option[ConnectionParams] =
     Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.deserialize)
-
-  private var curSensor: Option[SensorConnection] = None
 }

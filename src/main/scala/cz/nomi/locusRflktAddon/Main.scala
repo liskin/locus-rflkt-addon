@@ -76,6 +76,11 @@ class Main extends AppCompatActivity with RActivity {
     finish()
   }
 
+  override def onBackPressed() {
+    service(_.stopUnneeded())
+    super.onBackPressed()
+  }
+
   private lazy val mainServiceIntent = new Intent(this, classOf[MainService])
 
   private lazy val settingsIntent = new Intent(this, classOf[Settings])
