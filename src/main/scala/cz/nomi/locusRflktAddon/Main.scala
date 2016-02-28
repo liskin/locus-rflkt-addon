@@ -29,40 +29,35 @@ class Main extends AppCompatActivity with RActivity {
         l[LinearLayout](
           w[Button] <~ text("connect first") <~ matchWidth <~ On.click { Ui {
             service(_.connectFirst()).get
-          }},
-          w[Button] <~ text("stop all") <~ matchWidth <~ On.click { Ui {
-            stopServices()
-            finish()
           }}
         ) <~ vertical
       }
     }
 
-    startServices()
-  }
-
-  private def startServices() {
-    startService(new Intent(this, classOf[MainService]))
-  }
-
-  private def stopServices() {
-    stopService(new Intent(this, classOf[MainService]))
+    val _ = startService(mainServiceIntent)
   }
 
   private var menuItemDiscovery: MenuItem = _
 
   onCreateOptionsMenu { menu =>
     menuItemDiscovery =
-      onMenuClick(menu.add("discovery enabled").setCheckable(true)) { mi =>
+      onMenuClick(menu.add("Discovery").setCheckable(true)) { mi =>
         service { s =>
           s.enableDiscovery(!s.isDiscovering())
         }.get
       }
+
+    onMenuClick(menu.add("Quit")) { mi =>
+      stopService(mainServiceIntent)
+      finish()
+    }
   }
 
   onPrepareOptionsMenu { menu =>
     menuItemDiscovery.setChecked(service(_.isDiscovering()).getOrElse(false))
   }
+
+  private lazy val mainServiceIntent = new Intent(this, classOf[MainService])
 }
 
 class MainService extends LocalService[MainService]
