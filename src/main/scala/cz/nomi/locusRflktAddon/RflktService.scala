@@ -47,8 +47,7 @@ object RflktApi {
   case class Vis(v: Boolean) extends Val
 }
 
-trait RflktService extends RService
-  with LocalService[RflktService] with RflktApi
+trait RflktService extends RService with RflktApi
 { this: LocusApi =>
   import RflktService._
 
