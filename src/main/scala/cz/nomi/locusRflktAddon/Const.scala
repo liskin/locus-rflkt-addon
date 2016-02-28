@@ -6,8 +6,6 @@
 package cz.nomi.locusRflktAddon
 
 object Const {
-  val notificationId: Int = 1 // unique within app
-
   val packageName = "cz.nomi.locusRflktAddon"
   val actionStop = s"$packageName.ACTION_STOP"
 }

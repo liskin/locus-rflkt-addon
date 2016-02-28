@@ -95,11 +95,11 @@ trait RflktService extends RService with RflktApi
     PendingIntent.getBroadcast(this, 0, quitIntent, 0)
 
   private def startForeground() {
-    startForeground(notificationId, notificationBuilder.build())
+    startForeground(Gen.Id.notification, notificationBuilder.build())
   }
 
   private def updateNotification(text: String) {
-    getNotificationManager().notify(notificationId,
+    getNotificationManager().notify(Gen.Id.notification,
       notificationBuilder.setContentText(text).build())
   }
 

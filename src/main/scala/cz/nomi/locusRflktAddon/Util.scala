@@ -14,7 +14,7 @@ import android.content.{Context, Intent, ServiceConnection, ComponentName,
 import android.preference.PreferenceManager
 import android.view.{Menu, MenuItem}
 
-import macroid.{Contexts, ContextWrapper}
+import macroid.{Contexts, ContextWrapper, IdGeneration}
 
 object Log {
   val logger = org.log4s.getLogger("LocusRflktAddon")
@@ -240,3 +240,5 @@ trait RActivity extends Activity with Contexts[Activity]
   def onRegister(body: => Unit): Unit = onResume(body)
   def onUnregister(body: => Unit): Unit = onPause(body)
 }
+
+object Gen extends IdGeneration
