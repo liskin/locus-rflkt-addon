@@ -5,7 +5,7 @@
 
 package cz.nomi.locusRflktAddon
 
-import android.content.Intent
+import android.content.{Intent, Context}
 import android.widget.LinearLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.{AppCompatButton => Button}
@@ -13,6 +13,8 @@ import android.view.ViewGroup.LayoutParams.{MATCH_PARENT, WRAP_CONTENT}
 import android.view.MenuItem
 
 import Log._
+import Broadcasts._
+import Const._
 
 class Main extends AppCompatActivity with RActivity {
   private val service = new LocalServiceConnection[MainService]
@@ -55,6 +57,11 @@ class Main extends AppCompatActivity with RActivity {
 
   onPrepareOptionsMenu { menu =>
     menuItemDiscovery.setChecked(service(_.isDiscovering()).getOrElse(false))
+  }
+
+  broadcastReceiver(actionStop) { (context: Context, intent: Intent) =>
+    logger.info(s"Main: actionStop received")
+    finish()
   }
 
   private lazy val mainServiceIntent = new Intent(this, classOf[MainService])

@@ -32,7 +32,9 @@ import connector.HardwareConnectorEnums.{SensorConnectionError, SensorConnection
 import com.wahoofitness.common.display.{DisplayConfiguration, DisplayButtonPosition}
 
 import Log._
+import Broadcasts._
 import Preferences._
+import Const._
 
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
@@ -49,8 +51,6 @@ object RflktApi {
 
 trait RflktService extends RService with RflktApi
 { this: LocusApi =>
-  import RflktService._
-
   private var hwCon: HardwareConnector = null
 
   onRegister {
@@ -65,6 +65,11 @@ trait RflktService extends RService with RflktApi
     hwCon.shutdown()
   }
 
+  broadcastReceiver(actionStop) { (context: Context, intent: Intent) =>
+    logger.info(s"RflktService: actionStop received")
+    stopSelf()
+  }
+
   override def onTaskRemoved(rootIntent: Intent) {
     super.onTaskRemoved(rootIntent)
 
@@ -77,12 +82,17 @@ trait RflktService extends RService with RflktApi
     .setContentTitle("Locus Wahoo RFLKT addon")
     .setContentText("ready")
     .setContentIntent(pendingMainIntent)
-    // TODO: add some actions, e.g. disconnect
+    .addAction(android.R.drawable.ic_menu_delete, "Quit", pendingQuitIntent)
 
   private lazy val mainIntent = new Intent(this, classOf[Main])
 
   private lazy val pendingMainIntent =
     PendingIntent.getActivity(this, 0, mainIntent, Intent.FLAG_ACTIVITY_NEW_TASK)
+
+  private lazy val quitIntent = new Intent(actionStop).setPackage(packageName)
+
+  private lazy val pendingQuitIntent =
+    PendingIntent.getBroadcast(this, 0, quitIntent, 0)
 
   private def startForeground() {
     startForeground(notificationId, notificationBuilder.build())
@@ -327,8 +337,4 @@ trait RflktService extends RService with RflktApi
     Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.deserialize)
 
   private var curSensor: Option[SensorConnection] = None
-}
-
-object RflktService {
-  private val notificationId: Int = 1 // unique within app
 }
