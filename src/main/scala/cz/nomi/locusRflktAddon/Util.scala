@@ -12,7 +12,6 @@ import android.os.{Binder, IBinder, Bundle}
 import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
 import android.view.{Menu, MenuItem}
 
 import macroid.{Contexts, ContextWrapper}
@@ -203,7 +202,7 @@ trait RService extends Service with Contexts[Service]
 }
 
 // inspired by scaloid
-trait RActivity extends AppCompatActivity with Contexts[Activity]
+trait RActivity extends Activity with Contexts[Activity]
   with OnCreateDestroy with OnResumePause with Registerable with OptionsMenu
 {
   protected implicit val implicitContext: Context = this

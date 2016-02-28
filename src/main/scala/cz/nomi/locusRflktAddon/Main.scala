@@ -7,13 +7,14 @@ package cz.nomi.locusRflktAddon
 
 import android.content.Intent
 import android.widget.LinearLayout
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.{AppCompatButton => Button}
 import android.view.ViewGroup.LayoutParams.{MATCH_PARENT, WRAP_CONTENT}
 import android.view.MenuItem
 
 import Log._
 
-class Main extends RActivity {
+class Main extends AppCompatActivity with RActivity {
   private val service = new LocalServiceConnection[MainService]
 
   onCreate {
