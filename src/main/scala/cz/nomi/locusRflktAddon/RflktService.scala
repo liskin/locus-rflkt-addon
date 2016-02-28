@@ -36,6 +36,7 @@ import Preferences._
 
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
+  def isDiscovering(): Boolean
   def connectFirst(): Unit
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
 }
@@ -231,11 +232,15 @@ trait RflktService extends RService
     enableBluetooth()
     enable match {
       case true =>
+        logger.info(s"startDiscovery")
         hwCon.startDiscovery(Discovery)
       case false =>
+        logger.info(s"stopDiscovery")
         hwCon.stopDiscovery()
     }
   }
+
+  def isDiscovering(): Boolean = hwCon.isDiscovering()
 
   def connectFirst() {
     enableBluetooth()

@@ -13,6 +13,7 @@ import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.view.{Menu, MenuItem}
 
 import macroid.{Contexts, ContextWrapper}
 
@@ -163,6 +164,24 @@ trait Notice {
   }
 }
 
+trait OptionsMenu {
+  protected var onCreateOptionsMenuBodies: List[Menu => Unit] = Nil
+  protected var onPrepareOptionsMenuBodies: List[Menu => Unit] = Nil
+
+  def onCreateOptionsMenu(body: Menu => Unit) = {
+    onCreateOptionsMenuBodies ::= body
+  }
+
+  def onPrepareOptionsMenu(body: Menu => Unit) = {
+    onPrepareOptionsMenuBodies ::= body
+  }
+
+  def onMenuClick(mi: MenuItem)(f: MenuItem => Unit): MenuItem =
+    mi.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener {
+      def onMenuItemClick(mi: MenuItem): Boolean = { f(mi); true }
+    })
+}
+
 // inspired by scaloid
 trait RService extends Service with Contexts[Service]
   with OnCreateDestroy with Registerable with Notice
@@ -185,7 +204,7 @@ trait RService extends Service with Contexts[Service]
 
 // inspired by scaloid
 trait RActivity extends AppCompatActivity with Contexts[Activity]
-  with OnCreateDestroy with OnResumePause with Registerable
+  with OnCreateDestroy with OnResumePause with Registerable with OptionsMenu
 {
   protected implicit val implicitContext: Context = this
 
@@ -207,6 +226,16 @@ trait RActivity extends AppCompatActivity with Contexts[Activity]
   override def onPause() {
     onPauseBodies.foreach(_())
     super.onPause()
+  }
+
+  override def onCreateOptionsMenu(menu: Menu): Boolean = {
+    onCreateOptionsMenuBodies.reverse.foreach(_(menu))
+    super.onCreateOptionsMenu(menu)
+  }
+
+  override def onPrepareOptionsMenu(menu: Menu): Boolean = {
+    onPrepareOptionsMenuBodies.reverse.foreach(_(menu))
+    super.onPrepareOptionsMenu(menu)
   }
 
   def onRegister(body: => Unit): Unit = onResume(body)
