@@ -22,6 +22,10 @@ class Main extends AppCompatActivity with RActivity {
   onCreate {
     logger.info(s"Main: onCreate")
 
+    getSupportActionBar.setDisplayShowHomeEnabled(true)
+    getSupportActionBar.setLogo(R.drawable.ic_launcher)
+    getSupportActionBar.setDisplayUseLogoEnabled(true)
+
     setContentView {
       import macroid._
       import macroid.FullDsl._

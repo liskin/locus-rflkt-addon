@@ -6,5 +6,6 @@
 -->
 <resources>
 	<string name="app_name">Locus Wahoo RFLKT addon</string>
-	<string name="settings">Settings</string>
+	<string name="main_label">RFLKT addon</string>
+	<string name="settings_label">Settings</string>
 </resources>
