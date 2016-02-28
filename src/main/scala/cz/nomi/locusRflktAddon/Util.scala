@@ -184,7 +184,7 @@ trait RService extends Service with Contexts[Service]
 }
 
 // inspired by scaloid
-trait RActivity extends AppCompatActivity
+trait RActivity extends AppCompatActivity with Contexts[Activity]
   with OnCreateDestroy with OnResumePause with Registerable
 {
   protected implicit val implicitContext: Context = this

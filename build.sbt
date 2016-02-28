@@ -15,7 +15,6 @@ scalacOptions in Compile ++= Seq("-explaintypes", "-unchecked", "-feature", "-de
 
 updateCheck in Android := {} // disable update check
 proguardCache in Android ++= Seq(
-  "org.scaloid",
   "macroid",
   "org.slf4j",
   "org.log4s",
@@ -27,7 +26,7 @@ proguardCache in Android ++= Seq(
   "locus"
 )
 
-proguardOptions in Android ++= Seq("-keepattributes Signature", "-dontwarn org.scaloid.**")
+proguardOptions in Android ++= Seq("-keepattributes Signature", "-keepattributes InnerClasses")
 proguardConfig in Android := {
   // This is probably wrong
   // (https://github.com/pfn/android-sdk-plugin/issues/242) but it
@@ -44,7 +43,6 @@ proguardConfig in Android := {
 resolvers += "jcenter" at "http://jcenter.bintray.com"
 
 libraryDependencies += aar("org.macroid" %% "macroid" % "2.0.0-20150427")
-libraryDependencies += "org.scaloid" %% "scaloid" % "4.1"
 libraryDependencies += "com.android.support" % "appcompat-v7" % "23.1.1"
 libraryDependencies += "org.log4s" %% "log4s" % "1.2.1"
 libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.18"

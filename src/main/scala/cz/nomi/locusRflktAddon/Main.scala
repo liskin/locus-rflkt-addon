@@ -6,6 +6,9 @@
 package cz.nomi.locusRflktAddon
 
 import android.content.Intent
+import android.widget.LinearLayout
+import android.support.v7.widget.{AppCompatButton => Button}
+import android.view.ViewGroup.LayoutParams.{MATCH_PARENT, WRAP_CONTENT}
 
 import Log._
 
@@ -15,22 +18,28 @@ class Main extends RActivity {
   onCreate {
     logger.info(s"Main: onCreate")
 
-    setContentView{
-      import org.scaloid.common.{SVerticalLayout, SButton}
-      new SVerticalLayout {
-        SButton("enable discovery").onClick {
-          service(_.enableDiscovery(true)).get
-        }
-        SButton("disable discovery").onClick {
-          service(_.enableDiscovery(false)).get
-        }
-        SButton("connect first").onClick {
-          service(_.connectFirst()).get
-        }
-        SButton("stop all").onClick {
-          stopServices()
-          finish()
-        }
+    setContentView {
+      import macroid._
+      import macroid.FullDsl._
+
+      val fill = lp[LinearLayout](MATCH_PARENT, WRAP_CONTENT, 0.0f)
+
+      getUi {
+        l[LinearLayout](
+          w[Button] <~ text("enable discovery") <~ fill <~ On.click { Ui {
+            service(_.enableDiscovery(true)).get
+          }},
+          w[Button] <~ text("disable discovery") <~ fill <~ On.click { Ui {
+            service(_.enableDiscovery(false)).get
+          }},
+          w[Button] <~ text("connect first") <~ fill <~ On.click { Ui {
+            service(_.connectFirst()).get
+          }},
+          w[Button] <~ text("stop all") <~ fill <~ On.click { Ui {
+            stopServices()
+            finish()
+          }}
+        ) <~ vertical
       }
     }
 
