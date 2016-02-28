@@ -97,14 +97,15 @@ object Pages {
     ).key("NAVIGATION")
   }
 
-  lazy val conf =
-    Configuration(overview, navigation)
+  type ButtonConf = Seq[(w.DisplayButtonPosition, String)]
+
+  def conf(buttons: ButtonConf): Configuration = {
+    val c = Configuration(overview, navigation)
       .id("LocusRflktAddon")
       .name("LocusRflktAddon")
-      .button(SOUTH_WEST, "PAGE_LEFT")
-      .button(SOUTH_EAST, "PAGE_RIGHT")
-      .button(NORTH_WEST, "START_STOP_WORKOUT")
-      .button(NORTH_EAST, "BACKLIGHT")
+    buttons.foreach((c.button _).tupled)
+    c
+  }
 }
 
 object Icons {

@@ -7,7 +7,7 @@ package cz.nomi.locusRflktAddon
 
 import scala.reflect.Manifest
 
-import android.app.{Service, Activity}
+import android.app.{Service, Activity, Fragment}
 import android.os.{Binder, IBinder, Bundle}
 import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
@@ -237,6 +237,33 @@ trait RActivity extends Activity with Contexts[Activity]
   override def onPrepareOptionsMenu(menu: Menu): Boolean = {
     onPrepareOptionsMenuBodies.reverse.foreach(_(menu))
     super.onPrepareOptionsMenu(menu)
+  }
+
+  def onRegister(body: => Unit): Unit = onResume(body)
+  def onUnregister(body: => Unit): Unit = onPause(body)
+}
+
+trait RFragment extends Fragment with Contexts[Fragment]
+  with OnCreateDestroy with OnResumePause with Registerable
+{
+  override def onCreate(b: Bundle) {
+    super.onCreate(b)
+    onCreateBodies.reverse.foreach(_())
+  }
+
+  override def onDestroy() {
+    onDestroyBodies.foreach(_())
+    super.onDestroy()
+  }
+
+  override def onResume() {
+    super.onResume()
+    onResumeBodies.reverse.foreach(_())
+  }
+
+  override def onPause() {
+    onPauseBodies.foreach(_())
+    super.onPause()
   }
 
   def onRegister(body: => Unit): Unit = onResume(body)

@@ -307,7 +307,7 @@ trait RflktService extends RService with RflktApi
 
   private def loadConfig() {
     getCapRflkt() foreach {
-      _.loadConfig(display.Pages.conf)
+      _.loadConfig(display.Pages.conf(ButtonSettings.toDisplayConf))
     }
   }
 
