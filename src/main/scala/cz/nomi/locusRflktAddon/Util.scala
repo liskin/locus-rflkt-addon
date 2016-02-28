@@ -12,6 +12,7 @@ import android.os.{Binder, IBinder, Bundle}
 import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
+import android.support.v7.app.AppCompatActivity
 
 import macroid.{Contexts, ContextWrapper}
 
@@ -183,7 +184,7 @@ trait RService extends Service with Contexts[Service]
 }
 
 // inspired by scaloid
-trait RActivity extends Activity
+trait RActivity extends AppCompatActivity
   with OnCreateDestroy with OnResumePause with Registerable
 {
   protected implicit val implicitContext: Context = this

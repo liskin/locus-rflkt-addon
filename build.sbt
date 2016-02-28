@@ -45,7 +45,7 @@ resolvers += "jcenter" at "http://jcenter.bintray.com"
 
 libraryDependencies += aar("org.macroid" %% "macroid" % "2.0.0-20150427")
 libraryDependencies += "org.scaloid" %% "scaloid" % "4.1"
-libraryDependencies += "com.android.support" % "support-v4" % "23.1.1"
+libraryDependencies += "com.android.support" % "appcompat-v7" % "23.1.1"
 libraryDependencies += "org.log4s" %% "log4s" % "1.2.1"
 libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.18"
 
