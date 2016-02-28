@@ -5,6 +5,6 @@
   See the COPYING and LICENSE files in the project root directory.
 -->
 <resources>
-	<string name="red">Red alert!</string>
 	<string name="app_name">Locus Wahoo RFLKT addon</string>
+	<string name="settings">Settings</string>
 </resources>

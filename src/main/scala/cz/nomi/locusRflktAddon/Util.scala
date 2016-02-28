@@ -13,6 +13,8 @@ import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
 import android.view.{Menu, MenuItem}
+import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.NavUtils
 
 import macroid.{Contexts, ContextWrapper, IdGeneration}
 
@@ -239,6 +241,22 @@ trait RActivity extends Activity with Contexts[Activity]
 
   def onRegister(body: => Unit): Unit = onResume(body)
   def onUnregister(body: => Unit): Unit = onPause(body)
+}
+
+trait BackToParentActivity extends RActivity { this: AppCompatActivity =>
+  onCreate {
+    getSupportActionBar.setDisplayHomeAsUpEnabled(true)
+  }
+
+  override def onOptionsItemSelected(item: MenuItem): Boolean = {
+    item.getItemId match {
+      case android.R.id.home =>
+        NavUtils.navigateUpFromSameTask(this)
+        true
+      case _ =>
+        super.onOptionsItemSelected(item)
+    }
+  }
 }
 
 object Gen extends IdGeneration

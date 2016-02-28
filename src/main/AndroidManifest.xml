@@ -38,6 +38,10 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".Settings"
+              android:label="@string/settings"
+              android:parentActivityName=".Main" />
+
     <service android:name=".MainService" />
 
     <receiver android:name=".PeriodicUpdateReceiver"

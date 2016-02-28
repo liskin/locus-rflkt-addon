@@ -49,6 +49,14 @@ class Main extends AppCompatActivity with RActivity {
         }.get
       }
 
+    onMenuClick {
+      menu.add("preferences")
+        .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        .setIcon(android.R.drawable.ic_menu_preferences)
+    } { mi =>
+      startActivity(settingsIntent)
+    }
+
     onMenuClick(menu.add("Quit")) { mi =>
       stopService(mainServiceIntent)
       finish()
@@ -65,6 +73,8 @@ class Main extends AppCompatActivity with RActivity {
   }
 
   private lazy val mainServiceIntent = new Intent(this, classOf[MainService])
+
+  private lazy val settingsIntent = new Intent(this, classOf[Settings])
 }
 
 class MainService extends LocalService[MainService]
