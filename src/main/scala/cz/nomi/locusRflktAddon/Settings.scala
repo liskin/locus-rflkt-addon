@@ -43,49 +43,66 @@ class Settings extends AppCompatActivity
 class SettingsFragment extends PreferenceFragment with RFragment {
   onCreate {
     implicit val ctx: Context = getActivity()
+
     val root = getPreferenceManager().createPreferenceScreen(ctx)
-
-    val buttons = new PreferenceCategory(ctx)
-    buttons.setTitle("RFLKT button functions")
-    root.addPreference(buttons)
-
-    import ButtonSettings._
-    buttons.addPreference(northEast.preference())
-    buttons.addPreference(northWest.preference())
-    buttons.addPreference(southEast.preference())
-    buttons.addPreference(southWest.preference())
-
+    ButtonSettings.addToScreen(root)
     setPreferenceScreen(root)
   }
 }
 
-object ButtonSettings {
-  private val entries = Seq(
+trait Settings2x2 {
+  def title: String
+  def prefix: String
+
+  def entries: Seq[(String, String)]
+  def northWestDef: String
+  def northEastDef: String
+  def southWestDef: String
+  def southEastDef: String
+
+  private lazy val northWest =
+    ListPref(s"$prefix.northWest", "top left", entries, northWestDef)
+  private lazy val northEast =
+    ListPref(s"$prefix.northEast", "top right", entries, northEastDef)
+  private lazy val southWest =
+    ListPref(s"$prefix.southWest", "bottom left", entries, southWestDef)
+  private lazy val southEast =
+    ListPref(s"$prefix.southEast", "bottom right", entries, southEastDef)
+
+  def addToScreen(root: PreferenceScreen)(implicit ctx: Context) {
+    val cat = new PreferenceCategory(ctx)
+    cat.setTitle(title)
+    root.addPreference(cat)
+
+    cat.addPreference(northWest.preference())
+    cat.addPreference(northEast.preference())
+    cat.addPreference(southWest.preference())
+    cat.addPreference(southEast.preference())
+  }
+
+  def toDisplayConf()(implicit pref: SharedPreferences) =
+    display.Pages.Conf2x2(
+      northWest.preferenceVar()(),
+      northEast.preferenceVar()(),
+      southWest.preferenceVar()(),
+      southEast.preferenceVar()()
+    )
+}
+
+object ButtonSettings extends Settings2x2 {
+  lazy val prefix = "allPages.buttons"
+  lazy val title = "RFLKT button functions"
+
+  lazy val entries = Seq(
     "Previous page" -> "PAGE_LEFT",
     "Next page" -> "PAGE_RIGHT",
     "Start/pause track recording" -> "START_STOP_WORKOUT",
     "Backlight for 5 seconds" -> "BACKLIGHT"
   )
-
-  val northEast = ListPref("allPages.buttons.northEast",
-    "top left", entries, "BACKLIGHT")
-  val northWest = ListPref("allPages.buttons.northWest",
-    "top right", entries, "START_STOP_WORKOUT")
-  val southEast = ListPref("allPages.buttons.southEast",
-    "bottom left", entries, "PAGE_LEFT")
-  val southWest = ListPref("allPages.buttons.southWest",
-    "bottom right", entries, "PAGE_RIGHT")
-
-  import com.wahoofitness.common.{display => w}
-  import w.DisplayButtonPosition._
-
-  def toDisplayConf()(implicit pref: SharedPreferences) =
-    Seq[(w.DisplayButtonPosition, String)](
-      (NORTH_EAST, northEast.preferenceVar()()),
-      (NORTH_WEST, northWest.preferenceVar()()),
-      (SOUTH_EAST, southEast.preferenceVar()()),
-      (SOUTH_WEST, southWest.preferenceVar()())
-    )
+  lazy val northWestDef = "START_STOP_WORKOUT"
+  lazy val northEastDef = "BACKLIGHT"
+  lazy val southWestDef = "PAGE_RIGHT"
+  lazy val southEastDef = "PAGE_LEFT"
 }
 
 abstract class PreferenceBuilder[T] {

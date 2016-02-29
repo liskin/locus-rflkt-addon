@@ -97,15 +97,21 @@ object Pages {
     ).key("NAVIGATION")
   }
 
-  type ButtonConf = Seq[(w.DisplayButtonPosition, String)]
+  case class Conf2x2(
+    northWest: String,
+    northEast: String,
+    southWest: String,
+    southEast: String
+  )
 
-  def conf(buttons: ButtonConf): Configuration = {
-    val c = Configuration(overview, navigation)
+  def conf(buttons: Conf2x2): Configuration =
+    Configuration(overview, navigation)
       .id("LocusRflktAddon")
       .name("LocusRflktAddon")
-    buttons.foreach((c.button _).tupled)
-    c
-  }
+      .button(NORTH_WEST, buttons.northWest)
+      .button(NORTH_EAST, buttons.northEast)
+      .button(SOUTH_WEST, buttons.southWest)
+      .button(SOUTH_EAST, buttons.southEast)
 }
 
 object Icons {
