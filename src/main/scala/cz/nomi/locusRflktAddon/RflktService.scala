@@ -309,7 +309,8 @@ trait RflktService extends RService with RflktApi
     getCapRflkt() foreach {
       _.loadConfig(display.Pages.conf(
         ButtonSettings.toDisplayConf,
-        OverviewSettings.toDisplayConf
+        OverviewSettings.toDisplayConf,
+        ShowNavPage.toDisplayConf
       ))
     }
   }

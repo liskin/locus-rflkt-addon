@@ -49,6 +49,7 @@ class SettingsFragment extends PreferenceFragment with RFragment {
     val root = getPreferenceManager().createPreferenceScreen(ctx)
     ButtonSettings.addToScreen(root)
     OverviewSettings.addToScreen(root)
+    ShowNavPage.addToScreen(root)
     setPreferenceScreen(root)
   }
 }
@@ -124,6 +125,23 @@ trait Setting2x2 extends Setting[Conf2x2] {
     )
 }
 
+object ShowNavPage extends Setting[Boolean] {
+  private lazy val enable =
+    SwitchPref("navigationPage.enabled", "Enable",
+      "(loading pages faster if disabled)", true)
+
+  def addToScreen(root: PreferenceScreen)(implicit ctx: Context) {
+    val cat = new PreferenceCategory(ctx)
+    cat.setTitle("Navigation page")
+    root.addPreference(cat)
+
+    cat.addPreference(enable.preference())
+  }
+
+  def toDisplayConf()(implicit pref: SharedPreferences) =
+    enable.preferenceVar()()
+}
+
 trait Setting[T] {
   def addToScreen(root: PreferenceScreen)(implicit ctx: Context): Unit
   def toDisplayConf()(implicit pref: SharedPreferences): T
@@ -149,5 +167,20 @@ case class ListPref(key: String, title: String,
     }
 
   def preferenceVar(): PreferenceVar[String] =
+    Preferences.preferenceVar(key, default)
+}
+
+case class SwitchPref(key: String, title: String, summary: String, default: Boolean)
+  extends PreferenceBuilder[Boolean]
+{
+  def preference()(implicit ctx: Context): Preference =
+    new SwitchPreference(ctx) {
+      setKey(key)
+      setTitle(title)
+      setSummary(summary)
+      setDefaultValue(default)
+    }
+
+  def preferenceVar(): PreferenceVar[Boolean] =
     Preferences.preferenceVar(key, default)
 }

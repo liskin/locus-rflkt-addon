@@ -113,12 +113,20 @@ object Preferences {
 
   def preferenceVar[T](key: String, defaultVal: T): PreferenceVar[T] =
     defaultVal match {
-      case v: String => new PreferenceVar[String](key, v) {
-        def get(value: String, pref: SharedPreferences): String =
-          pref.getString(key, value)
-        def put(value: String, editor: SharedPreferences.Editor): Unit =
-          editor.putString(key, value)
-      }.asInstanceOf[PreferenceVar[T]]
+      case v: String =>
+        new PreferenceVar[String](key, v) {
+          def get(value: String, pref: SharedPreferences): String =
+            pref.getString(key, value)
+          def put(value: String, editor: SharedPreferences.Editor): Unit =
+            editor.putString(key, value)
+        }.asInstanceOf[PreferenceVar[T]]
+      case v: Boolean =>
+        new PreferenceVar[Boolean](key, v) {
+          def get(value: Boolean, pref: SharedPreferences): Boolean =
+            pref.getBoolean(key, value)
+          def put(value: Boolean, editor: SharedPreferences.Editor): Unit =
+            editor.putBoolean(key, value)
+        }.asInstanceOf[PreferenceVar[T]]
     }
 }
 

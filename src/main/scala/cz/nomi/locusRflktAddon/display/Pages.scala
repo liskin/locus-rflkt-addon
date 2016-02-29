@@ -5,6 +5,8 @@
 
 package cz.nomi.locusRflktAddon.display
 
+import scala.collection.mutable.ListBuffer
+
 import com.wahoofitness.common.{display => w}
 
 object Pages {
@@ -117,14 +119,20 @@ object Pages {
     southEast: String
   )
 
-  def conf(buttons: Conf2x2, overviewWidgets: Conf2x2): Configuration =
-    Configuration(overview(overviewWidgets), navigation)
+  def conf(buttons: Conf2x2, overviewWidgets: Conf2x2,
+      showNavPage: Boolean): Configuration = {
+    var pages = ListBuffer.empty[Page]
+    pages += overview(overviewWidgets)
+    if (showNavPage) pages += navigation
+
+    Configuration(pages: _*)
       .id("LocusRflktAddon")
       .name("LocusRflktAddon")
       .button(NORTH_WEST, buttons.northWest)
       .button(NORTH_EAST, buttons.northEast)
       .button(SOUTH_WEST, buttons.southWest)
       .button(SOUTH_EAST, buttons.southEast)
+  }
 }
 
 object Icons {
