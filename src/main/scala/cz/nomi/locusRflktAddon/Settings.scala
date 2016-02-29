@@ -46,6 +46,7 @@ class SettingsFragment extends PreferenceFragment with RFragment {
 
     val root = getPreferenceManager().createPreferenceScreen(ctx)
     ButtonSettings.addToScreen(root)
+    OverviewSettings.addToScreen(root)
     setPreferenceScreen(root)
   }
 }
@@ -103,6 +104,22 @@ object ButtonSettings extends Settings2x2 {
   lazy val northEastDef = "BACKLIGHT"
   lazy val southWestDef = "PAGE_RIGHT"
   lazy val southEastDef = "PAGE_LEFT"
+}
+
+object OverviewSettings extends Settings2x2 {
+  lazy val prefix = "pages.1.widgets"
+  lazy val title = "Overview page widgets"
+
+  lazy val entries = Seq(
+    "Speed (current)" -> "SPEED_CURRENT",
+    "Distance (workout)" -> "DISTANCE_WORKOUT",
+    "Cadence (current)" -> "BIKE_CAD_CURRENT",
+    "Heart rate (current)" -> "HR_CURRENT"
+  )
+  lazy val northWestDef = "SPEED_CURRENT"
+  lazy val northEastDef = "DISTANCE_WORKOUT"
+  lazy val southWestDef = "BIKE_CAD_CURRENT"
+  lazy val southEastDef = "HR_CURRENT"
 }
 
 abstract class PreferenceBuilder[T] {

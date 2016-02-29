@@ -30,17 +30,30 @@ object Pages {
     Group(icon, units, value).key(key).frame(w = 64, h = 51)
   }
 
+  private def emptyUnitGroup: Group =
+    Group().frame(w = 64, h = 51)
+
   private def speedCurrent = unitGroup("SPEED_CURRENT", Icons.speed, "KPH")
   private def distanceWorkout = unitGroup("DISTANCE_WORKOUT", Icons.distance, "KM")
   private def cadenceCurrent = unitGroup("BIKE_CAD_CURRENT", Icons.cadence, "RPM")
   private def heartRateCurrent = unitGroup("HR_CURRENT", Icons.heartRate, "BPM")
 
-  private lazy val overview = {
+  private lazy val widgets2x2: Map[String, () => Group] = Map(
+    "SPEED_CURRENT" -> speedCurrent _,
+    "DISTANCE_WORKOUT" -> distanceWorkout _,
+    "BIKE_CAD_CURRENT" -> cadenceCurrent _,
+    "HR_CURRENT" -> heartRateCurrent _
+  )
+
+  private def widget2x2(key: String): Group =
+    widgets2x2.getOrElse(key, emptyUnitGroup _)()
+
+  private def overview(widgets: Conf2x2) = {
     val top = clockAndRecStatus
-    val northWest = speedCurrent
-    val northEast = distanceWorkout
-    val southWest = cadenceCurrent
-    val southEast = heartRateCurrent
+    val northWest = widget2x2(widgets.northWest)
+    val northEast = widget2x2(widgets.northEast)
+    val southWest = widget2x2(widgets.southWest)
+    val southEast = widget2x2(widgets.southEast)
     Page(
       top      .frame( 0,  0, 128, 26),
       Rect()   .frame( 0, 26, 128,  0),
@@ -104,8 +117,8 @@ object Pages {
     southEast: String
   )
 
-  def conf(buttons: Conf2x2): Configuration =
-    Configuration(overview, navigation)
+  def conf(buttons: Conf2x2, overviewWidgets: Conf2x2): Configuration =
+    Configuration(overview(overviewWidgets), navigation)
       .id("LocusRflktAddon")
       .name("LocusRflktAddon")
       .button(NORTH_WEST, buttons.northWest)
