@@ -67,7 +67,6 @@ trait LocusService extends RService with LocusApi
     }
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
-      // TODO: move to the end, maybe skip some updates
       lastUpdate = Some(update)
 
       val loc = update.getLocMyLocation()
