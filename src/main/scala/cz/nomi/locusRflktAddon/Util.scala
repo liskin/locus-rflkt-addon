@@ -143,11 +143,11 @@ trait OnCreateDestroy {
   protected var onCreateBodies: List[() => Unit] = Nil
   protected var onDestroyBodies: List[() => Unit] = Nil
 
-  def onCreate(body: => Unit) = {
+  def onCreate(body: => Unit) {
     onCreateBodies ::= body _
   }
 
-  def onDestroy(body: => Unit) = {
+  def onDestroy(body: => Unit) {
     onDestroyBodies ::= body _
   }
 }
@@ -157,11 +157,11 @@ trait OnResumePause {
   protected var onResumeBodies: List[() => Unit] = Nil
   protected var onPauseBodies: List[() => Unit] = Nil
 
-  def onResume(body: => Unit) = {
+  def onResume(body: => Unit) {
     onResumeBodies ::= body _
   }
 
-  def onPause(body: => Unit) = {
+  def onPause(body: => Unit) {
     onPauseBodies ::= body _
   }
 }
@@ -177,11 +177,11 @@ trait OptionsMenu {
   protected var onCreateOptionsMenuBodies: List[Menu => Unit] = Nil
   protected var onPrepareOptionsMenuBodies: List[Menu => Unit] = Nil
 
-  def onCreateOptionsMenu(body: Menu => Unit) = {
+  def onCreateOptionsMenu(body: Menu => Unit) {
     onCreateOptionsMenuBodies ::= body
   }
 
-  def onPrepareOptionsMenu(body: Menu => Unit) = {
+  def onPrepareOptionsMenu(body: Menu => Unit) {
     onPrepareOptionsMenuBodies ::= body
   }
 
