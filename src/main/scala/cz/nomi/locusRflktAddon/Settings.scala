@@ -78,7 +78,9 @@ object OverviewSettings extends Setting2x2 {
   import display.Const.{Widget => W}
   lazy val entries = Seq(
     "Speed (current)" -> W.speedCurrent,
-    "Average speed (workout)" -> W.averageSpeedWorkout,
+    "Average speed – total (workout)" -> W.averageSpeedWorkout,
+    "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
+    "Max speed (workout)" -> W.maxSpeedWorkout,
     "Distance (workout)" -> W.distanceWorkout,
     "Cadence (current)" -> W.cadenceCurrent,
     "Heart rate (current)" -> W.heartRateCurrent

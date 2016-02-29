@@ -40,6 +40,10 @@ object Pages {
     unitGroup(W.speedCurrent, Icons.speed, "KPH")
   private def averageSpeedWorkout =
     unitGroup(W.averageSpeedWorkout, Icons.speed, "AVG")
+  private def averageMovingSpeedWorkout =
+    unitGroup(W.averageMovingSpeedWorkout, Icons.speed, "AVG")
+  private def maxSpeedWorkout =
+    unitGroup(W.maxSpeedWorkout, Icons.speed, "MAX")
   private def distanceWorkout =
     unitGroup(W.distanceWorkout, Icons.distance, "KM")
   private def cadenceCurrent =
@@ -50,6 +54,8 @@ object Pages {
   private lazy val widgets2x2: Map[String, () => Group] = Map(
     W.speedCurrent -> speedCurrent _,
     W.averageSpeedWorkout -> averageSpeedWorkout _,
+    W.averageMovingSpeedWorkout -> averageMovingSpeedWorkout _,
+    W.maxSpeedWorkout -> maxSpeedWorkout _,
     W.distanceWorkout -> distanceWorkout _,
     W.cadenceCurrent -> cadenceCurrent _,
     W.heartRateCurrent -> heartRateCurrent _
@@ -155,7 +161,9 @@ object Const {
     val clock = "CLOCK"
 
     val speedCurrent = "SPEED_CURRENT"
-    val averageSpeedWorkout = "SPEED_WORKOUT_AV"
+    val averageSpeedWorkout = "SPEED_WORKOUT_AVG"
+    val averageMovingSpeedWorkout = "SPEED_WORKOUT_AVG_MOVE"
+    val maxSpeedWorkout = "SPEED_WORKOUT_MAX"
     val distanceWorkout = "DISTANCE_WORKOUT"
     val cadenceCurrent = "BIKE_CAD_CURRENT"
     val heartRateCurrent = "HR_CURRENT"

@@ -82,9 +82,13 @@ trait LocusService extends RService with LocusApi
 
       val trackRecord = Option(update.getTrackRecordContainer())
       val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
+      val avgMovingSpeed = trackRecord.map(_.getSpeedAvgMove()).filter(_ != 0).map(_ * 36 / 10)
+      val maxSpeed = trackRecord.map(_.getSpeedMax()).filter(_ != 0).map(_ * 36 / 10)
       val distance = trackRecord.map(_.getDistance() / 1000)
       val workout = Seq(
         s"${W.averageSpeedWorkout}.value" -> formatFloatFixed(avgSpeed),
+        s"${W.averageMovingSpeedWorkout}.value" -> formatFloatFixed(avgMovingSpeed),
+        s"${W.maxSpeedWorkout}.value" -> formatFloatFixed(maxSpeed),
         s"${W.distanceWorkout}.value" -> formatDoubleFixed(distance)
       )
 
