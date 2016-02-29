@@ -60,6 +60,7 @@ trait LocusService extends RService with LocusApi
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
     import LocusUtils.LocusVersion
     import RflktApi.{Val, Str, Vis}
+    import display.Const.{Widget => W}
 
     def onIncorrectData() {
       // TODO: log something
@@ -74,27 +75,24 @@ trait LocusService extends RService with LocusApi
       val curHeartRate = Option(loc.getSensorHeartRate()).filter(_ != 0)
       val curCadence = Option(loc.getSensorCadence()).filter(_ != 0)
       val current = Seq(
-        "SPEED_CURRENT.value" -> formatFloatFixed(curSpeed),
-        "BIKE_CAD_CURRENT.value" -> formatInt(curCadence),
-        "HR_CURRENT.value" -> formatInt(curHeartRate)
+        s"${W.speedCurrent}.value" -> formatFloatFixed(curSpeed),
+        s"${W.cadenceCurrent}.value" -> formatInt(curCadence),
+        s"${W.heartRateCurrent}.value" -> formatInt(curHeartRate)
       )
 
       val trackRecord = Option(update.getTrackRecordContainer())
       val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
       val distance = trackRecord.map(_.getDistance() / 1000)
       val workout = Seq(
-        "SPEED_WORKOUT_AV.value" -> formatFloatFixed(avgSpeed),
-        "DISTANCE_WORKOUT.value" -> formatDoubleFixed(distance)
+        s"${W.averageSpeedWorkout}.value" -> formatFloatFixed(avgSpeed),
+        s"${W.distanceWorkout}.value" -> formatDoubleFixed(distance)
       )
 
       val now = java.util.Calendar.getInstance().getTime()
-      val recStatus = trackRecord.map(tr =>
-          if (tr.isTrackRecPaused()) "hold" else "rec"
-      ).getOrElse("")
       val clock = Seq(
-        "CLOCK.value" -> formatTime(now),
-        "CLOCK.rec_stopped" -> Vis(trackRecord.isEmpty),
-        "CLOCK.rec_paused" -> Vis(trackRecord.exists(_.isTrackRecPaused()))
+        s"${W.clock}.value" -> formatTime(now),
+        s"${W.clock}.rec_stopped" -> Vis(trackRecord.isEmpty),
+        s"${W.clock}.rec_paused" -> Vis(trackRecord.exists(_.isTrackRecPaused()))
       )
 
       val guideTrack = Option(update.getGuideTypeTrack())
@@ -104,13 +102,13 @@ trait LocusService extends RService with LocusApi
       val nav2Action = guideTrack.map(_.getNavPoint2Action())
       val nav2Name = guideTrack.flatMap(g => Option(g.getNavPoint2Name()))
       val nav2Dist = guideTrack.map(_.getNavPoint2Dist() / 1000).filter(_ != 0)
-      val nav1Icon = setNavIcon("NAV1_ACTION", nav1Action)
-      val nav2Icon = setNavIcon("NAV2_ACTION", nav2Action)
+      val nav1Icon = setNavIcon(W.nav1Action, nav1Action)
+      val nav2Icon = setNavIcon(W.nav2Action, nav2Action)
       val nav = Seq(
-        "NAV1_NAME.value" -> formatString(nav1Name.map(normalizeString)),
-        "NAV1_DIST.value" -> formatDouble(nav1Dist),
-        "NAV2_NAME.value" -> formatString(nav2Name.map(normalizeString)),
-        "NAV2_DIST.value" -> formatDouble(nav2Dist)
+        s"${W.nav1Name}.value" -> formatString(nav1Name.map(normalizeString)),
+        s"${W.nav1Dist}.value" -> formatDouble(nav1Dist),
+        s"${W.nav2Name}.value" -> formatString(nav2Name.map(normalizeString)),
+        s"${W.nav2Dist}.value" -> formatDouble(nav2Dist)
       ) ++ nav1Icon ++ nav2Icon
 
       setRflkt((clock ++ current ++ workout ++ nav): _*)

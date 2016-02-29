@@ -219,6 +219,7 @@ trait RflktService extends RService with RflktApi
     override def onBacklightPercentReceived(p: Int) {}
     override def onButtonPressed(pos: DisplayButtonPosition, typ: ButtonPressType) {
       getCapRflkt() foreach { rflkt =>
+        import display.Const.{Function => F}
         val buttonCfg = Option(rflkt.getDisplayConfiguration()).map(_.getButtonCfg())
         val buttonCfgPage = Option(rflkt.getPage()).map(_.getButtonCfg())
         val fun =
@@ -226,13 +227,13 @@ trait RflktService extends RService with RflktApi
           buttonCfg.flatMap(c => Option(c.getButtonFunction(pos))) getOrElse null
         logger.info(s"onButtonPressed: $pos, $fun, $typ")
         (fun, typ) match {
-          case ("PAGE_RIGHT", ButtonPressType.SINGLE) =>
+          case (F.pageRight, ButtonPressType.SINGLE) =>
             rflkt.sendShowNextPage()
-          case ("PAGE_LEFT", ButtonPressType.SINGLE) =>
+          case (F.pageLeft, ButtonPressType.SINGLE) =>
             rflkt.sendShowPreviousPage()
-          case ("START_STOP_WORKOUT", ButtonPressType.SINGLE) =>
+          case (F.startStopWorkout, ButtonPressType.SINGLE) =>
             toggleRecording()
-          case ("BACKLIGHT", ButtonPressType.SINGLE) =>
+          case (F.backlight, ButtonPressType.SINGLE) =>
             backlight()
           case _ =>
         }

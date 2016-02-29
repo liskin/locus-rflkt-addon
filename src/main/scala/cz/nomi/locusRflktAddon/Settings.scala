@@ -58,33 +58,35 @@ object ButtonSettings extends Setting2x2 {
   lazy val prefix = "allPages.buttons"
   lazy val title = "RFLKT button functions"
 
+  import display.Const.{Function => F}
   lazy val entries = Seq(
-    "Previous page" -> "PAGE_LEFT",
-    "Next page" -> "PAGE_RIGHT",
-    "Start/pause track recording" -> "START_STOP_WORKOUT",
-    "Backlight for 5 seconds" -> "BACKLIGHT"
+    "Previous page" -> F.pageLeft,
+    "Next page" -> F.pageRight,
+    "Start/pause track recording" -> F.startStopWorkout,
+    "Backlight for 5 seconds" -> F.backlight
   )
-  lazy val northWestDef = "START_STOP_WORKOUT"
-  lazy val northEastDef = "BACKLIGHT"
-  lazy val southWestDef = "PAGE_RIGHT"
-  lazy val southEastDef = "PAGE_LEFT"
+  lazy val northWestDef = F.startStopWorkout
+  lazy val northEastDef = F.backlight
+  lazy val southWestDef = F.pageLeft
+  lazy val southEastDef = F.pageRight
 }
 
 object OverviewSettings extends Setting2x2 {
   lazy val prefix = "pages.1.widgets"
   lazy val title = "Overview page widgets"
 
+  import display.Const.{Widget => W}
   lazy val entries = Seq(
-    "Speed (current)" -> "SPEED_CURRENT",
-    "Average speed (workout)" -> "SPEED_WORKOUT_AV",
-    "Distance (workout)" -> "DISTANCE_WORKOUT",
-    "Cadence (current)" -> "BIKE_CAD_CURRENT",
-    "Heart rate (current)" -> "HR_CURRENT"
+    "Speed (current)" -> W.speedCurrent,
+    "Average speed (workout)" -> W.averageSpeedWorkout,
+    "Distance (workout)" -> W.distanceWorkout,
+    "Cadence (current)" -> W.cadenceCurrent,
+    "Heart rate (current)" -> W.heartRateCurrent
   )
-  lazy val northWestDef = "SPEED_CURRENT"
-  lazy val northEastDef = "DISTANCE_WORKOUT"
-  lazy val southWestDef = "BIKE_CAD_CURRENT"
-  lazy val southEastDef = "HR_CURRENT"
+  lazy val northWestDef = W.speedCurrent
+  lazy val northEastDef = W.distanceWorkout
+  lazy val southWestDef = W.cadenceCurrent
+  lazy val southEastDef = W.heartRateCurrent
 }
 
 trait Setting2x2 extends Setting[Conf2x2] {

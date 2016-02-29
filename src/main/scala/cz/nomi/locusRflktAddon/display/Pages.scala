@@ -13,6 +13,7 @@ object Pages {
   import w.DisplayAlignment._
   import w.DisplayButtonPosition._
   import w.DisplayFont._
+  import Const.{Widget => W}
 
   private def clockAndRecStatus: Group = {
     val icon = Icons.clock.frame(x = 1, y = 1)
@@ -20,7 +21,7 @@ object Pages {
     val recPaused = Icons.recPaused.frame(x = 1, y = 13).hidden
     val value = Text("--:--:--").frame(x = 20, y = 2, w = 108, h = 0)
       .font(SYSTEM19).align(CENTER).key("value")
-    Group(icon, recStopped, recPaused, value).key("CLOCK").frame(w = 128, h = 26)
+    Group(icon, recStopped, recPaused, value).key(W.clock).frame(w = 128, h = 26)
   }
 
   private def unitGroup(key: String, icon: Bitmap, unit: String): Group = {
@@ -35,18 +36,23 @@ object Pages {
   private def emptyUnitGroup: Group =
     Group().frame(w = 64, h = 51)
 
-  private def speedCurrent = unitGroup("SPEED_CURRENT", Icons.speed, "KPH")
-  private def averageSpeedWorkout = unitGroup("SPEED_WORKOUT_AV", Icons.speed, "AVG")
-  private def distanceWorkout = unitGroup("DISTANCE_WORKOUT", Icons.distance, "KM")
-  private def cadenceCurrent = unitGroup("BIKE_CAD_CURRENT", Icons.cadence, "RPM")
-  private def heartRateCurrent = unitGroup("HR_CURRENT", Icons.heartRate, "BPM")
+  private def speedCurrent =
+    unitGroup(W.speedCurrent, Icons.speed, "KPH")
+  private def averageSpeedWorkout =
+    unitGroup(W.averageSpeedWorkout, Icons.speed, "AVG")
+  private def distanceWorkout =
+    unitGroup(W.distanceWorkout, Icons.distance, "KM")
+  private def cadenceCurrent =
+    unitGroup(W.cadenceCurrent, Icons.cadence, "RPM")
+  private def heartRateCurrent =
+    unitGroup(W.heartRateCurrent, Icons.heartRate, "BPM")
 
   private lazy val widgets2x2: Map[String, () => Group] = Map(
-    "SPEED_CURRENT" -> speedCurrent _,
-    "SPEED_WORKOUT_AV" -> averageSpeedWorkout _,
-    "DISTANCE_WORKOUT" -> distanceWorkout _,
-    "BIKE_CAD_CURRENT" -> cadenceCurrent _,
-    "HR_CURRENT" -> heartRateCurrent _
+    W.speedCurrent -> speedCurrent _,
+    W.averageSpeedWorkout -> averageSpeedWorkout _,
+    W.distanceWorkout -> distanceWorkout _,
+    W.cadenceCurrent -> cadenceCurrent _,
+    W.heartRateCurrent -> heartRateCurrent _
   )
 
   private def widget2x2(key: String): Group =
@@ -75,7 +81,7 @@ object Pages {
     val rect = Rect().frame(w = 128, h = 22)
     val value = Text("--:--:--").frame(w = 128, h = 0)
       .font(SYSTEM19).align(CENTER).key("value")
-    Group(rect, value).key("CLOCK").frame(w = 128, h = 22)
+    Group(rect, value).key(W.clock).frame(w = 128, h = 22)
   }
 
   private def navAction: Group = {
@@ -104,13 +110,13 @@ object Pages {
     Page(
       navClock.frame(0, 0, 128, 22),
 
-      navAction.key("NAV1_ACTION").frame(0, 21, 49, 33),
-      navDist.key("NAV1_DIST").frame(48, 21, 80, 33),
-      navName.key("NAV1_NAME").frame(0, 53, 128, 22),
+      navAction.key(W.nav1Action).frame(0, 21, 49, 33),
+      navDist.key(W.nav1Dist).frame(48, 21, 80, 33),
+      navName.key(W.nav1Name).frame(0, 53, 128, 22),
 
-      navAction.key("NAV2_ACTION").frame(0, 74, 49, 33),
-      navDist.key("NAV2_DIST").frame(48, 74, 80, 33),
-      navName.key("NAV2_NAME").frame(0, 106, 128, 22)
+      navAction.key(W.nav2Action).frame(0, 74, 49, 33),
+      navDist.key(W.nav2Dist).frame(48, 74, 80, 33),
+      navName.key(W.nav2Name).frame(0, 106, 128, 22)
     ).key("NAVIGATION")
   }
 
@@ -134,6 +140,32 @@ object Pages {
       .button(NORTH_EAST, buttons.northEast)
       .button(SOUTH_WEST, buttons.southWest)
       .button(SOUTH_EAST, buttons.southEast)
+  }
+}
+
+object Const {
+  object Function {
+    val pageLeft = "PAGE_LEFT"
+    val pageRight = "PAGE_RIGHT"
+    val startStopWorkout = "START_STOP_WORKOUT"
+    val backlight = "BACKLIGHT"
+  }
+
+  object Widget {
+    val clock = "CLOCK"
+
+    val speedCurrent = "SPEED_CURRENT"
+    val averageSpeedWorkout = "SPEED_WORKOUT_AV"
+    val distanceWorkout = "DISTANCE_WORKOUT"
+    val cadenceCurrent = "BIKE_CAD_CURRENT"
+    val heartRateCurrent = "HR_CURRENT"
+
+    val nav1Action = "NAV1_ACTION"
+    val nav1Dist = "NAV1_DIST"
+    val nav1Name = "NAV1_NAME"
+    val nav2Action = "NAV2_ACTION"
+    val nav2Dist = "NAV2_DIST"
+    val nav2Name = "NAV2_NAME"
   }
 }
 
