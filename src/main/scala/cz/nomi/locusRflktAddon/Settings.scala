@@ -76,6 +76,7 @@ object OverviewSettings extends Setting2x2 {
 
   lazy val entries = Seq(
     "Speed (current)" -> "SPEED_CURRENT",
+    "Average speed (workout)" -> "SPEED_WORKOUT_AV",
     "Distance (workout)" -> "DISTANCE_WORKOUT",
     "Cadence (current)" -> "BIKE_CAD_CURRENT",
     "Heart rate (current)" -> "HR_CURRENT"

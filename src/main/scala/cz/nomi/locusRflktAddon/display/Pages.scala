@@ -36,12 +36,14 @@ object Pages {
     Group().frame(w = 64, h = 51)
 
   private def speedCurrent = unitGroup("SPEED_CURRENT", Icons.speed, "KPH")
+  private def averageSpeedWorkout = unitGroup("SPEED_WORKOUT_AV", Icons.speed, "AVG")
   private def distanceWorkout = unitGroup("DISTANCE_WORKOUT", Icons.distance, "KM")
   private def cadenceCurrent = unitGroup("BIKE_CAD_CURRENT", Icons.cadence, "RPM")
   private def heartRateCurrent = unitGroup("HR_CURRENT", Icons.heartRate, "BPM")
 
   private lazy val widgets2x2: Map[String, () => Group] = Map(
     "SPEED_CURRENT" -> speedCurrent _,
+    "SPEED_WORKOUT_AV" -> averageSpeedWorkout _,
     "DISTANCE_WORKOUT" -> distanceWorkout _,
     "BIKE_CAD_CURRENT" -> cadenceCurrent _,
     "HR_CURRENT" -> heartRateCurrent _
