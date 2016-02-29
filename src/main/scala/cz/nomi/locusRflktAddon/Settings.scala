@@ -12,6 +12,8 @@ import android.widget.{LinearLayout, TextView}
 
 import Log._
 
+import display.Pages.Conf2x2
+
 class Settings extends AppCompatActivity
   with RActivity with BackToParentActivity
 {
@@ -51,7 +53,39 @@ class SettingsFragment extends PreferenceFragment with RFragment {
   }
 }
 
-trait Settings2x2 {
+object ButtonSettings extends Setting2x2 {
+  lazy val prefix = "allPages.buttons"
+  lazy val title = "RFLKT button functions"
+
+  lazy val entries = Seq(
+    "Previous page" -> "PAGE_LEFT",
+    "Next page" -> "PAGE_RIGHT",
+    "Start/pause track recording" -> "START_STOP_WORKOUT",
+    "Backlight for 5 seconds" -> "BACKLIGHT"
+  )
+  lazy val northWestDef = "START_STOP_WORKOUT"
+  lazy val northEastDef = "BACKLIGHT"
+  lazy val southWestDef = "PAGE_RIGHT"
+  lazy val southEastDef = "PAGE_LEFT"
+}
+
+object OverviewSettings extends Setting2x2 {
+  lazy val prefix = "pages.1.widgets"
+  lazy val title = "Overview page widgets"
+
+  lazy val entries = Seq(
+    "Speed (current)" -> "SPEED_CURRENT",
+    "Distance (workout)" -> "DISTANCE_WORKOUT",
+    "Cadence (current)" -> "BIKE_CAD_CURRENT",
+    "Heart rate (current)" -> "HR_CURRENT"
+  )
+  lazy val northWestDef = "SPEED_CURRENT"
+  lazy val northEastDef = "DISTANCE_WORKOUT"
+  lazy val southWestDef = "BIKE_CAD_CURRENT"
+  lazy val southEastDef = "HR_CURRENT"
+}
+
+trait Setting2x2 extends Setting[Conf2x2] {
   def title: String
   def prefix: String
 
@@ -82,7 +116,7 @@ trait Settings2x2 {
   }
 
   def toDisplayConf()(implicit pref: SharedPreferences) =
-    display.Pages.Conf2x2(
+    Conf2x2(
       northWest.preferenceVar()(),
       northEast.preferenceVar()(),
       southWest.preferenceVar()(),
@@ -90,36 +124,9 @@ trait Settings2x2 {
     )
 }
 
-object ButtonSettings extends Settings2x2 {
-  lazy val prefix = "allPages.buttons"
-  lazy val title = "RFLKT button functions"
-
-  lazy val entries = Seq(
-    "Previous page" -> "PAGE_LEFT",
-    "Next page" -> "PAGE_RIGHT",
-    "Start/pause track recording" -> "START_STOP_WORKOUT",
-    "Backlight for 5 seconds" -> "BACKLIGHT"
-  )
-  lazy val northWestDef = "START_STOP_WORKOUT"
-  lazy val northEastDef = "BACKLIGHT"
-  lazy val southWestDef = "PAGE_RIGHT"
-  lazy val southEastDef = "PAGE_LEFT"
-}
-
-object OverviewSettings extends Settings2x2 {
-  lazy val prefix = "pages.1.widgets"
-  lazy val title = "Overview page widgets"
-
-  lazy val entries = Seq(
-    "Speed (current)" -> "SPEED_CURRENT",
-    "Distance (workout)" -> "DISTANCE_WORKOUT",
-    "Cadence (current)" -> "BIKE_CAD_CURRENT",
-    "Heart rate (current)" -> "HR_CURRENT"
-  )
-  lazy val northWestDef = "SPEED_CURRENT"
-  lazy val northEastDef = "DISTANCE_WORKOUT"
-  lazy val southWestDef = "BIKE_CAD_CURRENT"
-  lazy val southEastDef = "HR_CURRENT"
+trait Setting[T] {
+  def addToScreen(root: PreferenceScreen)(implicit ctx: Context): Unit
+  def toDisplayConf()(implicit pref: SharedPreferences): T
 }
 
 abstract class PreferenceBuilder[T] {
