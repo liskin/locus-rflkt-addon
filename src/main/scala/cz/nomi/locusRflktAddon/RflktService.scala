@@ -364,7 +364,7 @@ trait RflktService extends RService with RflktApi
       _.loadConfig(display.Pages.conf(
         ButtonSettings.getValue(sp),
         OverviewSettings.getValue(sp),
-        ShowNavPage.getValue(sp)
+        PageSettings.showNavPage.getValue(sp)
       ))
     }
   }

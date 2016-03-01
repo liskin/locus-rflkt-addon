@@ -46,8 +46,7 @@ class SettingsFragment extends PreferenceFragment with RFragment {
   onCreate {
     val root = getPreferenceManager().createPreferenceScreen(getActivity())
     ButtonSettings.addToGroup(this, root)
-    OverviewSettings.addToGroup(this, root)
-    ShowNavPage.addToGroup(this, root)
+    PageSettings.addToGroup(this, root)
     setPreferenceScreen(root)
   }
 }
@@ -69,9 +68,22 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
   lazy val southEastDef = F.pageRight
 }
 
+object PageSettings extends SettingCategory {
+  lazy val title = "RFLKT pages"
+
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
+    OverviewSettings.addToGroup(pf, group)
+    showNavPage.addToGroup(pf, group)
+  }
+
+  lazy val showNavPage =
+    SwitchPref("navigationPage.enabled", "Navigation page",
+      "(loading pages faster if disabled)", true)
+}
+
 object OverviewSettings extends SettingPage2x2 {
   lazy val prefix = "pages.1.widgets"
-  lazy val title = "Overview page widgets"
+  lazy val title = "Overview page"
 
   import display.Const.{Widget => W}
 
@@ -97,7 +109,7 @@ object OverviewSettings extends SettingPage2x2 {
   lazy val southEastDef = W.heartRateCurrent
 }
 
-trait SettingPage2x2 extends SettingCategory with Setting2x2 {
+trait SettingPage2x2 extends SettingScreen with Setting2x2 {
   def northEntries: Seq[(String, String)]
   def northDef: String
 
@@ -149,26 +161,19 @@ trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
     )
 }
 
-object ShowNavPage extends SettingCategory with SettingValue[Boolean] {
-  def title = "Navigation page"
-
-  private lazy val enable =
-    SwitchPref("navigationPage.enabled", "Enable",
-      "(loading pages faster if disabled)", true)
-
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
-    enable.addToGroup(pf, group)
-  }
-
-  def getValue(pref: SharedPreferences) =
-    enable.getValue(pref)
-}
-
 abstract class SettingCategory extends SettingGroup {
   def createGroup(pf: PreferenceFragment): PreferenceGroup = {
     val cat = new PreferenceCategory(pf.getActivity())
     cat.setTitle(title)
     cat
+  }
+}
+
+abstract class SettingScreen extends SettingGroup {
+  def createGroup(pf: PreferenceFragment): PreferenceGroup = {
+    val screen = pf.getPreferenceManager().createPreferenceScreen(pf.getActivity())
+    screen.setTitle(title)
+    screen
   }
 }
 
