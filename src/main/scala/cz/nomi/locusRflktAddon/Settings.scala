@@ -79,7 +79,7 @@ object OverviewSettings extends SettingPage2x2 {
 
   lazy val northEntries = Seq(
     "Clock" -> W.clock,
-    "Time – (workout)" -> W.timeWorkout,
+    "Time – total (workout)" -> W.timeWorkout,
     "Time – moving (workout)" -> W.timeMovingWorkout
   )
   lazy val northDef = W.clock
