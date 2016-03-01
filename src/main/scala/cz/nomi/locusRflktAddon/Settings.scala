@@ -91,8 +91,7 @@ object OverviewSettings extends Setting2x2 {
   lazy val southEastDef = W.heartRateCurrent
 }
 
-trait Setting2x2 extends Setting[Conf2x2] {
-  def title: String
+trait Setting2x2 extends SettingCategory[Conf2x2] {
   def prefix: String
 
   def entries: Seq[(String, String)]
@@ -110,11 +109,7 @@ trait Setting2x2 extends Setting[Conf2x2] {
   private lazy val southEast =
     ListPref(s"$prefix.southEast", "bottom right", entries, southEastDef)
 
-  def addToScreen(root: PreferenceScreen)(implicit ctx: Context) {
-    val cat = new PreferenceCategory(ctx)
-    cat.setTitle(title)
-    root.addPreference(cat)
-
+  def addToCategory(cat: PreferenceGroup)(implicit ctx: Context) {
     cat.addPreference(northWest.preference())
     cat.addPreference(northEast.preference())
     cat.addPreference(southWest.preference())
@@ -130,16 +125,14 @@ trait Setting2x2 extends Setting[Conf2x2] {
     )
 }
 
-object ShowNavPage extends Setting[Boolean] {
+object ShowNavPage extends SettingCategory[Boolean] {
+  def title = "Navigation page"
+
   private lazy val enable =
     SwitchPref("navigationPage.enabled", "Enable",
       "(loading pages faster if disabled)", true)
 
-  def addToScreen(root: PreferenceScreen)(implicit ctx: Context) {
-    val cat = new PreferenceCategory(ctx)
-    cat.setTitle("Navigation page")
-    root.addPreference(cat)
-
+  def addToCategory(cat: PreferenceGroup)(implicit ctx: Context) {
     cat.addPreference(enable.preference())
   }
 
@@ -147,8 +140,21 @@ object ShowNavPage extends Setting[Boolean] {
     enable.preferenceVar()()
 }
 
+trait SettingCategory[T] extends Setting[T] {
+  def title: String
+  def addToCategory(cat: PreferenceGroup)(implicit ctx: Context): Unit
+
+  def addToScreen(root: PreferenceGroup)(implicit ctx: Context) {
+    val cat = new PreferenceCategory(ctx)
+    cat.setTitle(title)
+    root.addPreference(cat)
+
+    addToCategory(cat)
+  }
+}
+
 trait Setting[T] {
-  def addToScreen(root: PreferenceScreen)(implicit ctx: Context): Unit
+  def addToScreen(root: PreferenceGroup)(implicit ctx: Context): Unit
   def toDisplayConf()(implicit pref: SharedPreferences): T
 }
 
