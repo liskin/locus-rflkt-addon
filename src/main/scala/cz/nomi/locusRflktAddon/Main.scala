@@ -12,12 +12,19 @@ import android.support.v7.widget.{AppCompatButton => Button}
 import android.view.ViewGroup.LayoutParams.{MATCH_PARENT, WRAP_CONTENT}
 import android.view.MenuItem
 
+import macroid._
+import macroid.FullDsl._
+import macroid.contrib.LpTweaks.matchWidth
+
 import Log._
 import Broadcasts._
 import Const._
 
 class Main extends AppCompatActivity with RActivity {
   private val service = new LocalServiceConnection[MainService]
+
+  private var connectButton = slot[Button]
+  private var disconnectButton = slot[Button]
 
   onCreate {
     logger.info(s"Main: onCreate")
@@ -27,20 +34,48 @@ class Main extends AppCompatActivity with RActivity {
     getSupportActionBar.setDisplayUseLogoEnabled(true)
 
     setContentView {
-      import macroid._
-      import macroid.FullDsl._
-      import macroid.contrib.LpTweaks.matchWidth
-
       getUi {
         l[LinearLayout](
-          w[Button] <~ text("connect first") <~ matchWidth <~ On.click { Ui {
+          w[Button] <~ matchWidth <~ wire(connectButton) <~ On.click { Ui {
             service(_.connectFirst()).get
-          }}
+          }},
+          w[Button] <~ matchWidth <~ wire(disconnectButton) <~ On.click { Ui {
+            service(_.disconnect()).get
+          }} <~ text("disconnect")
         ) <~ vertical
       }
     }
 
     val _ = startService(mainServiceIntent)
+  }
+
+  service.onServiceConnected {
+    refreshButton()
+  }
+
+  localBroadcastReceiver(localActionRefreshUi) { (context: Context, intent: Intent) =>
+    refreshButton()
+  }
+
+  private def refreshButton() {
+    runUi {
+      if (service(_.isConnected()).getOrElse(false)) {
+        Ui.sequence(
+          connectButton <~ text("connected") <~ disable,
+          disconnectButton <~ enable
+        )
+      } else {
+        Ui.sequence(
+          service(_.describeFirst()).flatten match {
+            case None =>
+              connectButton <~ text("no device, use discovery") <~ disable
+            case Some(d) =>
+              connectButton <~ text(s"connect to $d") <~ enable
+          },
+          disconnectButton <~ disable
+        )
+      }
+    }
   }
 
   private var menuItemDiscovery: MenuItem = _

@@ -8,4 +8,5 @@ package cz.nomi.locusRflktAddon
 object Const {
   val packageName = "cz.nomi.locusRflktAddon"
   val actionStop = s"$packageName.ACTION_STOP"
+  val localActionRefreshUi = s"$packageName.ACTION_REFRESH_UI"
 }

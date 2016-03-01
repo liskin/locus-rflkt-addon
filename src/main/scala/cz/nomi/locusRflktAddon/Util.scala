@@ -40,9 +40,15 @@ final class LocalServiceConnection[S <: LocalService[S]]
   extends ServiceConnection
 {
   private var service: Option[S] = None
+  private var onServiceConnectedBodies: List[() => Unit] = Nil
+
+  def onServiceConnected(body: => Unit) {
+    onServiceConnectedBodies ::= body _
+  }
 
   override def onServiceConnected(cn: ComponentName, b: IBinder) {
     service = Some(b.asInstanceOf[S#LocalServiceBinder].service)
+    onServiceConnectedBodies.reverse.foreach(_())
   }
 
   override def onServiceDisconnected(cn: ComponentName) {
@@ -67,6 +73,7 @@ final class LocalServiceConnection[S <: LocalService[S]]
 // inspired by scaloid
 object Broadcasts {
   import scala.language.implicitConversions
+  import android.support.v4.content.LocalBroadcastManager
 
   implicit def strToIntentFilter(str: String): IntentFilter =
     new IntentFilter(str)
@@ -84,7 +91,24 @@ object Broadcasts {
     reg.onUnregister(ctx.unregisterReceiver(receiver))
   }
 
-  // TODO: local broadcasts
+  def localBroadcastReceiver(filter: IntentFilter)
+    (onReceiveBody: (Context, Intent) => Unit)
+    (implicit ctx: Context, reg: Registerable)
+  {
+    val receiver = new BroadcastReceiver {
+      def onReceive(context: Context, intent: Intent) {
+        onReceiveBody(context, intent)
+      }
+    }
+    def localManager = LocalBroadcastManager.getInstance(ctx)
+    reg.onRegister(localManager.registerReceiver(receiver, filter))
+    reg.onUnregister(localManager.unregisterReceiver(receiver))
+  }
+
+  def sendLocalBroadcast(intent: Intent)(implicit ctx: Context) {
+    val localManager = LocalBroadcastManager.getInstance(ctx)
+    localManager.sendBroadcast(intent)
+  }
 }
 
 // inspired by scaloid

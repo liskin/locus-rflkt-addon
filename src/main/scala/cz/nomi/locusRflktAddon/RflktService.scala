@@ -21,7 +21,7 @@ import connector.HardwareConnectorTypes.{NetworkType, SensorType}
 import connector.HardwareConnectorEnums.HardwareConnectorState
 import connector.conn.connections
 import connections.SensorConnection
-import connections.params.ConnectionParams
+import connections.params.{ConnectionParams, BTLEConnectionParams}
 import connector.listeners.discovery.DiscoveryListener
 import connector.capabilities
 import capabilities.Capability.CapabilityType
@@ -39,7 +39,10 @@ import Const._
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
   def isDiscovering(): Boolean
+  def isConnected(): Boolean
+  def describeFirst(): Option[String]
   def connectFirst(): Unit
+  def disconnect(): Unit
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
   def stopUnneeded(): Unit
 }
@@ -115,6 +118,11 @@ trait RflktService extends RService with RflktApi
     startForeground(Gen.Id.notification, notificationBuilder.build())
   }
 
+  private def stopForeground() {
+    stayForeground = false
+    stopForeground(true)
+  }
+
   private def updateNotification(text: String) {
     getNotificationManager().notify(Gen.Id.notification,
       notificationBuilder.setContentText(text).build())
@@ -148,6 +156,7 @@ trait RflktService extends RService with RflktApi
 
       logger.info(s"onDeviceDiscovered: $params")
       notice(s"discovered: ${params.getName}")
+      refreshUi()
     }
 
     override def onDiscoveredDeviceLost(params: ConnectionParams) {
@@ -156,6 +165,7 @@ trait RflktService extends RService with RflktApi
 
       logger.info(s"onDiscoveredDeviceLost: $params")
       notice(s"lost: ${params.getName}")
+      refreshUi()
     }
 
     override def onDiscoveredDeviceRssiChanged(params: ConnectionParams, rssi: Int) {
@@ -194,6 +204,7 @@ trait RflktService extends RService with RflktApi
 
       notice(s"${s.getDeviceName}: $state")
       updateNotification(s"$state")
+      refreshUi()
     }
   }
 
@@ -269,18 +280,44 @@ trait RflktService extends RService with RflktApi
 
   def isDiscovering(): Boolean = hwCon.isDiscovering()
 
-  def connectFirst() {
-    startForeground()
-    enableBluetooth()
+  def isConnected(): Boolean = curSensor.isDefined
+
+  private def getFirst(): Option[ConnectionParams] = {
     val rflkts = hwCon.getDiscoveredConnectionParams()
       .filter(_.hasCapability(CapabilityType.Rflkt))
-    val params = rflkts.headOption orElse lastSensorOption
-    params match {
-      case Some(p) =>
-        hwCon.requestSensorConnection(p, Connection)
-        hwCon.stopDiscovery()
-      case None => notice("no sensor to connect to")
+    rflkts.headOption orElse lastSensorOption
+  }
+
+  def describeFirst(): Option[String] =
+    getFirst().map { p =>
+      val n = p.getName()
+      p match {
+        case b: BTLEConnectionParams =>
+          val a = b.getBluetoothDevice().getAddress()
+          s"$n ($a)"
+        case _ =>
+          n
+      }
     }
+
+  def connectFirst() {
+    getFirst().foreach { p =>
+      startForeground()
+      enableBluetooth()
+      hwCon.requestSensorConnection(p, Connection)
+      hwCon.stopDiscovery()
+    }
+  }
+
+  def disconnect() {
+    curSensor.foreach(_.disconnect())
+    stopForeground()
+  }
+
+  private lazy val refreshUiIntent = new Intent(localActionRefreshUi)
+
+  private def refreshUi() {
+    sendLocalBroadcast(refreshUiIntent)
   }
 
   private def enableBluetooth() {
