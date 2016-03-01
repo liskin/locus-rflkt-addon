@@ -106,9 +106,9 @@ trait SettingPage2x2 extends Setting2x2 {
   private lazy val north =
     ListPref(s"$prefix.north", "top", northEntries, northDef)
 
-  override def addToCategory(cat: PreferenceGroup)(implicit ctx: Context) {
+  override def addToGroup(cat: PreferenceGroup)(implicit ctx: Context) {
     cat.addPreference(north.preference())
-    super.addToCategory(cat)
+    super.addToGroup(cat)
   }
 
   override def toDisplayConf()(implicit pref: SharedPreferences) =
@@ -135,7 +135,7 @@ trait Setting2x2 extends SettingCategory[Conf2x2] {
   private lazy val southEast =
     ListPref(s"$prefix.southEast", "bottom right", entries, southEastDef)
 
-  def addToCategory(cat: PreferenceGroup)(implicit ctx: Context) {
+  def addToGroup(cat: PreferenceGroup)(implicit ctx: Context) {
     cat.addPreference(northWest.preference())
     cat.addPreference(northEast.preference())
     cat.addPreference(southWest.preference())
@@ -158,7 +158,7 @@ object ShowNavPage extends SettingCategory[Boolean] {
     SwitchPref("navigationPage.enabled", "Enable",
       "(loading pages faster if disabled)", true)
 
-  def addToCategory(cat: PreferenceGroup)(implicit ctx: Context) {
+  def addToGroup(cat: PreferenceGroup)(implicit ctx: Context) {
     cat.addPreference(enable.preference())
   }
 
@@ -166,16 +166,23 @@ object ShowNavPage extends SettingCategory[Boolean] {
     enable.preferenceVar()()
 }
 
-trait SettingCategory[T] extends Setting[T] {
-  def title: String
-  def addToCategory(cat: PreferenceGroup)(implicit ctx: Context): Unit
-
-  def addToScreen(root: PreferenceGroup)(implicit ctx: Context) {
+trait SettingCategory[T] extends SettingGroup[T] {
+  def createGroup()(implicit ctx: Context): PreferenceGroup = {
     val cat = new PreferenceCategory(ctx)
     cat.setTitle(title)
-    root.addPreference(cat)
+    cat
+  }
+}
 
-    addToCategory(cat)
+trait SettingGroup[T] extends Setting[T] {
+  def title: String
+  def addToGroup(cat: PreferenceGroup)(implicit ctx: Context): Unit
+  def createGroup()(implicit ctx: Context): PreferenceGroup
+
+  def addToScreen(root: PreferenceGroup)(implicit ctx: Context) {
+    val group = createGroup()
+    root.addPreference(group)
+    addToGroup(group)
   }
 }
 
