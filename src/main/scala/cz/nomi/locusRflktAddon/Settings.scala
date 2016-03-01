@@ -5,6 +5,8 @@
 
 package cz.nomi.locusRflktAddon
 
+import scala.collection.mutable.ListBuffer
+
 import android.content.{Context, SharedPreferences}
 import android.preference._
 import android.support.v7.app.AppCompatActivity
@@ -12,7 +14,7 @@ import android.widget.{LinearLayout, TextView}
 
 import Log._
 
-import display.Pages.{Conf2x2, ConfPage2x2}
+import display.Pages.{ConfPage, ConfPageNav, ConfPage2x2, Conf2x2}
 
 class Settings extends AppCompatActivity
   with RActivity with BackToParentActivity
@@ -68,7 +70,7 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
   lazy val southEastDef = F.pageRight
 }
 
-object PageSettings extends SettingCategory {
+object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
   lazy val title = "RFLKT pages"
 
   def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = Seq(
@@ -79,6 +81,13 @@ object PageSettings extends SettingCategory {
   lazy val showNavPage =
     SwitchPref("navigationPage.enabled", "Navigation page",
       "(loading pages faster if disabled)", true)
+
+  def getValue(pref: SharedPreferences): Seq[ConfPage] = {
+    var pages = ListBuffer.empty[ConfPage]
+    pages += OverviewSettings.getValue(pref)
+    if (showNavPage.getValue(pref)) pages += new ConfPageNav
+    pages
+  }
 }
 
 object OverviewSettings extends SettingPage2x2 {

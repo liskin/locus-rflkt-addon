@@ -5,8 +5,6 @@
 
 package cz.nomi.locusRflktAddon.display
 
-import scala.collection.mutable.ListBuffer
-
 import com.wahoofitness.common.{display => w}
 
 object Pages {
@@ -68,7 +66,7 @@ object Pages {
   private def widget2x2(key: String): Group =
     widgets2x2.getOrElse(key, emptyGroup _)()
 
-  private def overview(widgets: ConfPage2x2) = {
+  private def page2x2(widgets: ConfPage2x2) = {
     val top1 = widgetNorth2x2(widgets.north)
     val top2 = statusWorkout
     val northWest = widget2x2(widgets.northWest)
@@ -120,7 +118,7 @@ object Pages {
     Group(rect, value).frame(w = 128, h = 22)
   }
 
-  private lazy val navigation = {
+  private def pageNav = {
     Page(
       navClock.frame(0, 0, 128, 22),
 
@@ -134,10 +132,15 @@ object Pages {
     ).key("NAVIGATION")
   }
 
+  sealed trait ConfPage
+
+  class ConfPageNav extends ConfPage
+
   class ConfPage2x2(
     val north: String,
     x: Conf2x2
   ) extends Conf2x2(x.northWest, x.northEast, x.southWest, x.southEast)
+    with ConfPage
 
   class Conf2x2(
     val northWest: String,
@@ -146,20 +149,19 @@ object Pages {
     val southEast: String
   )
 
-  def conf(buttons: Conf2x2, overviewWidgets: ConfPage2x2,
-      showNavPage: Boolean): Configuration = {
-    var pages = ListBuffer.empty[Page]
-    pages += overview(overviewWidgets)
-    if (showNavPage) pages += navigation
+  private def page(c: ConfPage): Page = c match {
+    case c: ConfPage2x2 => page2x2(c)
+    case _: ConfPageNav => pageNav
+  }
 
-    Configuration(pages: _*)
+  def conf(buttons: Conf2x2, pages: Seq[ConfPage]): Configuration =
+    Configuration(pages.map(page): _*)
       .id("LocusRflktAddon")
       .name("LocusRflktAddon")
       .button(NORTH_WEST, buttons.northWest)
       .button(NORTH_EAST, buttons.northEast)
       .button(SOUTH_WEST, buttons.southWest)
       .button(SOUTH_EAST, buttons.southEast)
-  }
 }
 
 object Const {

@@ -363,8 +363,7 @@ trait RflktService extends RService with RflktApi
     getCapRflkt() foreach {
       _.loadConfig(display.Pages.conf(
         ButtonSettings.getValue(sp),
-        OverviewSettings.getValue(sp),
-        PageSettings.showNavPage.getValue(sp)
+        PageSettings.getValue(sp)
       ))
     }
   }
