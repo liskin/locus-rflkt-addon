@@ -39,7 +39,8 @@ import Const._
 trait RflktApi {
   def enableDiscovery(enable: Boolean): Unit
   def isDiscovering(): Boolean
-  def isConnected(): Boolean
+  def isDisconnected(): Boolean
+  def getStatus(): String
   def describeFirst(): Option[String]
   def connectFirst(): Unit
   def disconnect(): Unit
@@ -58,6 +59,7 @@ trait RflktService extends RService with RflktApi
   private var hwCon: HardwareConnector = null
   private var curSensor: Option[SensorConnection] = None
   private var stayForeground: Boolean = false
+  private var status: String = ""
 
   onRegister {
     logger.info(s"RflktService: onCreate")
@@ -181,6 +183,7 @@ trait RflktService extends RService with RflktApi
         case CapabilityType.ConfirmConnection =>
           getCapConfirm().get.addListener(Confirmation)
           requestConfirmation()
+          refreshUi("waiting for confirmation")
         case CapabilityType.Rflkt =>
           getCapRflkt().get.addListener(RFLKT)
         case _ =>
@@ -195,16 +198,18 @@ trait RflktService extends RService with RflktApi
     override def onSensorConnectionStateChanged(s: SensorConnection, state: SensorConnectionState) {
       logger.info(s"onSensorConnectionStateChanged: $s, $state")
 
-      if (state == SensorConnectionState.CONNECTED) {
-        curSensor = Some(s)
-        lastSensor() = s.getConnectionParams.serialize
-      } else {
+      if (state == SensorConnectionState.DISCONNECTED) {
         curSensor = None
+      } else {
+        curSensor = Some(s)
+        if (state == SensorConnectionState.CONNECTED) {
+          lastSensor() = s.getConnectionParams.serialize
+        }
       }
 
       notice(s"${s.getDeviceName}: $state")
       updateNotification(s"$state")
-      refreshUi()
+      refreshUi(s"$state")
     }
   }
 
@@ -213,6 +218,7 @@ trait RflktService extends RService with RflktApi
       logger.info(s"onConfirmationProcedureStateChange: $state, $error")
       if (state == ConfirmConnection.State.FAILED) {
         requestConfirmation()
+        refreshUi("still waiting for confirmation")
       }
     }
 
@@ -220,6 +226,7 @@ trait RflktService extends RService with RflktApi
       logger.info(s"onUserAccept")
       loadConfig()
       getCapRflkt().foreach(_.sendSetBacklightPercent(0))
+      refreshUi("loading config")
     }
   }
 
@@ -256,12 +263,15 @@ trait RflktService extends RService with RflktApi
     override def onDisplayOptionsReceived(x1: DisplayDateFormat, x2: DisplayTimeFormat, x3: DisplayDayOfWeek, x4: DisplayWatchFaceStyle) {}
     override def onLoadComplete() {
       logger.info(s"onLoadComplete")
+      refreshUi("everything okay")
     }
     override def onLoadFailed(result: LoadConfigResult) {
       logger.info(s"onLoadFailed: $result")
+      refreshUi("load failed :-(")
     }
     override def onLoadProgressChanged(progress: Int) {
       logger.info(s"onLoadProgressChanged: $progress")
+      refreshUi(s"loading config... $progress/100")
     }
     override def onPageIndexReceived(index: Int) {}
   }
@@ -280,7 +290,9 @@ trait RflktService extends RService with RflktApi
 
   def isDiscovering(): Boolean = hwCon.isDiscovering()
 
-  def isConnected(): Boolean = curSensor.isDefined
+  def isDisconnected(): Boolean = curSensor.isEmpty
+
+  def getStatus(): String = status
 
   private def getFirst(): Option[ConnectionParams] = {
     val rflkts = hwCon.getDiscoveredConnectionParams()
@@ -316,7 +328,8 @@ trait RflktService extends RService with RflktApi
 
   private lazy val refreshUiIntent = new Intent(localActionRefreshUi)
 
-  private def refreshUi() {
+  private def refreshUi(newStatus: String = status) {
+    status = newStatus
     sendLocalBroadcast(refreshUiIntent)
   }
 
@@ -329,7 +342,8 @@ trait RflktService extends RService with RflktApi
   }
 
   private def getCap[T](typ: CapabilityType): Option[T] =
-    curSensor.map(_.getCurrentCapability(typ).asInstanceOf[T]).filter(_ != null)
+    curSensor.filter(_.isConnected())
+      .map(_.getCurrentCapability(typ).asInstanceOf[T]).filter(_ != null)
 
   private def getCapConfirm(): Option[ConfirmConnection] =
     getCap(CapabilityType.ConfirmConnection)

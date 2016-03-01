@@ -61,12 +61,7 @@ class Main extends AppCompatActivity with RActivity {
 
   private def refreshButton() {
     runUi {
-      if (service(_.isConnected()).getOrElse(false)) {
-        Ui.sequence(
-          connectButton <~ text("connected") <~ disable,
-          disconnectButton <~ enable
-        )
-      } else {
+      if (service(_.isDisconnected()).getOrElse(true)) {
         Ui.sequence(
           service(_.describeFirst()).flatten match {
             case None =>
@@ -75,6 +70,12 @@ class Main extends AppCompatActivity with RActivity {
               connectButton <~ text(s"connect to $d") <~ enable
           },
           disconnectButton <~ disable
+        )
+      } else {
+        val status = service(_.getStatus()).get
+        Ui.sequence(
+          connectButton <~ text(status) <~ disable,
+          disconnectButton <~ enable
         )
       }
     }
