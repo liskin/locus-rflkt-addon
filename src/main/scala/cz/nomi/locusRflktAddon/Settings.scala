@@ -44,16 +44,15 @@ class Settings extends AppCompatActivity
 
 class SettingsFragment extends PreferenceFragment with RFragment {
   onCreate {
-    val ctx = getActivity()
-    val root = getPreferenceManager().createPreferenceScreen(ctx)
-    ButtonSettings.addToScreen(ctx, root)
-    OverviewSettings.addToScreen(ctx, root)
-    ShowNavPage.addToScreen(ctx, root)
+    val root = getPreferenceManager().createPreferenceScreen(getActivity())
+    ButtonSettings.addToGroup(this, root)
+    OverviewSettings.addToGroup(this, root)
+    ShowNavPage.addToGroup(this, root)
     setPreferenceScreen(root)
   }
 }
 
-object ButtonSettings extends Setting2x2 {
+object ButtonSettings extends SettingCategory with Setting2x2 {
   lazy val prefix = "allPages.buttons"
   lazy val title = "RFLKT button functions"
 
@@ -98,25 +97,25 @@ object OverviewSettings extends SettingPage2x2 {
   lazy val southEastDef = W.heartRateCurrent
 }
 
-trait SettingPage2x2 extends Setting2x2 {
+trait SettingPage2x2 extends SettingCategory with Setting2x2 {
   def northEntries: Seq[(String, String)]
   def northDef: String
 
   private lazy val north =
     ListPref(s"$prefix.north", "top", northEntries, northDef)
 
-  override def addToGroup(ctx: Context, cat: PreferenceGroup) {
-    cat.addPreference(north.preference(ctx))
-    super.addToGroup(ctx, cat)
+  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
+    north.addToGroup(pf, group)
+    super.addPreferences(pf, group)
   }
 
-  override def toDisplayConf(pref: SharedPreferences) =
+  override def getValue(pref: SharedPreferences) =
     new ConfPage2x2(
-      north.preferenceVar(pref),
-      super.toDisplayConf(pref))
+      north.getValue(pref),
+      super.getValue(pref))
 }
 
-trait Setting2x2 extends SettingCategory[Conf2x2] {
+trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
   def prefix: String
 
   def entries: Seq[(String, String)]
@@ -134,73 +133,63 @@ trait Setting2x2 extends SettingCategory[Conf2x2] {
   private lazy val southEast =
     ListPref(s"$prefix.southEast", "bottom right", entries, southEastDef)
 
-  def addToGroup(ctx: Context, cat: PreferenceGroup) {
-    cat.addPreference(northWest.preference(ctx))
-    cat.addPreference(northEast.preference(ctx))
-    cat.addPreference(southWest.preference(ctx))
-    cat.addPreference(southEast.preference(ctx))
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
+    northWest.addToGroup(pf, group)
+    northEast.addToGroup(pf, group)
+    southWest.addToGroup(pf, group)
+    southEast.addToGroup(pf, group)
   }
 
-  def toDisplayConf(pref: SharedPreferences) =
+  def getValue(pref: SharedPreferences) =
     new Conf2x2(
-      northWest.preferenceVar(pref),
-      northEast.preferenceVar(pref),
-      southWest.preferenceVar(pref),
-      southEast.preferenceVar(pref)
+      northWest.getValue(pref),
+      northEast.getValue(pref),
+      southWest.getValue(pref),
+      southEast.getValue(pref)
     )
 }
 
-object ShowNavPage extends SettingCategory[Boolean] {
+object ShowNavPage extends SettingCategory with SettingValue[Boolean] {
   def title = "Navigation page"
 
   private lazy val enable =
     SwitchPref("navigationPage.enabled", "Enable",
       "(loading pages faster if disabled)", true)
 
-  def addToGroup(ctx: Context, cat: PreferenceGroup) {
-    cat.addPreference(enable.preference(ctx))
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
+    enable.addToGroup(pf, group)
   }
 
-  def toDisplayConf(pref: SharedPreferences) =
-    enable.preferenceVar(pref)
+  def getValue(pref: SharedPreferences) =
+    enable.getValue(pref)
 }
 
-trait SettingCategory[T] extends SettingGroup[T] {
-  def createGroup(ctx: Context): PreferenceGroup = {
-    val cat = new PreferenceCategory(ctx)
+abstract class SettingCategory extends SettingGroup {
+  def createGroup(pf: PreferenceFragment): PreferenceGroup = {
+    val cat = new PreferenceCategory(pf.getActivity())
     cat.setTitle(title)
     cat
   }
 }
 
-trait SettingGroup[T] extends Setting[T] {
+abstract class SettingGroup extends Setting {
   def title: String
-  def addToGroup(ctx: Context, cat: PreferenceGroup): Unit
-  def createGroup(ctx: Context): PreferenceGroup
+  def createGroup(pf: PreferenceFragment): PreferenceGroup
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Unit
 
-  def addToScreen(ctx: Context, root: PreferenceGroup) {
-    val group = createGroup(ctx)
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup) {
+    val group = createGroup(pf)
     root.addPreference(group)
-    addToGroup(ctx, group)
+    addPreferences(pf, group)
   }
-}
-
-trait Setting[T] {
-  def addToScreen(ctx: Context, root: PreferenceGroup): Unit
-  def toDisplayConf(pref: SharedPreferences): T
-}
-
-abstract class PreferenceBuilder[T] {
-  def preference(ctx: Context): Preference
-  def preferenceVar: PreferenceVar[T]
 }
 
 case class ListPref(key: String, title: String,
     entries: Seq[(String, String)], default: String)
-  extends PreferenceBuilder[String]
+  extends SettingWidget[String]
 {
-  def preference(ctx: Context): Preference =
-    new ListPreference(ctx) {
+  protected def preference(pf: PreferenceFragment): Preference =
+    new ListPreference(pf.getActivity()) {
       setKey(key)
       setTitle(title)
       setSummary("%s")
@@ -209,21 +198,40 @@ case class ListPref(key: String, title: String,
       setDefaultValue(default)
     }
 
-  def preferenceVar: PreferenceVar[String] =
+  protected def preferenceVar: PreferenceVar[String] =
     Preferences.preferenceVar(key, default)
 }
 
 case class SwitchPref(key: String, title: String, summary: String, default: Boolean)
-  extends PreferenceBuilder[Boolean]
+  extends SettingWidget[Boolean]
 {
-  def preference(ctx: Context): Preference =
-    new SwitchPreference(ctx) {
+  protected def preference(pf: PreferenceFragment): Preference =
+    new SwitchPreference(pf.getActivity()) {
       setKey(key)
       setTitle(title)
       setSummary(summary)
       setDefaultValue(default)
     }
 
-  def preferenceVar: PreferenceVar[Boolean] =
+  protected def preferenceVar: PreferenceVar[Boolean] =
     Preferences.preferenceVar(key, default)
+}
+
+trait SettingWidget[T] extends SettingValue[T] {
+  protected def preference(pf: PreferenceFragment): Preference
+  protected def preferenceVar: PreferenceVar[T]
+
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup) {
+    root.addPreference(preference(pf))
+  }
+
+  def getValue(pref: SharedPreferences): T = preferenceVar(pref)
+}
+
+trait SettingValue[T] extends Setting {
+  def getValue(pref: SharedPreferences): T
+}
+
+abstract class Setting {
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Unit
 }

@@ -362,9 +362,9 @@ trait RflktService extends RService with RflktApi
     val sp = defaultSharedPreferences
     getCapRflkt() foreach {
       _.loadConfig(display.Pages.conf(
-        ButtonSettings.toDisplayConf(sp),
-        OverviewSettings.toDisplayConf(sp),
-        ShowNavPage.toDisplayConf(sp)
+        ButtonSettings.getValue(sp),
+        OverviewSettings.getValue(sp),
+        ShowNavPage.getValue(sp)
       ))
     }
   }
