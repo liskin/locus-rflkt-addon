@@ -48,7 +48,7 @@ class Main extends AppCompatActivity with RActivity {
       }
     }
 
-    val _ = startService(mainServiceIntent)
+    startService(mainServiceIntent); ()
   }
 
   service.onServiceConnected {

@@ -47,9 +47,9 @@ class Settings extends AppCompatActivity
 class SettingsFragment extends PreferenceFragment with RFragment {
   onCreate {
     val root = getPreferenceManager().createPreferenceScreen(getActivity())
-    ButtonSettings.addToGroup(this, root)
-    PageSettings.addToGroup(this, root)
     setPreferenceScreen(root)
+    ButtonSettings.addToGroup(this, root); ()
+    PageSettings.addToGroup(this, root); ()
   }
 }
 
