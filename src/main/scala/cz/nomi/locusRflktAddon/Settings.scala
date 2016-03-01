@@ -71,10 +71,10 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
 object PageSettings extends SettingCategory {
   lazy val title = "RFLKT pages"
 
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
-    OverviewSettings.addToGroup(pf, group)
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = Seq(
+    OverviewSettings.addToGroup(pf, group),
     showNavPage.addToGroup(pf, group)
-  }
+  )
 
   lazy val showNavPage =
     SwitchPref("navigationPage.enabled", "Navigation page",
@@ -116,10 +116,9 @@ trait SettingPage2x2 extends SettingScreen with Setting2x2 {
   lazy val southWestDef = W.cadenceCurrent
   lazy val southEastDef = W.heartRateCurrent
 
-  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
-    north.addToGroup(pf, group)
+  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
+    north.addToGroup(pf, group) +:
     super.addPreferences(pf, group)
-  }
 
   override def getValue(pref: SharedPreferences) =
     new ConfPage2x2(
@@ -145,12 +144,12 @@ trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
   private lazy val southEast =
     ListPref(s"$prefix.southEast", "bottom right", entries, southEastDef)
 
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup) {
-    northWest.addToGroup(pf, group)
-    northEast.addToGroup(pf, group)
-    southWest.addToGroup(pf, group)
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = Seq(
+    northWest.addToGroup(pf, group),
+    northEast.addToGroup(pf, group),
+    southWest.addToGroup(pf, group),
     southEast.addToGroup(pf, group)
-  }
+  )
 
   def getValue(pref: SharedPreferences) =
     new Conf2x2(
@@ -180,12 +179,13 @@ abstract class SettingScreen extends SettingGroup {
 abstract class SettingGroup extends Setting {
   def title: String
   def createGroup(pf: PreferenceFragment): PreferenceGroup
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Unit
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference]
 
-  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup) {
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Preference = {
     val group = createGroup(pf)
     root.addPreference(group)
     addPreferences(pf, group)
+    group
   }
 }
 
@@ -226,8 +226,10 @@ trait SettingWidget[T] extends SettingValue[T] {
   protected def preference(pf: PreferenceFragment): Preference
   protected def preferenceVar: PreferenceVar[T]
 
-  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup) {
-    root.addPreference(preference(pf))
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Preference = {
+    val widget = preference(pf)
+    root.addPreference(widget)
+    widget
   }
 
   def getValue(pref: SharedPreferences): T = preferenceVar(pref)
@@ -238,5 +240,5 @@ trait SettingValue[T] extends Setting {
 }
 
 abstract class Setting {
-  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Unit
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Preference
 }
