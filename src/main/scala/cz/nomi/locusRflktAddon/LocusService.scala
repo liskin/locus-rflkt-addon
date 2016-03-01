@@ -69,6 +69,11 @@ trait LocusService extends RService with LocusApi
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
       lastUpdate = Some(update)
 
+      val now = java.util.Calendar.getInstance().getTime()
+      val clock = Seq(
+        s"${W.clock}.value" -> formatTime(now)
+      )
+
       val loc = update.getLocMyLocation()
       val curSpeed = Option(loc.getSpeed()).filter(_ != 0).map(_ * 36 / 10)
       val curHeartRate = Option(loc.getSensorHeartRate()).filter(_ != 0)
@@ -80,22 +85,21 @@ trait LocusService extends RService with LocusApi
       )
 
       val trackRecord = Option(update.getTrackRecordContainer())
+      val time = trackRecord.map(_.getTime() / 1000)
+      val timeMoving = trackRecord.map(_.getTimeMove() / 1000)
       val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
       val avgMovingSpeed = trackRecord.map(_.getSpeedAvgMove()).filter(_ != 0).map(_ * 36 / 10)
       val maxSpeed = trackRecord.map(_.getSpeedMax()).filter(_ != 0).map(_ * 36 / 10)
       val distance = trackRecord.map(_.getDistance() / 1000)
       val workout = Seq(
+        s"${W.statusWorkout}.rec_stopped" -> Vis(trackRecord.isEmpty),
+        s"${W.statusWorkout}.rec_paused" -> Vis(trackRecord.exists(_.isTrackRecPaused())),
+        s"${W.timeWorkout}.value" -> formatDuration(time),
+        s"${W.timeMovingWorkout}.value" -> formatDuration(timeMoving),
         s"${W.averageSpeedWorkout}.value" -> formatFloatFixed(avgSpeed),
         s"${W.averageMovingSpeedWorkout}.value" -> formatFloatFixed(avgMovingSpeed),
         s"${W.maxSpeedWorkout}.value" -> formatFloatFixed(maxSpeed),
         s"${W.distanceWorkout}.value" -> formatDoubleFixed(distance)
-      )
-
-      val now = java.util.Calendar.getInstance().getTime()
-      val clock = Seq(
-        s"${W.clock}.value" -> formatTime(now),
-        s"${W.clock}.rec_stopped" -> Vis(trackRecord.isEmpty),
-        s"${W.clock}.rec_paused" -> Vis(trackRecord.exists(_.isTrackRecPaused()))
       )
 
       val guideTrack = Option(update.getGuideTypeTrack())
@@ -122,6 +126,17 @@ trait LocusService extends RService with LocusApi
     private def formatString(s: Option[String]): Str = Str(s.getOrElse("--"))
 
     private def formatTime(t: java.util.Date): Str = Str(timeFormat.format(t))
+
+    private def formatDuration(totalSecondsOpt: Option[Long]): Str =
+      formatString {
+        totalSecondsOpt.map { totalSeconds =>
+          val seconds = totalSeconds % 60
+          val totalMinutes = totalSeconds / 60
+          val minutes = totalMinutes % 60
+          val totalHours = totalMinutes / 60
+          f"$totalHours%02d:$minutes%02d:$seconds%02d"
+        }
+      }
 
     private def formatInt(i: Option[Int]): Str =
       formatString(i.map(v => f"$v%d"))

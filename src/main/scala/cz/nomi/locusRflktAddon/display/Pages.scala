@@ -15,16 +15,31 @@ object Pages {
   import w.DisplayFont._
   import Const.{Widget => W}
 
-  private def clockAndRecStatus: Group = {
-    val icon = Icons.clock.frame(x = 1, y = 1)
+  private def emptyGroup: Group = Group()
+
+  private def statusWorkout: Group = {
     val recStopped = Icons.recStopped.frame(x = 1, y = 13)
     val recPaused = Icons.recPaused.frame(x = 1, y = 13).hidden
-    val value = Text("--:--:--").frame(x = 20, y = 2, w = 108, h = 0)
-      .font(SYSTEM19).align(CENTER).key("value")
-    Group(icon, recStopped, recPaused, value).key(W.clock).frame(w = 128, h = 26)
+    Group(recStopped, recPaused).key(W.statusWorkout).frame(w = 128, h = 26)
   }
 
-  private def unitGroup(key: String, icon: Bitmap, unit: String): Group = {
+  private def time(key: String)(): Group = {
+    val icon = Icons.clock.frame(x = 1, y = 1)
+    val value = Text("--:--:--").frame(x = 20, y = 2, w = 108, h = 0)
+      .font(SYSTEM19).align(CENTER).key("value")
+    Group(icon, value).key(key).frame(w = 128, h = 26)
+  }
+
+  private lazy val widgetsNorth2x2: Map[String, () => Group] = Map(
+    W.clock -> time(W.clock) _,
+    W.timeWorkout -> time(W.timeWorkout) _,
+    W.timeMovingWorkout -> time(W.timeMovingWorkout) _
+  )
+
+  private def widgetNorth2x2(key: String): Group =
+    widgetsNorth2x2.getOrElse(key, emptyGroup _)()
+
+  private def unitGroup(key: String, icon: Bitmap, unit: String)(): Group = {
     icon.frame(x = 3, y = 3)
     val units = Text(unit).frame(x = 0, y = 3, w = 61, h = 0)
       .constant.font(SYSTEM10).align(RIGHT).key("units")
@@ -33,45 +48,36 @@ object Pages {
     Group(icon, units, value).key(key).frame(w = 64, h = 51)
   }
 
-  private def emptyUnitGroup: Group =
-    Group().frame(w = 64, h = 51)
-
-  private def speedCurrent =
-    unitGroup(W.speedCurrent, Icons.speed, "KPH")
-  private def averageSpeedWorkout =
-    unitGroup(W.averageSpeedWorkout, Icons.speed, "AVG")
-  private def averageMovingSpeedWorkout =
-    unitGroup(W.averageMovingSpeedWorkout, Icons.speed, "AVG")
-  private def maxSpeedWorkout =
-    unitGroup(W.maxSpeedWorkout, Icons.speed, "MAX")
-  private def distanceWorkout =
-    unitGroup(W.distanceWorkout, Icons.distance, "KM")
-  private def cadenceCurrent =
-    unitGroup(W.cadenceCurrent, Icons.cadence, "RPM")
-  private def heartRateCurrent =
-    unitGroup(W.heartRateCurrent, Icons.heartRate, "BPM")
-
   private lazy val widgets2x2: Map[String, () => Group] = Map(
-    W.speedCurrent -> speedCurrent _,
-    W.averageSpeedWorkout -> averageSpeedWorkout _,
-    W.averageMovingSpeedWorkout -> averageMovingSpeedWorkout _,
-    W.maxSpeedWorkout -> maxSpeedWorkout _,
-    W.distanceWorkout -> distanceWorkout _,
-    W.cadenceCurrent -> cadenceCurrent _,
-    W.heartRateCurrent -> heartRateCurrent _
+    W.speedCurrent ->
+      unitGroup(W.speedCurrent, Icons.speed, "KPH") _,
+    W.averageSpeedWorkout ->
+      unitGroup(W.averageSpeedWorkout, Icons.speed, "AVG") _,
+    W.averageMovingSpeedWorkout ->
+      unitGroup(W.averageMovingSpeedWorkout, Icons.speed, "AVG") _,
+    W.maxSpeedWorkout ->
+      unitGroup(W.maxSpeedWorkout, Icons.speed, "MAX") _,
+    W.distanceWorkout ->
+      unitGroup(W.distanceWorkout, Icons.distance, "KM") _,
+    W.cadenceCurrent ->
+      unitGroup(W.cadenceCurrent, Icons.cadence, "RPM") _,
+    W.heartRateCurrent ->
+      unitGroup(W.heartRateCurrent, Icons.heartRate, "BPM") _
   )
 
   private def widget2x2(key: String): Group =
-    widgets2x2.getOrElse(key, emptyUnitGroup _)()
+    widgets2x2.getOrElse(key, emptyGroup _)()
 
-  private def overview(widgets: Conf2x2) = {
-    val top = clockAndRecStatus
+  private def overview(widgets: ConfPage2x2) = {
+    val top1 = widgetNorth2x2(widgets.north)
+    val top2 = statusWorkout
     val northWest = widget2x2(widgets.northWest)
     val northEast = widget2x2(widgets.northEast)
     val southWest = widget2x2(widgets.southWest)
     val southEast = widget2x2(widgets.southEast)
     Page(
-      top      .frame( 0,  0, 128, 26),
+      top1     .frame( 0,  0, 128, 26),
+      top2     .frame( 0,  0, 128, 26),
       Rect()   .frame( 0, 26, 128,  0),
       northWest.frame( 0, 26,  64, 51),
       Rect()   .frame(64, 26,   0, 51),
@@ -85,6 +91,8 @@ object Pages {
 
   private def navClock: Group = {
     val rect = Rect().frame(w = 128, h = 22)
+    // TODO: add time to finish
+    // TODO: switch between clock and time to finish by a chosen button
     val value = Text("--:--:--").frame(w = 128, h = 0)
       .font(SYSTEM19).align(CENTER).key("value")
     Group(rect, value).key(W.clock).frame(w = 128, h = 22)
@@ -126,14 +134,19 @@ object Pages {
     ).key("NAVIGATION")
   }
 
-  case class Conf2x2(
-    northWest: String,
-    northEast: String,
-    southWest: String,
-    southEast: String
+  class ConfPage2x2(
+    val north: String,
+    x: Conf2x2
+  ) extends Conf2x2(x.northWest, x.northEast, x.southWest, x.southEast)
+
+  class Conf2x2(
+    val northWest: String,
+    val northEast: String,
+    val southWest: String,
+    val southEast: String
   )
 
-  def conf(buttons: Conf2x2, overviewWidgets: Conf2x2,
+  def conf(buttons: Conf2x2, overviewWidgets: ConfPage2x2,
       showNavPage: Boolean): Configuration = {
     var pages = ListBuffer.empty[Page]
     pages += overview(overviewWidgets)
@@ -159,6 +172,9 @@ object Const {
 
   object Widget {
     val clock = "CLOCK"
+    val timeWorkout = "TIME_WORKOUT"
+    val timeMovingWorkout = "TIME_WORKOUT_MOVE"
+    val statusWorkout = "STATUS_WORKOUT"
 
     val speedCurrent = "SPEED_CURRENT"
     val averageSpeedWorkout = "SPEED_WORKOUT_AVG"

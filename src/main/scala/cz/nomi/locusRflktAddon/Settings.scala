@@ -12,7 +12,7 @@ import android.widget.{LinearLayout, TextView}
 
 import Log._
 
-import display.Pages.Conf2x2
+import display.Pages.{Conf2x2, ConfPage2x2}
 
 class Settings extends AppCompatActivity
   with RActivity with BackToParentActivity
@@ -71,11 +71,19 @@ object ButtonSettings extends Setting2x2 {
   lazy val southEastDef = F.pageRight
 }
 
-object OverviewSettings extends Setting2x2 {
+object OverviewSettings extends SettingPage2x2 {
   lazy val prefix = "pages.1.widgets"
   lazy val title = "Overview page widgets"
 
   import display.Const.{Widget => W}
+
+  lazy val northEntries = Seq(
+    "Clock" -> W.clock,
+    "Time – (workout)" -> W.timeWorkout,
+    "Time – moving (workout)" -> W.timeMovingWorkout
+  )
+  lazy val northDef = W.clock
+
   lazy val entries = Seq(
     "Speed (current)" -> W.speedCurrent,
     "Average speed – total (workout)" -> W.averageSpeedWorkout,
@@ -89,6 +97,24 @@ object OverviewSettings extends Setting2x2 {
   lazy val northEastDef = W.distanceWorkout
   lazy val southWestDef = W.cadenceCurrent
   lazy val southEastDef = W.heartRateCurrent
+}
+
+trait SettingPage2x2 extends Setting2x2 {
+  def northEntries: Seq[(String, String)]
+  def northDef: String
+
+  private lazy val north =
+    ListPref(s"$prefix.north", "top", northEntries, northDef)
+
+  override def addToCategory(cat: PreferenceGroup)(implicit ctx: Context) {
+    cat.addPreference(north.preference())
+    super.addToCategory(cat)
+  }
+
+  override def toDisplayConf()(implicit pref: SharedPreferences) =
+    new ConfPage2x2(
+      north.preferenceVar()(),
+      super.toDisplayConf())
 }
 
 trait Setting2x2 extends SettingCategory[Conf2x2] {
@@ -117,7 +143,7 @@ trait Setting2x2 extends SettingCategory[Conf2x2] {
   }
 
   def toDisplayConf()(implicit pref: SharedPreferences) =
-    Conf2x2(
+    new Conf2x2(
       northWest.preferenceVar()(),
       northEast.preferenceVar()(),
       southWest.preferenceVar()(),
