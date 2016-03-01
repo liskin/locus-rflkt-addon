@@ -18,7 +18,6 @@ proguardCache in Android ++= Seq(
   "macroid",
   "org.slf4j",
   "org.log4s",
-  "com.google",
   "com.wahoofitness",
   "com.dsi",
   "com.garmin",
