@@ -25,7 +25,7 @@ proguardCache in Android ++= Seq(
   "locus"
 )
 
-proguardOptions in Android ++= Seq("-keepattributes Signature", "-keepattributes InnerClasses")
+proguardOptions in Android ++= Seq("-keepattributes Signature")
 proguardConfig in Android := {
   // This is probably wrong
   // (https://github.com/pfn/android-sdk-plugin/issues/242) but it

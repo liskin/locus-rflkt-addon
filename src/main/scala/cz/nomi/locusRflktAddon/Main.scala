@@ -33,6 +33,8 @@ class Main extends AppCompatActivity with RActivity {
     getSupportActionBar.setLogo(R.drawable.ic_launcher)
     getSupportActionBar.setDisplayUseLogoEnabled(true)
 
+    setTitle(getString(R.string.main_label))
+
     setContentView {
       getUi {
         l[LinearLayout](
