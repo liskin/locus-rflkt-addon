@@ -203,7 +203,8 @@ trait RflktService extends RService with RflktApi
       } else {
         curSensor = Some(s)
         if (state == SensorConnectionState.CONNECTED) {
-          lastSensor() = s.getConnectionParams.serialize
+          lastSensor(defaultSharedPreferences) =
+            s.getConnectionParams.serialize
         }
       }
 
@@ -358,11 +359,12 @@ trait RflktService extends RService with RflktApi
   }
 
   private def loadConfig() {
+    val sp = defaultSharedPreferences
     getCapRflkt() foreach {
       _.loadConfig(display.Pages.conf(
-        ButtonSettings.toDisplayConf,
-        OverviewSettings.toDisplayConf,
-        ShowNavPage.toDisplayConf
+        ButtonSettings.toDisplayConf(sp),
+        OverviewSettings.toDisplayConf(sp),
+        ShowNavPage.toDisplayConf(sp)
       ))
     }
   }
@@ -397,16 +399,17 @@ trait RflktService extends RService with RflktApi
   }
 
   private val uuid = preferenceVar("uuid", "")
-  private def getUuid: UUID = uuid() match {
+  private def getUuid: UUID = uuid(defaultSharedPreferences) match {
     case s if s.nonEmpty =>
       UUID.fromString(s)
     case "" =>
       val u = UUID.randomUUID()
-      uuid() = u.toString
+      uuid(defaultSharedPreferences) = u.toString
       u
   }
 
   private val lastSensor = preferenceVar("lastSensor", "")
   private def lastSensorOption: Option[ConnectionParams] =
-    Option(lastSensor()) filter (_.nonEmpty) map (ConnectionParams.deserialize)
+    Option(lastSensor(defaultSharedPreferences))
+      .filter(_.nonEmpty).map(ConnectionParams.deserialize)
 }

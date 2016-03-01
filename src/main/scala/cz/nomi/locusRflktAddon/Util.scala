@@ -116,23 +116,23 @@ abstract class PreferenceVar[T](key: String, defaultValue: T) {
   protected def get(value: T, pref: SharedPreferences): T
   protected def put(value: T, editor: SharedPreferences.Editor): Unit
 
-  final def apply()(implicit pref: SharedPreferences): T =
+  final def apply(pref: SharedPreferences): T =
     get(defaultValue, pref)
 
-  final def update(value: T)(implicit pref: SharedPreferences) {
+  final def update(pref: SharedPreferences, value: T) {
     val editor = pref.edit()
     put(value, editor)
     editor.apply()
   }
 
-  final def remove()(implicit pref: SharedPreferences) {
+  final def remove(pref: SharedPreferences) {
     pref.edit().remove(key).apply()
   }
 }
 
 // inspired by scaloid
 object Preferences {
-  implicit def defaultSharedPreferences(implicit context: Context): SharedPreferences =
+  def defaultSharedPreferences(implicit context: Context): SharedPreferences =
     PreferenceManager.getDefaultSharedPreferences(context)
 
   def preferenceVar[T](key: String, defaultVal: T): PreferenceVar[T] =
