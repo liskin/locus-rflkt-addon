@@ -87,6 +87,10 @@ object Pages {
     )
   }
 
+  private def page1x3(widgets: ConfPage1x3) = {
+    Page()
+  }
+
   private def navClock: Group = {
     val rect = Rect().frame(w = 128, h = 22)
     // TODO: add time to finish
@@ -140,12 +144,25 @@ object Pages {
     val key: String
   ) extends ConfPage
 
+  class ConfPage1x3(
+    val key: String,
+    val north: String,
+    x: Conf1x3
+  ) extends Conf1x3(x.line1, x.line2, x.line3)
+    with ConfPage
+
   class ConfPage2x2(
     val key: String,
     val north: String,
     x: Conf2x2
   ) extends Conf2x2(x.northWest, x.northEast, x.southWest, x.southEast)
     with ConfPage
+
+  class Conf1x3(
+    val line1: String,
+    val line2: String,
+    val line3: String
+  )
 
   class Conf2x2(
     val northWest: String,
@@ -155,6 +172,7 @@ object Pages {
   )
 
   private def page(c: ConfPage): Page = (c match {
+    case c: ConfPage1x3 => page1x3(c)
     case c: ConfPage2x2 => page2x2(c)
     case _: ConfPageNav => pageNav
   }).key(c.key)

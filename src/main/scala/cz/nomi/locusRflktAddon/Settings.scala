@@ -14,7 +14,7 @@ import android.widget.{LinearLayout, TextView}
 
 import Log._
 
-import display.Pages.{ConfPage, ConfPageNav, ConfPage2x2, Conf2x2}
+import display.Pages.{ConfPage, ConfPageNav, ConfPage1x3, ConfPage2x2, Conf1x3, Conf2x2}
 
 class Settings extends AppCompatActivity
   with RActivity with BackToParentActivity
@@ -104,7 +104,8 @@ class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[Co
       SwitchPref(s"pages.$number.enabled", "Enabled", null, false)
 
   lazy val templateEntries = Seq(
-    "top and 2 × 2 widgets" -> "2x2"
+    "top and 2 × 2 widgets" -> "2x2",
+    "top and 1 × 3 widgets" -> "1x3"
   )
   lazy val templateDef = "2x2"
   lazy val template = ListPref(s"pages.$number.template",
@@ -112,6 +113,7 @@ class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[Co
 
   def widgets(t: String) = t match {
     case "2x2" => new SettingPage2x2(number)
+    case "1x3" => new SettingPage1x3(number)
     case _ => ???
   }
 
@@ -152,6 +154,25 @@ class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[Co
         }
       }
     }
+}
+
+class SettingPage1x3(number: Int) extends SettingPageWidgets(number)
+  with SettingNorth with Setting1x3
+{
+  import display.Const.{Widget => W}
+
+  lazy val entries = Seq(
+    // TODO
+  )
+  lazy val line1Def = ""
+  lazy val line2Def = ""
+  lazy val line3Def = ""
+
+  override def getValue(pref: SharedPreferences) =
+    new ConfPage1x3(
+      s"PAGE$number",
+      north.getValue(pref),
+      super.getValue(pref))
 }
 
 class SettingPage2x2(number: Int) extends SettingPageWidgets(number)
@@ -195,6 +216,38 @@ trait SettingNorth extends SettingPageWidgets {
   override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
     super.addPreferences(pf, group) :+
     north.addToGroup(pf, group)
+}
+
+trait Setting1x3 extends SettingGroup with SettingValue[Conf1x3] {
+  def prefix: String
+
+  def entries: Seq[(String, String)]
+  def line1Def: String
+  def line2Def: String
+  def line3Def: String
+
+  private lazy val line1 =
+    ListPref(s"$prefix.line1", "line 1", entries, line1Def)
+  private lazy val line2 =
+    ListPref(s"$prefix.line2", "line 2", entries, line2Def)
+  private lazy val line3 =
+    ListPref(s"$prefix.line3", "line 3", entries, line3Def)
+
+  override def addPreferences(pf: PreferenceFragment,
+      group: PreferenceGroup): Seq[Preference] =
+    super.addPreferences(pf, group) ++
+    Seq(
+      line1.addToGroup(pf, group),
+      line2.addToGroup(pf, group),
+      line3.addToGroup(pf, group)
+    )
+
+  def getValue(pref: SharedPreferences) =
+    new Conf1x3(
+      line1.getValue(pref),
+      line2.getValue(pref),
+      line3.getValue(pref)
+    )
 }
 
 trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
