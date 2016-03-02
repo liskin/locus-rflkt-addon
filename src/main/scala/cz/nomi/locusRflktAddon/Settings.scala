@@ -103,27 +103,55 @@ class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[Co
     else
       SwitchPref(s"pages.$number.enabled", "Enabled", null, false)
 
-  lazy val widgets2x2 = new SettingPage2x2(number)
+  lazy val templateEntries = Seq(
+    "top and 2 × 2 widgets" -> "2x2"
+  )
+  lazy val templateDef = "2x2"
+  lazy val template = ListPref(s"pages.$number.template",
+    "Template", templateEntries, templateDef)
+
+  def widgets(t: String) = t match {
+    case "2x2" => new SettingPage2x2(number)
+    case _ => ???
+  }
 
   override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = {
     val sup = super.addPreferences(pf, group)
     val switch = enabled.addToGroup(pf, group)
-    val widgets = widgets2x2.addToGroup(pf, group)
+    val templ = template.addToGroup(pf, group)
+    val t = template.getValue(templ.getSharedPreferences())
+    val widgetGroup = widgets(t).addToGroup(pf, group)
+
+    onPrefChange(templ) { newTemplate: String =>
+      widgetGroup.removeAll()
+      widgets(newTemplate).addPreferences(pf, widgetGroup)
+    }
 
     if (switch == null) { // first page
-      sup :+ widgets
+      sup :+ templ :+ widgetGroup
     } else {
       switch.setDisableDependentsState(false)
-      widgets.setDependency(switch.getKey())
-      sup :+ switch :+ widgets
+      templ.setDependency(switch.getKey())
+      widgetGroup.setDependency(switch.getKey())
+      sup :+ switch :+ templ :+ widgetGroup
     }
   }
 
   override def getValue(pref: SharedPreferences) =
     if (enabled.getValue(pref))
-      Some(widgets2x2.getValue(pref))
+      Some(widgets(template.getValue(pref)).getValue(pref))
     else
       None
+
+  private def onPrefChange[T](pref: Preference)(f: T => Unit) =
+    pref.setOnPreferenceChangeListener {
+      new Preference.OnPreferenceChangeListener {
+        def onPreferenceChange(pref: Preference, newValue: Any): Boolean = {
+          f(newValue.asInstanceOf[T])
+          true
+        }
+      }
+    }
 }
 
 class SettingPage2x2(number: Int) extends SettingPageWidgets(number)
