@@ -73,66 +73,90 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
 object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
   lazy val title = "RFLKT pages"
 
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = Seq(
-    OverviewSettings.addToGroup(pf, group),
+  lazy val pages = (1 to 4).map(new SettingPage2x2(_))
+
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
+    pages.map(_.addToGroup(pf, group)) :+
     showNavPage.addToGroup(pf, group)
-  )
 
   lazy val showNavPage =
     SwitchPref("navigationPage.enabled", "Navigation page",
       "(loading pages faster if disabled)", true)
 
   def getValue(pref: SharedPreferences): Seq[ConfPage] = {
-    var pages = ListBuffer.empty[ConfPage]
-    pages += OverviewSettings.getValue(pref)
-    if (showNavPage.getValue(pref)) pages += new ConfPageNav
-    pages
+    var confPages = ListBuffer.empty[ConfPage]
+    confPages ++= pages.map(_.getValue(pref)).flatten
+    if (showNavPage.getValue(pref)) confPages += new ConfPageNav
+    confPages
   }
 }
 
-object OverviewSettings extends SettingPage2x2 {
-  lazy val number = 1
-}
-
-trait SettingPage2x2 extends SettingScreen with Setting2x2 {
+class SettingPage2x2(number: Int) extends SettingScreen with SettingValue[Option[ConfPage]] {
   import display.Const.{Widget => W}
 
-  def number: Int
-
-  lazy val prefix = s"pages.$number.widgets"
   lazy val title = s"Page $number"
 
-  lazy val northEntries = Seq(
-    "Clock" -> W.clock,
-    "Time – total (workout)" -> W.timeWorkout,
-    "Time – moving (workout)" -> W.timeMovingWorkout
-  )
-  lazy val northDef = W.clock
-  lazy val north =
-    ListPref(s"$prefix.north", "top", northEntries, northDef)
+  lazy val enabled =
+    if (number == 1)
+      ConstPref(true)
+    else
+      SwitchPref(s"pages.$number.enabled", "Enabled", null, false)
 
-  lazy val entries = Seq(
-    "Speed (current)" -> W.speedCurrent,
-    "Average speed – total (workout)" -> W.averageSpeedWorkout,
-    "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
-    "Max speed (workout)" -> W.maxSpeedWorkout,
-    "Distance (workout)" -> W.distanceWorkout,
-    "Cadence (current)" -> W.cadenceCurrent,
-    "Heart rate (current)" -> W.heartRateCurrent
-  )
-  lazy val northWestDef = W.speedCurrent
-  lazy val northEastDef = W.distanceWorkout
-  lazy val southWestDef = W.cadenceCurrent
-  lazy val southEastDef = W.heartRateCurrent
+  object Widgets extends SettingCategory with Setting2x2 {
+    lazy val prefix = s"pages.$number.widgets"
+    lazy val title = "Widgets"
 
-  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
-    north.addToGroup(pf, group) +:
-    super.addPreferences(pf, group)
+    lazy val northEntries = Seq(
+      "Clock" -> W.clock,
+      "Time – total (workout)" -> W.timeWorkout,
+      "Time – moving (workout)" -> W.timeMovingWorkout
+    )
+    lazy val northDef = W.clock
+    lazy val north =
+      ListPref(s"$prefix.north", "top", northEntries, northDef)
+
+    lazy val entries = Seq(
+      "Speed (current)" -> W.speedCurrent,
+      "Average speed – total (workout)" -> W.averageSpeedWorkout,
+      "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
+      "Max speed (workout)" -> W.maxSpeedWorkout,
+      "Distance (workout)" -> W.distanceWorkout,
+      "Cadence (current)" -> W.cadenceCurrent,
+      "Heart rate (current)" -> W.heartRateCurrent
+    )
+    lazy val northWestDef = W.speedCurrent
+    lazy val northEastDef = W.distanceWorkout
+    lazy val southWestDef = W.cadenceCurrent
+    lazy val southEastDef = W.heartRateCurrent
+
+    override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
+      north.addToGroup(pf, group) +:
+      super.addPreferences(pf, group)
+
+    override def getValue(pref: SharedPreferences) =
+      new ConfPage2x2(
+        north.getValue(pref),
+        super.getValue(pref))
+  }
+
+  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = {
+    val switch = enabled.addToGroup(pf, group)
+    val widgets = Widgets.addToGroup(pf, group)
+
+    if (switch == null) { // first page
+      Seq(widgets)
+    } else {
+      switch.setDisableDependentsState(false)
+      widgets.setDependency(switch.getKey())
+      Seq(switch, widgets)
+    }
+  }
 
   override def getValue(pref: SharedPreferences) =
-    new ConfPage2x2(
-      north.getValue(pref),
-      super.getValue(pref))
+    if (enabled.getValue(pref))
+      Some(Widgets.getValue(pref))
+    else
+      None
 }
 
 trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
@@ -200,9 +224,9 @@ abstract class SettingGroup extends Setting {
 
 case class ListPref(key: String, title: String,
     entries: Seq[(String, String)], default: String)
-  extends SettingWidget[String]
+  extends SettingWidget[String, ListPreference]
 {
-  protected def preference(pf: PreferenceFragment): Preference =
+  protected def preference(pf: PreferenceFragment): ListPreference =
     new ListPreference(pf.getActivity()) {
       setKey(key)
       setTitle(title)
@@ -217,9 +241,9 @@ case class ListPref(key: String, title: String,
 }
 
 case class SwitchPref(key: String, title: String, summary: String, default: Boolean)
-  extends SettingWidget[Boolean]
+  extends SettingWidget[Boolean, SwitchPreference]
 {
-  protected def preference(pf: PreferenceFragment): Preference =
+  protected def preference(pf: PreferenceFragment): SwitchPreference =
     new SwitchPreference(pf.getActivity()) {
       setKey(key)
       setTitle(title)
@@ -231,13 +255,22 @@ case class SwitchPref(key: String, title: String, summary: String, default: Bool
     Preferences.preferenceVar(key, default)
 }
 
-trait SettingWidget[T] extends SettingValue[T] {
-  protected def preference(pf: PreferenceFragment): Preference
+case class ConstPref[T](default: T) extends SettingWidget[T, Null] {
+  protected def preference(pf: PreferenceFragment): Null = null
+  protected def preferenceVar: PreferenceVar[T] =
+    new PreferenceVar[T](null, default) {
+      protected def get(value: T, pref: SharedPreferences): T = value
+      protected def put(value: T, editor: SharedPreferences.Editor): Unit = ???
+    }
+}
+
+trait SettingWidget[T, P <: Preference] extends SettingValue[T] {
+  protected def preference(pf: PreferenceFragment): P
   protected def preferenceVar: PreferenceVar[T]
 
-  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Preference = {
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): P = {
     val widget = preference(pf)
-    root.addPreference(widget)
+    if (widget != null) root.addPreference(widget)
     widget
   }
 
