@@ -37,13 +37,13 @@ object Pages {
   private def widgetNorth2x2(key: String): Group =
     widgetsNorth2x2.getOrElse(key, emptyGroup _)()
 
-  private def unitGroup(key: String, icon: Bitmap, unit: String)(): Group = {
-    icon.frame(x = 3, y = 3)
+  private def unitGroup(key: String, icon: => Bitmap, unit: String)(): Group = {
+    val ic = icon.frame(x = 3, y = 3)
     val units = Text(unit).frame(x = 0, y = 3, w = 61, h = 0)
       .constant.font(SYSTEM10).align(RIGHT).key("units")
     val value = Text("--").frame(x = 0, y = 18, w = 64, h = 0)
       .font(SYSTEM26).align(CENTER).key("value")
-    Group(icon, units, value).key(key).frame(w = 64, h = 51)
+    Group(ic, units, value).key(key).frame(w = 64, h = 51)
   }
 
   private lazy val widgets2x2: Map[String, () => Group] = Map(
