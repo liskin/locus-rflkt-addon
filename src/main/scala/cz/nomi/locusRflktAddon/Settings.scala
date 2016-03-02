@@ -75,13 +75,13 @@ object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
 
   lazy val pages = (1 to 4).map(new SettingPage(_))
 
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
-    pages.map(_.addToGroup(pf, group)) :+
-    showNavPage.addToGroup(pf, group)
-
   lazy val showNavPage =
     SwitchPref("navigationPage.enabled", "Navigation page",
       "(loading pages faster if disabled)", true)
+
+  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
+    pages.map(_.addToGroup(pf, group)) :+
+    showNavPage.addToGroup(pf, group)
 
   def getValue(pref: SharedPreferences): Seq[ConfPage] = {
     var confPages = ListBuffer.empty[ConfPage]
