@@ -86,7 +86,8 @@ object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
   def getValue(pref: SharedPreferences): Seq[ConfPage] = {
     var confPages = ListBuffer.empty[ConfPage]
     confPages ++= pages.map(_.getValue(pref)).flatten
-    if (showNavPage.getValue(pref)) confPages += new ConfPageNav
+    if (showNavPage.getValue(pref))
+      confPages += new ConfPageNav("NAVIGATION")
     confPages
   }
 }
@@ -135,6 +136,7 @@ class SettingPage2x2(number: Int) extends SettingScreen with SettingValue[Option
 
     override def getValue(pref: SharedPreferences) =
       new ConfPage2x2(
+        s"PAGE$number",
         north.getValue(pref),
         super.getValue(pref))
   }

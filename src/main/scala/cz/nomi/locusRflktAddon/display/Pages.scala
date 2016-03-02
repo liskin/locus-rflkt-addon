@@ -84,7 +84,7 @@ object Pages {
       southWest.frame( 0, 77,  64, 51),
       Rect()   .frame(64, 77,   0, 51),
       southEast.frame(64, 77,  64, 51)
-    ).key("OVERVIEW")
+    )
   }
 
   private def navClock: Group = {
@@ -129,14 +129,19 @@ object Pages {
       navAction.key(W.nav2Action).frame(0, 74, 49, 33),
       navDist.key(W.nav2Dist).frame(48, 74, 80, 33),
       navName.key(W.nav2Name).frame(0, 106, 128, 22)
-    ).key("NAVIGATION")
+    )
   }
 
-  sealed trait ConfPage
+  sealed trait ConfPage {
+    def key: String
+  }
 
-  class ConfPageNav extends ConfPage
+  class ConfPageNav(
+    val key: String
+  ) extends ConfPage
 
   class ConfPage2x2(
+    val key: String,
     val north: String,
     x: Conf2x2
   ) extends Conf2x2(x.northWest, x.northEast, x.southWest, x.southEast)
@@ -149,10 +154,10 @@ object Pages {
     val southEast: String
   )
 
-  private def page(c: ConfPage): Page = c match {
+  private def page(c: ConfPage): Page = (c match {
     case c: ConfPage2x2 => page2x2(c)
     case _: ConfPageNav => pageNav
-  }
+  }).key(c.key)
 
   def conf(buttons: Conf2x2, pages: Seq[ConfPage]): Configuration =
     Configuration(pages.map(page): _*)
