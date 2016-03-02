@@ -79,7 +79,9 @@ object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
     SwitchPref("navigationPage.enabled", "Navigation page",
       "(loading pages faster if disabled)", true)
 
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
+  override def addPreferences(pf: PreferenceFragment,
+      group: PreferenceGroup): Seq[Preference] =
+    super.addPreferences(pf, group) ++
     pages.map(_.addToGroup(pf, group)) :+
     showNavPage.addToGroup(pf, group)
 
@@ -104,15 +106,16 @@ class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[Co
   lazy val widgets2x2 = new SettingPage2x2(number)
 
   override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = {
+    val sup = super.addPreferences(pf, group)
     val switch = enabled.addToGroup(pf, group)
     val widgets = widgets2x2.addToGroup(pf, group)
 
     if (switch == null) { // first page
-      Seq(widgets)
+      sup :+ widgets
     } else {
       switch.setDisableDependentsState(false)
       widgets.setDependency(switch.getKey())
-      Seq(switch, widgets)
+      sup :+ switch :+ widgets
     }
   }
 
@@ -123,20 +126,10 @@ class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[Co
       None
 }
 
-class SettingPage2x2(number: Int) extends SettingCategory with Setting2x2 {
+class SettingPage2x2(number: Int) extends SettingPageWidgets(number)
+  with SettingNorth with Setting2x2
+{
   import display.Const.{Widget => W}
-
-  lazy val prefix = s"pages.$number.widgets"
-  lazy val title = "Widgets"
-
-  lazy val northEntries = Seq(
-    "Clock" -> W.clock,
-    "Time – total (workout)" -> W.timeWorkout,
-    "Time – moving (workout)" -> W.timeMovingWorkout
-  )
-  lazy val northDef = W.clock
-  lazy val north =
-    ListPref(s"$prefix.north", "top", northEntries, northDef)
 
   lazy val entries = Seq(
     "Speed (current)" -> W.speedCurrent,
@@ -152,15 +145,28 @@ class SettingPage2x2(number: Int) extends SettingCategory with Setting2x2 {
   lazy val southWestDef = W.cadenceCurrent
   lazy val southEastDef = W.heartRateCurrent
 
-  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
-    north.addToGroup(pf, group) +:
-    super.addPreferences(pf, group)
-
   override def getValue(pref: SharedPreferences) =
     new ConfPage2x2(
       s"PAGE$number",
       north.getValue(pref),
       super.getValue(pref))
+}
+
+trait SettingNorth extends SettingPageWidgets {
+  import display.Const.{Widget => W}
+
+  lazy val northEntries = Seq(
+    "Clock" -> W.clock,
+    "Time – total (workout)" -> W.timeWorkout,
+    "Time – moving (workout)" -> W.timeMovingWorkout
+  )
+  lazy val northDef = W.clock
+  lazy val north =
+    ListPref(s"$prefix.north", "top", northEntries, northDef)
+
+  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
+    super.addPreferences(pf, group) :+
+    north.addToGroup(pf, group)
 }
 
 trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
@@ -181,12 +187,15 @@ trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
   private lazy val southEast =
     ListPref(s"$prefix.southEast", "bottom right", entries, southEastDef)
 
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = Seq(
-    northWest.addToGroup(pf, group),
-    northEast.addToGroup(pf, group),
-    southWest.addToGroup(pf, group),
-    southEast.addToGroup(pf, group)
-  )
+  override def addPreferences(pf: PreferenceFragment,
+      group: PreferenceGroup): Seq[Preference] =
+    super.addPreferences(pf, group) ++
+    Seq(
+      northWest.addToGroup(pf, group),
+      northEast.addToGroup(pf, group),
+      southWest.addToGroup(pf, group),
+      southEast.addToGroup(pf, group)
+    )
 
   def getValue(pref: SharedPreferences) =
     new Conf2x2(
@@ -195,6 +204,11 @@ trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
       southWest.getValue(pref),
       southEast.getValue(pref)
     )
+}
+
+abstract class SettingPageWidgets(number: Int) extends SettingCategory {
+  lazy val prefix = s"pages.$number.widgets"
+  lazy val title = "Widgets"
 }
 
 abstract class SettingCategory extends SettingGroup {
@@ -216,9 +230,10 @@ abstract class SettingScreen extends SettingGroup {
 abstract class SettingGroup extends Setting {
   def title: String
   def createGroup(pf: PreferenceFragment): PreferenceGroup
-  def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference]
+  def addPreferences(pf: PreferenceFragment,
+    group: PreferenceGroup): Seq[Preference] = Seq()
 
-  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Preference = {
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): PreferenceGroup = {
     val group = createGroup(pf)
     root.addPreference(group)
     addPreferences(pf, group)
