@@ -73,7 +73,7 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
 object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
   lazy val title = "RFLKT pages"
 
-  lazy val pages = (1 to 4).map(new SettingPage2x2(_))
+  lazy val pages = (1 to 4).map(new SettingPage(_))
 
   def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
     pages.map(_.addToGroup(pf, group)) :+
@@ -92,9 +92,7 @@ object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
   }
 }
 
-class SettingPage2x2(number: Int) extends SettingScreen with SettingValue[Option[ConfPage]] {
-  import display.Const.{Widget => W}
-
+class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[ConfPage]] {
   lazy val title = s"Page $number"
 
   lazy val enabled =
@@ -103,47 +101,11 @@ class SettingPage2x2(number: Int) extends SettingScreen with SettingValue[Option
     else
       SwitchPref(s"pages.$number.enabled", "Enabled", null, false)
 
-  object Widgets extends SettingCategory with Setting2x2 {
-    lazy val prefix = s"pages.$number.widgets"
-    lazy val title = "Widgets"
-
-    lazy val northEntries = Seq(
-      "Clock" -> W.clock,
-      "Time – total (workout)" -> W.timeWorkout,
-      "Time – moving (workout)" -> W.timeMovingWorkout
-    )
-    lazy val northDef = W.clock
-    lazy val north =
-      ListPref(s"$prefix.north", "top", northEntries, northDef)
-
-    lazy val entries = Seq(
-      "Speed (current)" -> W.speedCurrent,
-      "Average speed – total (workout)" -> W.averageSpeedWorkout,
-      "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
-      "Max speed (workout)" -> W.maxSpeedWorkout,
-      "Distance (workout)" -> W.distanceWorkout,
-      "Cadence (current)" -> W.cadenceCurrent,
-      "Heart rate (current)" -> W.heartRateCurrent
-    )
-    lazy val northWestDef = W.speedCurrent
-    lazy val northEastDef = W.distanceWorkout
-    lazy val southWestDef = W.cadenceCurrent
-    lazy val southEastDef = W.heartRateCurrent
-
-    override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
-      north.addToGroup(pf, group) +:
-      super.addPreferences(pf, group)
-
-    override def getValue(pref: SharedPreferences) =
-      new ConfPage2x2(
-        s"PAGE$number",
-        north.getValue(pref),
-        super.getValue(pref))
-  }
+  lazy val widgets2x2 = new SettingPage2x2(number)
 
   override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] = {
     val switch = enabled.addToGroup(pf, group)
-    val widgets = Widgets.addToGroup(pf, group)
+    val widgets = widgets2x2.addToGroup(pf, group)
 
     if (switch == null) { // first page
       Seq(widgets)
@@ -156,9 +118,49 @@ class SettingPage2x2(number: Int) extends SettingScreen with SettingValue[Option
 
   override def getValue(pref: SharedPreferences) =
     if (enabled.getValue(pref))
-      Some(Widgets.getValue(pref))
+      Some(widgets2x2.getValue(pref))
     else
       None
+}
+
+class SettingPage2x2(number: Int) extends SettingCategory with Setting2x2 {
+  import display.Const.{Widget => W}
+
+  lazy val prefix = s"pages.$number.widgets"
+  lazy val title = "Widgets"
+
+  lazy val northEntries = Seq(
+    "Clock" -> W.clock,
+    "Time – total (workout)" -> W.timeWorkout,
+    "Time – moving (workout)" -> W.timeMovingWorkout
+  )
+  lazy val northDef = W.clock
+  lazy val north =
+    ListPref(s"$prefix.north", "top", northEntries, northDef)
+
+  lazy val entries = Seq(
+    "Speed (current)" -> W.speedCurrent,
+    "Average speed – total (workout)" -> W.averageSpeedWorkout,
+    "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
+    "Max speed (workout)" -> W.maxSpeedWorkout,
+    "Distance (workout)" -> W.distanceWorkout,
+    "Cadence (current)" -> W.cadenceCurrent,
+    "Heart rate (current)" -> W.heartRateCurrent
+  )
+  lazy val northWestDef = W.speedCurrent
+  lazy val northEastDef = W.distanceWorkout
+  lazy val southWestDef = W.cadenceCurrent
+  lazy val southEastDef = W.heartRateCurrent
+
+  override def addPreferences(pf: PreferenceFragment, group: PreferenceGroup): Seq[Preference] =
+    north.addToGroup(pf, group) +:
+    super.addPreferences(pf, group)
+
+  override def getValue(pref: SharedPreferences) =
+    new ConfPage2x2(
+      s"PAGE$number",
+      north.getValue(pref),
+      super.getValue(pref))
 }
 
 trait Setting2x2 extends SettingGroup with SettingValue[Conf2x2] {
