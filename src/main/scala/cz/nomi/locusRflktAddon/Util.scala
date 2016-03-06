@@ -78,7 +78,8 @@ object Broadcasts {
   implicit def strToIntentFilter(str: String): IntentFilter =
     new IntentFilter(str)
 
-  def broadcastReceiver(filter: IntentFilter)
+  def broadcastReceiver(filter: IntentFilter,
+      broadcastPermission: String = null)
     (onReceiveBody: (Context, Intent) => Unit)
     (implicit ctx: Context, reg: Registerable)
   {
@@ -87,7 +88,7 @@ object Broadcasts {
         onReceiveBody(context, intent)
       }
     }
-    reg.onRegister(ctx.registerReceiver(receiver, filter))
+    reg.onRegister(ctx.registerReceiver(receiver, filter, broadcastPermission, null))
     reg.onUnregister(ctx.unregisterReceiver(receiver))
   }
 

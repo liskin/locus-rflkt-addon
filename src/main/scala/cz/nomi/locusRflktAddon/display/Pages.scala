@@ -122,25 +122,51 @@ object Pages {
     Group(rect, value).frame(w = 128, h = 22)
   }
 
-  private def pageNav = {
-    Page(
-      navClock.frame(0, 0, 128, 22),
+  private def pageNav = Page(
+    navClock.frame(0, 0, 128, 22),
 
-      navAction.key(W.nav1Action).frame(0, 21, 49, 33),
-      navDist.key(W.nav1Dist).frame(48, 21, 80, 33),
-      navName.key(W.nav1Name).frame(0, 53, 128, 22),
+    navAction.key(W.nav1Action).frame(0, 21, 49, 33),
+    navDist.key(W.nav1Dist).frame(48, 21, 80, 33),
+    navName.key(W.nav1Name).frame(0, 53, 128, 22),
 
-      navAction.key(W.nav2Action).frame(0, 74, 49, 33),
-      navDist.key(W.nav2Dist).frame(48, 74, 80, 33),
-      navName.key(W.nav2Name).frame(0, 106, 128, 22)
-    )
+    navAction.key(W.nav2Action).frame(0, 74, 49, 33),
+    navDist.key(W.nav2Dist).frame(48, 74, 80, 33),
+    navName.key(W.nav2Name).frame(0, 106, 128, 22)
+  )
+
+  private def notifHeader: Group = {
+    val rect = Rect().frame(w = 128, h = 27)
+    val value = Text("--").frame(x = 1, y = 0, w = 126, h = 0)
+      .font(SYSTEM19).align(CENTER).key("value")
+    Group(rect, value).key(W.notifHeader).frame(w = 128, h = 27)
   }
+
+  private def notifLine(i: Int): Group = {
+    val value = Text("").frame(x = 0, y = 1, w = 128, h = 0)
+      .font(SYSTEM10).align(CENTER).key("value")
+    Group(value).key(W.notifLine(i)).frame(w = 128, h = 14)
+  }
+
+  private def pageNotif = Page(
+    notifHeader.frame(x = 0, y = 0),
+    notifLine(0).frame(x = 0, y = 28),
+    notifLine(1).frame(x = 0, y = 42),
+    notifLine(2).frame(x = 0, y = 56),
+    notifLine(3).frame(x = 0, y = 70),
+    notifLine(4).frame(x = 0, y = 84),
+    notifLine(5).frame(x = 0, y = 98),
+    notifLine(6).frame(x = 0, y = 112)
+  )
 
   sealed trait ConfPage {
     def key: String
   }
 
   class ConfPageNav(
+    val key: String
+  ) extends ConfPage
+
+  class ConfPageNotif(
     val key: String
   ) extends ConfPage
 
@@ -175,6 +201,7 @@ object Pages {
     case c: ConfPage1x3 => page1x3(c)
     case c: ConfPage2x2 => page2x2(c)
     case _: ConfPageNav => pageNav
+    case _: ConfPageNotif => pageNotif
   }).key(c.key)
 
   def conf(buttons: Conf2x2, pages: Seq[ConfPage]): Configuration =
@@ -215,6 +242,14 @@ object Const {
     val nav2Action = "NAV2_ACTION"
     val nav2Dist = "NAV2_DIST"
     val nav2Name = "NAV2_NAME"
+
+    val notifHeader = "NOTIFICATION_HEADER"
+    def notifLine(i: Int) = s"NOTIFICATION_LINE$i"
+  }
+
+  object Page {
+    val navigation = "NAVIGATION"
+    val notification = "NOTIFICATION"
   }
 }
 

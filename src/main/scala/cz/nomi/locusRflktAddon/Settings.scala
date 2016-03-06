@@ -14,7 +14,8 @@ import android.widget.{LinearLayout, TextView}
 
 import Log._
 
-import display.Pages.{ConfPage, ConfPageNav, ConfPage1x3, ConfPage2x2, Conf1x3, Conf2x2}
+import display.Pages.{ConfPage, ConfPageNav, ConfPageNotif,
+  ConfPage1x3, ConfPage2x2, Conf1x3, Conf2x2}
 
 class Settings extends AppCompatActivity
   with RActivity with BackToParentActivity
@@ -71,6 +72,8 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
 }
 
 object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
+  import display.Const.{Page => P}
+
   lazy val title = "RFLKT pages"
 
   lazy val pages = (1 to 4).map(new SettingPage(_))
@@ -79,17 +82,24 @@ object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
     SwitchPref("navigationPage.enabled", "Navigation page",
       "(loading pages faster if disabled)", true)
 
+  lazy val showNotifPage =
+    SwitchPref("notificationPage.enabled", "Notification page",
+      "(loading pages faster if disabled)", true)
+
   override def addPreferences(pf: PreferenceFragment,
       group: PreferenceGroup): Seq[Preference] =
     super.addPreferences(pf, group) ++
     pages.map(_.addToGroup(pf, group)) :+
-    showNavPage.addToGroup(pf, group)
+    showNavPage.addToGroup(pf, group) :+
+    showNotifPage.addToGroup(pf, group)
 
   def getValue(pref: SharedPreferences): Seq[ConfPage] = {
     var confPages = ListBuffer.empty[ConfPage]
     confPages ++= pages.map(_.getValue(pref)).flatten
     if (showNavPage.getValue(pref))
-      confPages += new ConfPageNav("NAVIGATION")
+      confPages += new ConfPageNav(P.navigation)
+    if (showNotifPage.getValue(pref))
+      confPages += new ConfPageNotif(P.notification)
     confPages
   }
 }
