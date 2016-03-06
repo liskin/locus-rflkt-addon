@@ -58,7 +58,7 @@ trait LocusService extends RService with LocusApi
 
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
     import LocusUtils.LocusVersion
-    import RflktApi.{Val, Str, Vis}
+    import RflktApi.{Val, Vis}
     import display.Const.{Widget => W}
 
     def onIncorrectData() {
@@ -67,6 +67,8 @@ trait LocusService extends RService with LocusApi
 
     def onUpdate(version: LocusVersion, update: UpdateContainer) {
       lastUpdate = Some(update)
+
+      import Formatters._
 
       val now = java.util.Calendar.getInstance().getTime()
       val clock = Seq(
@@ -118,51 +120,6 @@ trait LocusService extends RService with LocusApi
       ) ++ nav1Icon ++ nav2Icon
 
       setRflkt((clock ++ current ++ workout ++ nav): _*)
-    }
-
-    private val timeFormat = new java.text.SimpleDateFormat("HH:mm:ss")
-
-    private def formatString(s: Option[String]): Str = Str(s.getOrElse("--"))
-
-    private def formatTime(t: java.util.Date): Str = Str(timeFormat.format(t))
-
-    private def formatDuration(totalSecondsOpt: Option[Long]): Str =
-      formatString {
-        totalSecondsOpt.map { totalSeconds =>
-          val seconds = totalSeconds % 60
-          val totalMinutes = totalSeconds / 60
-          val minutes = totalMinutes % 60
-          val totalHours = totalMinutes / 60
-          f"$totalHours%02d:$minutes%02d:$seconds%02d"
-        }
-      }
-
-    private def formatInt(i: Option[Int]): Str =
-      formatString(i.map(v => f"$v%d"))
-
-    private def formatFloatFixed(f: Option[Float]): Str =
-      formatString(f.map(v => f"$v%.1f"))
-
-    private def formatDoubleFixed(d: Option[Double]): Str =
-      formatString(d.map(v => f"$v%.1f"))
-
-    private def formatDouble(d: Option[Double]): Str =
-      formatString {
-        d.map { v =>
-          if (v.abs > 99) {
-            f"$v%.0f"
-          } else if (v.abs > 9) {
-            f"$v%.1f"
-          } else {
-            f"$v%.2f"
-          }
-        }
-      }
-
-    private def normalizeString(s: String): String = {
-      import java.text.Normalizer
-      val split = Normalizer.normalize(s, Normalizer.Form.NFD)
-      "\\p{M}".r.replaceAllIn(split, "")
     }
 
     private def setNavIcon(group: String, action: Option[Int]): Seq[(String, Val)] = {
