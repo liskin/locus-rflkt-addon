@@ -6,7 +6,7 @@
 lazy val commonSettings = Def.settings(
   platformTarget in Android := "android-23",
   targetSdkVersion in Android := "23",
-  minSdkVersion in Android := "16",
+  minSdkVersion in Android := "18",
 
   javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
   scalaVersion := "2.11.7",
