@@ -5,7 +5,7 @@
 
 package cz.nomi.locusRflktAddon
 
-import android.content.{Context, Intent, IntentFilter}
+import android.content.{Context, Intent}
 
 import locus.api.android.features.periodicUpdates.{PeriodicUpdatesHandler, UpdateContainer}
 import locus.api.android.utils.{LocusConst, LocusUtils}
@@ -31,7 +31,8 @@ trait LocusService extends RService with LocusApi
     disablePeriodicUpdatesReceiver()
   }
 
-  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE) { (context: Context, intent: Intent) =>
+  broadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE)
+  { (context: Context, intent: Intent) =>
     logger.info(s"periodic update received")
     PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
   }
