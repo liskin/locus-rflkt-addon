@@ -62,12 +62,10 @@ trait RflktService extends RService with RflktApi
   private var status: String = ""
 
   onRegister {
-    logger.info(s"RflktService: onCreate")
     hwCon = new HardwareConnector(this, Hardware)
   }
 
   onUnregister {
-    logger.info(s"RflktService: onDestroy")
     hwCon.stopDiscovery()
     hwCon.shutdown()
   }

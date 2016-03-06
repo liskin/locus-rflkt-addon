@@ -24,12 +24,10 @@ trait LocusService extends RService with LocusApi
 { this: RflktApi =>
 
   onRegister {
-    logger.info(s"LocusService: onRegister")
     enablePeriodicUpdatesReceiver()
   }
 
   onUnregister {
-    logger.info(s"LocusService: onUnregister")
     disablePeriodicUpdatesReceiver()
   }
 

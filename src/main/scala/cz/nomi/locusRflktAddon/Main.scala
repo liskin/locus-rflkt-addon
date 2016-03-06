@@ -162,6 +162,15 @@ class Main extends AppCompatActivity with RActivity {
 
 class MainService extends LocalService[MainService]
   with RflktService with LocusService
+{
+  onRegister {
+    logger.info(s"MainService: onCreate")
+  }
+
+  onUnregister {
+    logger.info(s"MainService: onDestroy")
+  }
+}
 
 class OurLicense extends de.psdev.licensesdialog.licenses.GnuGeneralPublicLicense30 {
   override def readSummaryTextFromResources(context: Context): String =
