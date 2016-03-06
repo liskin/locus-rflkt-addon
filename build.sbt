@@ -11,7 +11,7 @@ protifySettings
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
 scalaVersion := "2.11.7"
-scalacOptions in Compile ++= Seq("-explaintypes", "-unchecked", "-feature", "-deprecation")
+scalacOptions in Compile ++= Seq("-explaintypes", "-unchecked", "-feature", "-deprecation", "-target:jvm-1.7")
 
 updateCheck in Android := {} // disable update check
 proguardCache in Android ++= Seq(
