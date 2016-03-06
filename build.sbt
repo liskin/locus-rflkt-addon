@@ -4,6 +4,9 @@
  */
 
 lazy val commonSettings = Def.settings(
+  androidBuild,
+  platformTarget in Android := "android-23",
+
   javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
   scalaVersion := "2.11.7",
   scalacOptions in Compile ++= Seq("-explaintypes", "-unchecked", "-feature", "-deprecation", "-target:jvm-1.7")
@@ -12,15 +15,15 @@ lazy val commonSettings = Def.settings(
 lazy val root = project.in(file(".")).settings(
   name := "locus-rflkt-addon",
 
-  androidBuild,
-  protifySettings,
   commonSettings,
+  protifySettings,
 
   updateCheck in Android := {}, // disable update check
   proguardCache in Android ++= Seq(
     "macroid",
     "org.slf4j",
     "org.log4s",
+    "com.google",
     "com.wahoofitness",
     "com.dsi",
     "com.garmin",
@@ -48,5 +51,15 @@ lazy val root = project.in(file(".")).settings(
   libraryDependencies += "com.android.support" % "appcompat-v7" % "23.1.1",
   libraryDependencies += "org.log4s" %% "log4s" % "1.2.1",
   libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.18",
-  libraryDependencies += "de.psdev.licensesdialog" % "licensesdialog" % "1.8.0"
+  libraryDependencies += "de.psdev.licensesdialog" % "licensesdialog" % "1.8.0",
+
+  buildWith(noAnalytics)
+).dependsOn(noAnalytics)
+
+lazy val noAnalytics = project.in(file("deps/NoAnalytics/NoAnalytics")).settings(
+  name := "NoAnalytics",
+
+  commonSettings,
+
+  antLayoutDetector in Android := ()
 )
