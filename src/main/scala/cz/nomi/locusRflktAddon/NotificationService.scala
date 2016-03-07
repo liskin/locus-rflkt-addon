@@ -29,6 +29,7 @@ trait NotificationService extends RService
 
   private def receivedSms(msg: SmsMessage) {
     import display.Const.{Widget => W}
+    import display.Const.{Page => P}
     import RflktApi.Str
     import Formatters.normalizeString
 
@@ -53,7 +54,7 @@ trait NotificationService extends RService
       s"${W.notifLine(6)}.value" -> Str(bodyLine(6))
     )
 
-    // TODO: switch to Page.notification
+    setRflktPage(P.notification)
   }
 }
 

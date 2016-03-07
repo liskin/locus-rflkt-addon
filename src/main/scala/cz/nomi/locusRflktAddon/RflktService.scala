@@ -45,6 +45,7 @@ trait RflktApi {
   def connectFirst(): Unit
   def disconnect(): Unit
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
+  def setRflktPage(page: String, timeout: Option[Int] = None): Unit
   def stopUnneeded(): Unit
 }
 
@@ -350,6 +351,9 @@ trait RflktService extends RService with RflktApi
   private def getCapRflkt(): Option[Rflkt] =
     getCap(CapabilityType.Rflkt)
 
+  private def getCapRflktReady(): Option[Rflkt] =
+    getCapRflkt().filter(_.getLastLoadConfigResult() == LoadConfigResult.SUCCESS)
+
   private def requestConfirmation() {
     getCapConfirm() foreach {
       _.requestConfirmation(ConfirmConnection.Role.MASTER, "Locus", getUuid, "LocusRflktAddon")
@@ -366,17 +370,25 @@ trait RflktService extends RService with RflktApi
     }
   }
 
-  def setRflkt(vars: (String, RflktApi.Val)*) {
-    getCapRflkt() foreach { rflkt =>
-      if (rflkt.getLastLoadConfigResult() == LoadConfigResult.SUCCESS) {
-        logger.info(s"setRflkt: setting")
-        vars foreach {
-          case (k, RflktApi.Str(v)) => rflkt.setValue(k, v.take(14))
-          case (k, RflktApi.Vis(v)) => rflkt.setVisisble(k, v)
+  def setRflkt(vars: (String, RflktApi.Val)*) =
+    getCapRflktReady() foreach { rflkt =>
+      logger.info(s"setRflkt: setting")
+      vars foreach {
+        case (k, RflktApi.Str(v)) => rflkt.setValue(k, v.take(14))
+        case (k, RflktApi.Vis(v)) => rflkt.setVisisble(k, v)
+      }
+    }
+
+  def setRflktPage(page: String, timeout: Option[Int] = None) =
+    getCapRflktReady() foreach { rflkt =>
+      val conf = Option(rflkt.getDisplayConfiguration())
+      conf.flatMap(c => Option(c.getPage(page))).foreach { p =>
+        timeout match {
+          case None    => rflkt.sendSetPageIndex(p.getPageIndex())
+          case Some(t) => rflkt.sendSetPageIndex(p.getPageIndex(), t)
         }
       }
     }
-  }
 
   private var backlightTimer: Option[CountDownTimer] = None
 
