@@ -62,8 +62,6 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
   lazy val entries = Seq(
     "Previous page" -> F.hwPageLeft,
     "Next page" -> F.hwPageRight,
-    "Previous page (software, deprecated)" -> F.pageLeft,
-    "Next page (software, deprecated)" -> F.pageRight,
     "Start/pause track recording" -> F.startStopWorkout,
     "Backlight for 5 seconds" -> F.backlight
   )

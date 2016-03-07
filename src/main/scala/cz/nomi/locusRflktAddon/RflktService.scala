@@ -246,10 +246,6 @@ trait RflktService extends RService with RflktApi
           buttonCfg.flatMap(c => Option(c.getButtonFunction(pos))) getOrElse null
         logger.info(s"onButtonPressed: $pos, $fun, $typ")
         (fun, typ) match {
-          case (F.pageRight, ButtonPressType.SINGLE) =>
-            rflkt.sendShowNextPage()
-          case (F.pageLeft, ButtonPressType.SINGLE) =>
-            rflkt.sendShowPreviousPage()
           case (F.startStopWorkout, ButtonPressType.SINGLE) =>
             toggleRecording()
           case (F.backlight, ButtonPressType.SINGLE) =>
