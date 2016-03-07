@@ -33,7 +33,7 @@ trait NotificationService extends RService
 
     import Async.Implicits.ecSerial
     Async(findContactName(addr)) { name =>
-      setNotification(name, body)
+      setNotification(fixNumber(name), body)
       setRflktPage(display.Const.Page.notification)
     }
   }
@@ -129,5 +129,13 @@ object NotificationService {
     } finally {
       if (cursor != null) cursor.close()
     }
+  }
+
+  private lazy val numRegex = """\+?([0-9 ]+)""".r
+
+  // a workaround for RFLKT showing the number in scientific notation
+  private def fixNumber(number: String): String = number match {
+    case numRegex(digits) => s"x$digits"
+    case _ => number
   }
 }
