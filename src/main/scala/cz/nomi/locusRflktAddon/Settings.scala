@@ -60,15 +60,17 @@ object ButtonSettings extends SettingCategory with Setting2x2 {
 
   import display.Const.{Function => F}
   lazy val entries = Seq(
-    "Previous page" -> F.pageLeft,
-    "Next page" -> F.pageRight,
+    "Previous page" -> F.hwPageLeft,
+    "Next page" -> F.hwPageRight,
+    "Previous page (software, deprecated)" -> F.pageLeft,
+    "Next page (software, deprecated)" -> F.pageRight,
     "Start/pause track recording" -> F.startStopWorkout,
     "Backlight for 5 seconds" -> F.backlight
   )
   lazy val northWestDef = F.startStopWorkout
   lazy val northEastDef = F.backlight
-  lazy val southWestDef = F.pageLeft
-  lazy val southEastDef = F.pageRight
+  lazy val southWestDef = F.hwPageLeft
+  lazy val southEastDef = F.hwPageRight
 }
 
 object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {

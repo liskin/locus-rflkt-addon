@@ -216,6 +216,8 @@ object Pages {
 
 object Const {
   object Function {
+    val hwPageLeft = "hardwarePageLeft"
+    val hwPageRight = "hardwarePageRight"
     val pageLeft = "PAGE_LEFT"
     val pageRight = "PAGE_RIGHT"
     val startStopWorkout = "START_STOP_WORKOUT"
