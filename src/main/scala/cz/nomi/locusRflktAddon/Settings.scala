@@ -336,7 +336,7 @@ abstract class SettingGroup extends Setting {
 
 case class ListPref(key: String, title: String,
     entries: Seq[(String, String)], default: String)
-  extends SettingWidget[String, ListPreference]
+  extends SettingWidget[ListPreference] with SettingPrefValue[String]
 {
   protected def preference(pf: PreferenceFragment): ListPreference =
     new ListPreference(pf.getActivity()) {
@@ -347,13 +347,10 @@ case class ListPref(key: String, title: String,
       setEntryValues(entries.map(_._2: CharSequence).toArray)
       setDefaultValue(default)
     }
-
-  protected def preferenceVar: PreferenceVar[String] =
-    Preferences.preferenceVar(key, default)
 }
 
 case class SwitchPref(key: String, title: String, summary: String, default: Boolean)
-  extends SettingWidget[Boolean, SwitchPreference]
+  extends SettingWidget[SwitchPreference] with SettingPrefValue[Boolean]
 {
   protected def preference(pf: PreferenceFragment): SwitchPreference =
     new SwitchPreference(pf.getActivity()) {
@@ -362,31 +359,30 @@ case class SwitchPref(key: String, title: String, summary: String, default: Bool
       setSummary(summary)
       setDefaultValue(default)
     }
-
-  protected def preferenceVar: PreferenceVar[Boolean] =
-    Preferences.preferenceVar(key, default)
 }
 
-case class ConstPref[T](default: T) extends SettingWidget[T, Null] {
+case class ConstPref[T](default: T)
+  extends SettingWidget[Null] with SettingValue[T]
+{
   protected def preference(pf: PreferenceFragment): Null = null
-  protected def preferenceVar: PreferenceVar[T] =
-    new PreferenceVar[T](null, default) {
-      protected def get(value: T, pref: SharedPreferences): T = value
-      protected def put(value: T, editor: SharedPreferences.Editor): Unit = ???
-    }
+  def getValue(pref: SharedPreferences): T = default
 }
 
-trait SettingWidget[T, P <: Preference] extends SettingValue[T] {
+trait SettingWidget[P <: Preference] extends Setting {
   protected def preference(pf: PreferenceFragment): P
-  protected def preferenceVar: PreferenceVar[T]
 
   def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): P = {
     val widget = preference(pf)
     if (widget != null) root.addPreference(widget)
     widget
   }
+}
 
-  def getValue(pref: SharedPreferences): T = preferenceVar(pref)
+trait SettingPrefValue[T] extends SettingValue[T] {
+  def key: String
+  def default: T
+  def getValue(pref: SharedPreferences): T =
+    Preferences.preferenceVar(key, default)(pref)
 }
 
 trait SettingValue[T] extends Setting {
