@@ -6,9 +6,10 @@
 package cz.nomi.locusRflktAddon
 
 import scala.reflect.Manifest
+import scala.concurrent.{ExecutionContext, Future}
 
 import android.app.{Service, Activity, Fragment}
-import android.os.{Binder, IBinder, Bundle}
+import android.os.{Binder, IBinder, Bundle, AsyncTask, Handler}
 import android.content.{Context, Intent, ServiceConnection, ComponentName,
   IntentFilter, BroadcastReceiver, SharedPreferences}
 import android.preference.PreferenceManager
@@ -320,3 +321,20 @@ trait BackToParentActivity extends RActivity { this: AppCompatActivity =>
 }
 
 object Gen extends IdGeneration
+
+object Async {
+  object Implicits {
+    implicit val ecThreadPool =
+      ExecutionContext.fromExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    implicit val ecSerial =
+      ExecutionContext.fromExecutor(AsyncTask.SERIAL_EXECUTOR)
+  }
+
+  def apply[T](async: => T)(sync: T => Unit)(implicit ec: ExecutionContext) {
+    val handler = new Handler()
+    Future {
+      val t = async
+      handler.post(new Runnable { def run() = sync(t) })
+    }
+  }
+}

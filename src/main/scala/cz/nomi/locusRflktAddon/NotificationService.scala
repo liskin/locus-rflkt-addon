@@ -30,8 +30,12 @@ trait NotificationService extends RService
   private def receivedSms(msg: SmsMessage) {
     val addr = msg.getDisplayOriginatingAddress()
     val body = msg.getDisplayMessageBody()
-    setNotification(addr, body)
-    setRflktPage(display.Const.Page.notification)
+
+    import Async.Implicits.ecSerial
+    Async(findContactName(addr)) { name =>
+      setNotification(name, body)
+      setRflktPage(display.Const.Page.notification)
+    }
   }
 
   private def setNotification(header: String, body: String) {
@@ -43,7 +47,6 @@ trait NotificationService extends RService
     def bodyLine(i: Int) = bodyLines.applyOrElse(i, (_: Int) => "")
 
     setRflkt(
-      // TODO: show name instead of number
       s"${W.notifHeader}.value" -> Str(normalizeString(header)),
       s"${W.notifLine(0)}.value" -> Str(bodyLine(0)),
       s"${W.notifLine(1)}.value" -> Str(bodyLine(1)),
@@ -101,5 +104,30 @@ object NotificationService {
       }
 
     lines(0, Nil)
+  }
+
+  private def findContactName(number: String)(implicit ctx: Context): String = {
+    import android.database.Cursor
+    import android.provider.ContactsContract.{PhoneLookup, ContactsColumns}
+    import android.net.Uri
+
+    var cursor: Cursor = null
+    try {
+      val uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number))
+      val proj = Array(ContactsColumns.DISPLAY_NAME)
+      cursor = ctx.getContentResolver().query(uri, proj, null, null, null)
+
+      if (cursor != null && cursor.moveToFirst()) {
+        cursor.getString(cursor.getColumnIndex(proj(0)))
+      } else {
+        number
+      }
+    } catch {
+      case e: Exception =>
+        logger.error(e)("findContactName exception")
+        number
+    } finally {
+      if (cursor != null) cursor.close()
+    }
   }
 }
