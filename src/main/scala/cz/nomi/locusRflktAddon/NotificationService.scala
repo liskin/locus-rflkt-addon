@@ -39,14 +39,12 @@ trait NotificationService extends RService
     import RflktApi.Str
     import Formatters.normalizeString
 
-    // TODO: wrap at word boundaries
-    val bodyLines = body.grouped(14).toArray
-    def bodyLine(i: Int) =
-      normalizeString(bodyLines.applyOrElse(i, (_: Int) => ""))
+    val bodyLines = breakIntoLines(normalizeString(body)).toArray
+    def bodyLine(i: Int) = bodyLines.applyOrElse(i, (_: Int) => "")
 
     setRflkt(
       // TODO: show name instead of number
-      s"${W.notifHeader}.value" -> Str(header),
+      s"${W.notifHeader}.value" -> Str(normalizeString(header)),
       s"${W.notifLine(0)}.value" -> Str(bodyLine(0)),
       s"${W.notifLine(1)}.value" -> Str(bodyLine(1)),
       s"${W.notifLine(2)}.value" -> Str(bodyLine(2)),
@@ -66,5 +64,42 @@ object NotificationService {
       intent.getExtras.get("pdus").asInstanceOf[Array[Array[Byte]]]
         .map(SmsMessage.createFromPdu: @silent)
     }
+  }
+
+  private def breakIntoLines(str: String, maxLine: Int = 14): List[String] = {
+    import java.text.BreakIterator
+
+    val iter = BreakIterator.getLineInstance()
+    iter.setText(str)
+
+    def makeLine(words: List[String]): List[String] =
+      if (words.nonEmpty) List(words.reverse.mkString(" ")) else Nil
+
+    def lines(len: Int, words: List[String]): List[String] = {
+      assert(len <= maxLine)
+      val (start, end) = (iter.current(), iter.next())
+      if (end == BreakIterator.DONE) {
+        makeLine(words)
+      } else {
+        val word = str.substring(start, end).trim
+        if (word.length == 0) {
+          lines(len, words)
+        } else if (len + 1 + word.length <= maxLine) {
+          lines(len + 1 + word.length, word :: words)
+        } else {
+          makeLine(words) ++ newLine(word)
+        }
+      }
+    }
+
+    def newLine(word: String): List[String] =
+      if (word.length > maxLine) {
+        val (a, b) = word.splitAt(maxLine)
+        a :: newLine(b)
+      } else {
+        lines(word.length, List(word))
+      }
+
+    lines(0, Nil)
   }
 }
