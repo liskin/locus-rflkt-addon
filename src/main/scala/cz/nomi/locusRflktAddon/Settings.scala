@@ -344,6 +344,17 @@ case class ListPref(key: String, title: String,
       setEntries(entries.map(_._1: CharSequence).toArray)
       setEntryValues(entries.map(_._2: CharSequence).toArray)
       setDefaultValue(default)
+
+      override protected def onSetInitialValue(restore: Boolean, any: Any) {
+        if (restore) {
+          getPersistedString(default) match {
+            case v if validValues(v) => setValue(v)
+            case _ => setValue(default)
+          }
+        } else {
+          setValue(default)
+        }
+      }
     }
 
   override def getValue(pref: SharedPreferences): String =
