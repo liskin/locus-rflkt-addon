@@ -347,6 +347,14 @@ case class ListPref(key: String, title: String,
       setEntryValues(entries.map(_._2: CharSequence).toArray)
       setDefaultValue(default)
     }
+
+  override def getValue(pref: SharedPreferences): String =
+    super.getValue(pref) match {
+      case v if validValues(v) => v
+      case _ => default
+    }
+
+  private lazy val validValues: Set[String] = entries.map(_._2).toSet
 }
 
 case class SwitchPref(key: String, title: String, summary: String, default: Boolean)
