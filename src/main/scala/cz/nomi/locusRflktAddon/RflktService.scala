@@ -61,6 +61,7 @@ trait RflktService extends RService with RflktApi
   private var curSensor: Option[SensorConnection] = None
   private var stayForeground: Boolean = false
   private var status: String = ""
+  private var availableElements: Set[String] = Set()
 
   onRegister {
     hwCon = new HardwareConnector(this, Hardware)
@@ -360,22 +361,27 @@ trait RflktService extends RService with RflktApi
     }
   }
 
-  private def loadConfig() {
-    val sp = defaultSharedPreferences
-    getCapRflkt() foreach {
-      _.loadConfig(display.Pages.conf(
+  private def loadConfig() =
+    getCapRflkt() foreach { rflkt =>
+      val sp = defaultSharedPreferences
+      val conf = display.Pages.conf(
         ButtonSettings.getValue(sp),
         PageSettings.getValue(sp)
-      ))
+      )
+      rflkt.loadConfig(conf)
+      availableElements = Set(
+        conf.getPages().flatMap(_.getAllElements().map(_.getUpdateKey())): _*)
     }
-  }
 
   def setRflkt(vars: (String, RflktApi.Val)*) =
     getCapRflktReady() foreach { rflkt =>
       logger.info(s"setRflkt: setting")
       vars foreach {
-        case (k, RflktApi.Str(v)) => rflkt.setValue(k, v.take(14))
-        case (k, RflktApi.Vis(v)) => rflkt.setVisisble(k, v)
+        case (k, RflktApi.Str(v)) if availableElements(k) =>
+          rflkt.setValue(k, v.take(14))
+        case (k, RflktApi.Vis(v)) if availableElements(k) =>
+          rflkt.setVisisble(k, v)
+        case _ =>
       }
     }
 
