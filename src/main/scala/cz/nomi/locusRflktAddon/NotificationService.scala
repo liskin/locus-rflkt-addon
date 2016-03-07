@@ -34,7 +34,7 @@ trait NotificationService extends RService
     import Async.Implicits.ecSerial
     Async(findContactName(addr)) { name =>
       setNotification(fixNumber(name), body)
-      setRflktPage(display.Const.Page.notification)
+      setRflktPage(display.Const.Page.notification, timeout = Some(10))
     }
   }
 
