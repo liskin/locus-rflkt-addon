@@ -28,14 +28,16 @@ trait NotificationService extends RService
   }
 
   private def receivedSms(msg: SmsMessage) {
-    import display.Const.{Widget => W}
-    import display.Const.{Page => P}
-    import RflktApi.Str
-    import Formatters.normalizeString
-
     val addr = msg.getDisplayOriginatingAddress()
     val body = msg.getDisplayMessageBody()
-    logger.info(s"""NotificationService: SMS from "$addr": "$body"""")
+    setNotification(addr, body)
+    setRflktPage(display.Const.Page.notification)
+  }
+
+  private def setNotification(header: String, body: String) {
+    import display.Const.{Widget => W}
+    import RflktApi.Str
+    import Formatters.normalizeString
 
     // TODO: wrap at word boundaries
     val bodyLines = body.grouped(14).toArray
@@ -44,7 +46,7 @@ trait NotificationService extends RService
 
     setRflkt(
       // TODO: show name instead of number
-      s"${W.notifHeader}.value" -> Str(addr),
+      s"${W.notifHeader}.value" -> Str(header),
       s"${W.notifLine(0)}.value" -> Str(bodyLine(0)),
       s"${W.notifLine(1)}.value" -> Str(bodyLine(1)),
       s"${W.notifLine(2)}.value" -> Str(bodyLine(2)),
@@ -53,8 +55,6 @@ trait NotificationService extends RService
       s"${W.notifLine(5)}.value" -> Str(bodyLine(5)),
       s"${W.notifLine(6)}.value" -> Str(bodyLine(6))
     )
-
-    setRflktPage(P.notification)
   }
 }
 
