@@ -16,8 +16,7 @@ import android.os.Build.{VERSION_CODES => VersionCodes, VERSION => Version}
 import Log._
 import Broadcasts._
 
-trait NotificationService extends RService
-{ this: RflktApi =>
+trait NotificationService extends RService with RflktApi {
   import NotificationService._
 
   broadcastReceiver(SmsIntents.SMS_RECEIVED_ACTION,

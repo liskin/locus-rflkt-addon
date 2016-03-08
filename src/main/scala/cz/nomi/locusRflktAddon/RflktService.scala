@@ -46,6 +46,7 @@ trait RflktApi {
   def disconnect(): Unit
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
   def setRflktPage(page: String, timeout: Option[Int] = None): Unit
+  def onButtonPressed(fun: String, typ: ButtonPressType): Unit
   def stopUnneeded(): Unit
 }
 
@@ -55,8 +56,7 @@ object RflktApi {
   case class Vis(v: Boolean) extends Val
 }
 
-trait RflktService extends RService with RflktApi
-{ this: LocusApi =>
+trait RflktService extends RService with RflktApi {
   private var hwCon: HardwareConnector = null
   private var curSensor: Option[SensorConnection] = None
   private var stayForeground: Boolean = false
@@ -238,20 +238,13 @@ trait RflktService extends RService with RflktApi
     override def onBacklightPercentReceived(p: Int) {}
     override def onButtonPressed(pos: DisplayButtonPosition, typ: ButtonPressType) {
       getCapRflkt() foreach { rflkt =>
-        import display.Const.{Function => F}
         val buttonCfg = Option(rflkt.getDisplayConfiguration()).map(_.getButtonCfg())
         val buttonCfgPage = Option(rflkt.getPage()).map(_.getButtonCfg())
         val fun =
           buttonCfgPage.flatMap(c => Option(c.getButtonFunction(pos))) orElse
           buttonCfg.flatMap(c => Option(c.getButtonFunction(pos))) getOrElse null
         logger.info(s"onButtonPressed: $pos, $fun, $typ")
-        (fun, typ) match {
-          case (F.startStopWorkout, ButtonPressType.SINGLE) =>
-            toggleRecording()
-          case (F.backlight, ButtonPressType.SINGLE) =>
-            backlight()
-          case _ =>
-        }
+        RflktService.this.onButtonPressed(fun, typ)
       }
     }
     override def onColorInvertedReceived(inverted: Boolean) {}
@@ -381,7 +374,7 @@ trait RflktService extends RService with RflktApi
       }
     }
 
-  def setRflktPage(page: String, timeout: Option[Int] = None) =
+  def setRflktPage(page: String, timeout: Option[Int]) =
     getCapRflktReady() foreach { rflkt =>
       val conf = Option(rflkt.getDisplayConfiguration())
       conf.flatMap(c => Option(c.getPage(page))).foreach { p =>
@@ -391,6 +384,15 @@ trait RflktService extends RService with RflktApi
         }
       }
     }
+
+  def onButtonPressed(fun: String, typ: ButtonPressType) {
+    import display.Const.{Function => F}
+    (fun, typ) match {
+      case (F.backlight, ButtonPressType.SINGLE) =>
+        backlight()
+      case _ =>
+    }
+  }
 
   private var backlightTimer: Option[CountDownTimer] = None
 

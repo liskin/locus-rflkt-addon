@@ -13,16 +13,12 @@ import locus.api.android.ActionTools
 import LocusUtils.LocusVersion
 import locus.api.objects.extra.ExtraData
 
+import com.wahoofitness.connector.capabilities.Rflkt.ButtonPressType
+
 import Log._
 import Broadcasts._
 
-trait LocusApi {
-  def toggleRecording(): Unit
-}
-
-trait LocusService extends RService with LocusApi
-{ this: RflktApi =>
-
+trait LocusService extends RService with RflktApi {
   onRegister {
     enablePeriodicUpdatesReceiver()
   }
@@ -132,13 +128,23 @@ trait LocusService extends RService with LocusApi
 
   private var lastUpdate: Option[UpdateContainer] = None
 
-  def toggleRecording() {
+  private def toggleRecording() {
     lastUpdate match {
       case Some(u) if u.isTrackRecRecording()
                    && !u.getTrackRecordContainer().isTrackRecPaused() =>
         ActionTools.actionTrackRecordPause(this, locusVer)
       case _ =>
         ActionTools.actionTrackRecordStart(this, locusVer)
+    }
+  }
+
+  abstract override def onButtonPressed(fun: String, typ: ButtonPressType) {
+    import display.Const.{Function => F}
+    (fun, typ) match {
+      case (F.startStopWorkout, ButtonPressType.SINGLE) =>
+        toggleRecording()
+      case _ =>
+        super.onButtonPressed(fun, typ)
     }
   }
 }
