@@ -171,16 +171,8 @@ class SettingPage1x3(number: Int) extends SettingPageWidgets(number)
 {
   import display.Const.{Widget => W}
 
-  // FIXME: fill from Pages.widgets1x3
-  lazy val entries = Seq(
-    "Speed (current)" -> W.speedCurrent,
-    "Average speed – total (workout)" -> W.averageSpeedWorkout,
-    "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
-    "Max speed (workout)" -> W.maxSpeedWorkout,
-    "Distance (workout)" -> W.distanceWorkout,
-    "Cadence (current)" -> W.cadenceCurrent,
-    "Heart rate (current)" -> W.heartRateCurrent
-  )
+  lazy val entries =
+    display.Pages.unitWidgets.map(w => w.description -> w.key)
   lazy val line1Def = W.speedCurrent
   lazy val line2Def = W.averageSpeedWorkout
   lazy val line3Def = W.averageMovingSpeedWorkout
@@ -197,16 +189,8 @@ class SettingPage2x2(number: Int) extends SettingPageWidgets(number)
 {
   import display.Const.{Widget => W}
 
-  // FIXME: fill from Pages.widgets2x2
-  lazy val entries = Seq(
-    "Speed (current)" -> W.speedCurrent,
-    "Average speed – total (workout)" -> W.averageSpeedWorkout,
-    "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
-    "Max speed (workout)" -> W.maxSpeedWorkout,
-    "Distance (workout)" -> W.distanceWorkout,
-    "Cadence (current)" -> W.cadenceCurrent,
-    "Heart rate (current)" -> W.heartRateCurrent
-  )
+  lazy val entries =
+    display.Pages.unitWidgets.map(w => w.description -> w.key)
   lazy val northWestDef = W.speedCurrent
   lazy val northEastDef = W.distanceWorkout
   lazy val southWestDef = W.cadenceCurrent

@@ -37,6 +37,24 @@ object Pages {
   private def widgetNorth(key: String): Group =
     widgetsNorth.getOrElse(key, emptyGroup _)()
 
+  case class UnitWidget(
+    key: String,
+    icon: () => Bitmap,
+    unit: String,
+    longUnit: String,
+    description: String
+  )
+
+  lazy val unitWidgets = Seq(
+    UnitWidget(W.speedCurrent, Icons.speed _, "KPH", "KPH", "Speed (current)"),
+    UnitWidget(W.averageSpeedWorkout, Icons.speed _, "AVG", "total AVG", "Average speed – total (workout)"),
+    UnitWidget(W.averageMovingSpeedWorkout, Icons.speed _, "AVG", "move AVG", "Average speed – moving (workout)"),
+    UnitWidget(W.maxSpeedWorkout, Icons.speed _, "MAX", "MAX", "Max speed (workout)"),
+    UnitWidget(W.distanceWorkout, Icons.distance _, "KM", "KM", "Distance (workout)"),
+    UnitWidget(W.cadenceCurrent, Icons.cadence _, "RPM", "RPM", "Cadence (current)"),
+    UnitWidget(W.heartRateCurrent, Icons.heartRate _, "BPM", "BPM", "Heart rate (current)")
+  )
+
   private def unitGroup2x2(key: String, icon: => Bitmap, unit: String)(): Group = {
     val ic = icon.frame(x = 3, y = 3)
     val units = Text(unit).frame(x = 0, y = 3, w = 61, h = 0)
@@ -46,25 +64,10 @@ object Pages {
     Group(ic, units, value).key(key).frame(w = 64, h = 51)
   }
 
-  private lazy val widgets2x2: Map[String, () => Group] = Map(
-    W.speedCurrent ->
-      unitGroup2x2(W.speedCurrent, Icons.speed, "KPH") _,
-    W.averageSpeedWorkout ->
-      unitGroup2x2(W.averageSpeedWorkout, Icons.speed, "AVG") _,
-    W.averageMovingSpeedWorkout ->
-      unitGroup2x2(W.averageMovingSpeedWorkout, Icons.speed, "AVG") _,
-    W.maxSpeedWorkout ->
-      unitGroup2x2(W.maxSpeedWorkout, Icons.speed, "MAX") _,
-    W.distanceWorkout ->
-      unitGroup2x2(W.distanceWorkout, Icons.distance, "KM") _,
-    W.cadenceCurrent ->
-      unitGroup2x2(W.cadenceCurrent, Icons.cadence, "RPM") _,
-    W.heartRateCurrent ->
-      unitGroup2x2(W.heartRateCurrent, Icons.heartRate, "BPM") _
-  )
-
   private def widget2x2(key: String): Group =
-    widgets2x2.getOrElse(key, emptyGroup _)()
+    unitWidgets.find(_.key == key).map(w =>
+      unitGroup2x2(w.key, w.icon(), w.unit)
+    ).getOrElse(emptyGroup)
 
   private def page2x2(widgets: ConfPage2x2) = {
     val top1 = widgetNorth(widgets.north)
@@ -96,25 +99,10 @@ object Pages {
     Group(ic, units, value).key(key).frame(w = 128, h = 32)
   }
 
-  private lazy val widgets1x3: Map[String, () => Group] = Map(
-    W.speedCurrent ->
-      unitGroup1x3(W.speedCurrent, Icons.speed, "KPH") _,
-    W.averageSpeedWorkout ->
-      unitGroup1x3(W.averageSpeedWorkout, Icons.speed, "AVG") _,
-    W.averageMovingSpeedWorkout ->
-      unitGroup1x3(W.averageMovingSpeedWorkout, Icons.speed, "AVG") _,
-    W.maxSpeedWorkout ->
-      unitGroup1x3(W.maxSpeedWorkout, Icons.speed, "MAX") _,
-    W.distanceWorkout ->
-      unitGroup1x3(W.distanceWorkout, Icons.distance, "KM") _,
-    W.cadenceCurrent ->
-      unitGroup1x3(W.cadenceCurrent, Icons.cadence, "RPM") _,
-    W.heartRateCurrent ->
-      unitGroup1x3(W.heartRateCurrent, Icons.heartRate, "BPM") _
-  )
-
   private def widget1x3(key: String): Group =
-    widgets1x3.getOrElse(key, emptyGroup _)()
+    unitWidgets.find(_.key == key).map(w =>
+      unitGroup1x3(w.key, w.icon(), w.longUnit)
+    ).getOrElse(emptyGroup)
 
   private def page1x3(widgets: ConfPage1x3) = {
     val top1 = widgetNorth(widgets.north)
