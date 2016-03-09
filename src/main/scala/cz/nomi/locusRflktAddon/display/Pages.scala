@@ -53,6 +53,7 @@ object Pages {
     UnitWidget(W.distanceWorkout, Icons.distance _, "KM", "KM", "Distance (workout)"),
     UnitWidget(W.distanceUphillWorkout, Icons.distanceUphill _, "KM", "KM", "Distance – uphill (workout)"),
     UnitWidget(W.distanceDownhillWorkout, Icons.distanceDownhill _, "KM", "KM", "Distance – downhill (workout)"),
+    UnitWidget(W.elevationCurrent, Icons.elevation _, "M", "M", "Elevation (current)"),
     UnitWidget(W.elevationUphillWorkout, Icons.elevationUphill _, "M", "M", "Elevation – uphill (workout)"),
     UnitWidget(W.elevationDownhillWorkout, Icons.elevationDownhill _, "M", "M", "Elevation – downhill (workout)"),
     UnitWidget(W.cadenceCurrent, Icons.cadence _, "RPM", "RPM", "Cadence (current)"),
@@ -270,6 +271,7 @@ object Const {
     val distanceWorkout = "DISTANCE_WORKOUT"
     val distanceUphillWorkout = "DISTANCE_WORKOUT_UPHILL"
     val distanceDownhillWorkout = "DISTANCE_WORKOUT_DOWNHILL"
+    val elevationCurrent = "ELEVATION_CURRENT"
     val elevationUphillWorkout = "ELEVATION_WORKOUT_UPHILL"
     val elevationDownhillWorkout = "ELEVATION_WORKOUT_DOWNHILL"
     val cadenceCurrent = "BIKE_CAD_CURRENT"
@@ -298,6 +300,7 @@ object Icons {
   def distance = Bitmap("////8P///wD///8A/P//AMD//wMA//8DAPD/DwDA////A/z////w////D//////8////////").frame(w = 18, h = 12).key("icon")
   def distanceUphill = Bitmap("/w8A/P//A8D///8A/P//AMP//wD//PAA//8AAP8/AAD/PwAA/z8AAPAPAAAADwAAAAAAAAAA").frame(w = 18, h = 12).key("icon")
   def distanceDownhill = Bitmap("P/D///8/8P///z/w////P/A/8P8/8ADw/z8AAMD/DwAAwD8AAADA/w8AAAD/AAAAAA8AAAAA").frame(w = 18, h = 12).key("icon")
+  def elevation = Bitmap("//////////////z///8D////D8D//z8A8PP/AAAM/A8AMAD/AMAAwA8ADADwADAAAAzAAAAA").frame(w = 18, h = 12).key("icon")
   def elevationUphill = Bitmap("////D////z/Az///ADDw///wAPz/Dw8AP//wAMDADw8AA/DwAAwADA/AAMDwAAMA8A8MAADw").frame(w = 18, h = 12).key("icon")
   def elevationDownhill = Bitmap("////D//////wz///Dz/w///wAPz/Dw8AP//wAMDADw8AAwwAAAwAAwzAAMDwAAMA8A8MAADw").frame(w = 18, h = 12).key("icon")
   def cadence = Bitmap("//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////").frame(w = 18, h = 12).key("icon")

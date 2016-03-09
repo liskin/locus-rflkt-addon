@@ -73,10 +73,12 @@ trait LocusService extends RService with RflktApi {
 
       val loc = update.getLocMyLocation()
       val curSpeed = Option(loc.getSpeed()).filter(_ != 0).map(_ * 36 / 10)
+      val curElevation = Option(loc.getAltitude()).filter(_ != 0)
       val curHeartRate = Option(loc.getSensorHeartRate()).filter(_ != 0)
       val curCadence = Option(loc.getSensorCadence()).filter(_ != 0)
       val current = Seq(
         s"${W.speedCurrent}.value" -> formatFloatFixed(curSpeed),
+        s"${W.elevationCurrent}.value" -> formatDoubleRound(curElevation),
         s"${W.cadenceCurrent}.value" -> formatInt(curCadence),
         s"${W.heartRateCurrent}.value" -> formatInt(curHeartRate)
       )
