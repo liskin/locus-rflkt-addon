@@ -171,12 +171,19 @@ class SettingPage1x3(number: Int) extends SettingPageWidgets(number)
 {
   import display.Const.{Widget => W}
 
+  // FIXME: fill from Pages.widgets1x3
   lazy val entries = Seq(
-    // TODO
+    "Speed (current)" -> W.speedCurrent,
+    "Average speed – total (workout)" -> W.averageSpeedWorkout,
+    "Average speed – moving (workout)" -> W.averageMovingSpeedWorkout,
+    "Max speed (workout)" -> W.maxSpeedWorkout,
+    "Distance (workout)" -> W.distanceWorkout,
+    "Cadence (current)" -> W.cadenceCurrent,
+    "Heart rate (current)" -> W.heartRateCurrent
   )
-  lazy val line1Def = ""
-  lazy val line2Def = ""
-  lazy val line3Def = ""
+  lazy val line1Def = W.speedCurrent
+  lazy val line2Def = W.averageSpeedWorkout
+  lazy val line3Def = W.averageMovingSpeedWorkout
 
   override def getValue(pref: SharedPreferences) =
     new ConfPage1x3(
@@ -190,6 +197,7 @@ class SettingPage2x2(number: Int) extends SettingPageWidgets(number)
 {
   import display.Const.{Widget => W}
 
+  // FIXME: fill from Pages.widgets2x2
   lazy val entries = Seq(
     "Speed (current)" -> W.speedCurrent,
     "Average speed – total (workout)" -> W.averageSpeedWorkout,

@@ -28,16 +28,16 @@ object Pages {
     Group(icon, value).key(key).frame(w = 128, h = 26)
   }
 
-  private lazy val widgetsNorth2x2: Map[String, () => Group] = Map(
+  private lazy val widgetsNorth: Map[String, () => Group] = Map(
     W.clock -> time(W.clock) _,
     W.timeWorkout -> time(W.timeWorkout) _,
     W.timeMovingWorkout -> time(W.timeMovingWorkout) _
   )
 
-  private def widgetNorth2x2(key: String): Group =
-    widgetsNorth2x2.getOrElse(key, emptyGroup _)()
+  private def widgetNorth(key: String): Group =
+    widgetsNorth.getOrElse(key, emptyGroup _)()
 
-  private def unitGroup(key: String, icon: => Bitmap, unit: String)(): Group = {
+  private def unitGroup2x2(key: String, icon: => Bitmap, unit: String)(): Group = {
     val ic = icon.frame(x = 3, y = 3)
     val units = Text(unit).frame(x = 0, y = 3, w = 61, h = 0)
       .constant.font(SYSTEM10).align(RIGHT).key("units")
@@ -48,26 +48,26 @@ object Pages {
 
   private lazy val widgets2x2: Map[String, () => Group] = Map(
     W.speedCurrent ->
-      unitGroup(W.speedCurrent, Icons.speed, "KPH") _,
+      unitGroup2x2(W.speedCurrent, Icons.speed, "KPH") _,
     W.averageSpeedWorkout ->
-      unitGroup(W.averageSpeedWorkout, Icons.speed, "AVG") _,
+      unitGroup2x2(W.averageSpeedWorkout, Icons.speed, "AVG") _,
     W.averageMovingSpeedWorkout ->
-      unitGroup(W.averageMovingSpeedWorkout, Icons.speed, "AVG") _,
+      unitGroup2x2(W.averageMovingSpeedWorkout, Icons.speed, "AVG") _,
     W.maxSpeedWorkout ->
-      unitGroup(W.maxSpeedWorkout, Icons.speed, "MAX") _,
+      unitGroup2x2(W.maxSpeedWorkout, Icons.speed, "MAX") _,
     W.distanceWorkout ->
-      unitGroup(W.distanceWorkout, Icons.distance, "KM") _,
+      unitGroup2x2(W.distanceWorkout, Icons.distance, "KM") _,
     W.cadenceCurrent ->
-      unitGroup(W.cadenceCurrent, Icons.cadence, "RPM") _,
+      unitGroup2x2(W.cadenceCurrent, Icons.cadence, "RPM") _,
     W.heartRateCurrent ->
-      unitGroup(W.heartRateCurrent, Icons.heartRate, "BPM") _
+      unitGroup2x2(W.heartRateCurrent, Icons.heartRate, "BPM") _
   )
 
   private def widget2x2(key: String): Group =
     widgets2x2.getOrElse(key, emptyGroup _)()
 
   private def page2x2(widgets: ConfPage2x2) = {
-    val top1 = widgetNorth2x2(widgets.north)
+    val top1 = widgetNorth(widgets.north)
     val top2 = statusWorkout
     val northWest = widget2x2(widgets.northWest)
     val northEast = widget2x2(widgets.northEast)
@@ -87,8 +87,51 @@ object Pages {
     )
   }
 
+  private def unitGroup1x3(key: String, icon: => Bitmap, unit: String)(): Group = {
+    val ic = icon.frame(x = 1, y = 1)
+    val units = Text(unit).frame(x = 0, y = 1, w = 127, h = 0)
+      .constant.font(SYSTEM10).align(RIGHT).key("units")
+    val value = Text("--").frame(x = 0, y = 9, w = 128, h = 0)
+      .font(SYSTEM19).align(CENTER).key("value")
+    Group(ic, units, value).key(key).frame(w = 128, h = 32)
+  }
+
+  private lazy val widgets1x3: Map[String, () => Group] = Map(
+    W.speedCurrent ->
+      unitGroup1x3(W.speedCurrent, Icons.speed, "KPH") _,
+    W.averageSpeedWorkout ->
+      unitGroup1x3(W.averageSpeedWorkout, Icons.speed, "AVG") _,
+    W.averageMovingSpeedWorkout ->
+      unitGroup1x3(W.averageMovingSpeedWorkout, Icons.speed, "AVG") _,
+    W.maxSpeedWorkout ->
+      unitGroup1x3(W.maxSpeedWorkout, Icons.speed, "MAX") _,
+    W.distanceWorkout ->
+      unitGroup1x3(W.distanceWorkout, Icons.distance, "KM") _,
+    W.cadenceCurrent ->
+      unitGroup1x3(W.cadenceCurrent, Icons.cadence, "RPM") _,
+    W.heartRateCurrent ->
+      unitGroup1x3(W.heartRateCurrent, Icons.heartRate, "BPM") _
+  )
+
+  private def widget1x3(key: String): Group =
+    widgets1x3.getOrElse(key, emptyGroup _)()
+
   private def page1x3(widgets: ConfPage1x3) = {
-    Page()
+    val top1 = widgetNorth(widgets.north)
+    val top2 = statusWorkout
+    val line1 = widget1x3(widgets.line1)
+    val line2 = widget1x3(widgets.line2)
+    val line3 = widget1x3(widgets.line3)
+    Page(
+      top1     .frame( 0,  0, 128, 26),
+      top2     .frame( 0,  0, 128, 26),
+      Rect()   .frame( 0, 26, 128,  2),
+      line1    .frame( 0, 28, 128, 32),
+      Rect()   .frame( 0, 60, 128,  2),
+      line2    .frame( 0, 62, 128, 32),
+      Rect()   .frame( 0, 94, 128,  2),
+      line3    .frame( 0, 96, 128, 32)
+    )
   }
 
   private def navClock: Group = {
