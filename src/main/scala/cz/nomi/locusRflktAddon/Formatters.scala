@@ -28,6 +28,12 @@ object Formatters {
   def formatInt(i: Option[Int]): Str =
     formatString(i.map(v => f"$v%d"))
 
+  def formatFloatRound(f: Option[Float]): Str =
+    formatString(f.map(v => f"$v%.0f"))
+
+  def formatDoubleRound(d: Option[Double]): Str =
+    formatString(d.map(v => f"$v%.0f"))
+
   def formatFloatFixed(f: Option[Float]): Str =
     formatString(f.map(v => f"$v%.1f"))
 

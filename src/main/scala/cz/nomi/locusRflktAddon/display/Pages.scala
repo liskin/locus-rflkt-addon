@@ -51,6 +51,10 @@ object Pages {
     UnitWidget(W.averageMovingSpeedWorkout, Icons.speed _, "AVG", "move AVG", "Average speed – moving (workout)"),
     UnitWidget(W.maxSpeedWorkout, Icons.speed _, "MAX", "MAX", "Max speed (workout)"),
     UnitWidget(W.distanceWorkout, Icons.distance _, "KM", "KM", "Distance (workout)"),
+    UnitWidget(W.distanceUphillWorkout, Icons.distanceUphill _, "KM", "KM", "Distance – uphill (workout)"),
+    UnitWidget(W.distanceDownhillWorkout, Icons.distanceDownhill _, "KM", "KM", "Distance – downhill (workout)"),
+    UnitWidget(W.elevationUphillWorkout, Icons.elevationUphill _, "M", "M", "Elevation – uphill (workout)"),
+    UnitWidget(W.elevationDownhillWorkout, Icons.elevationDownhill _, "M", "M", "Elevation – downhill (workout)"),
     UnitWidget(W.cadenceCurrent, Icons.cadence _, "RPM", "RPM", "Cadence (current)"),
     UnitWidget(W.heartRateCurrent, Icons.heartRate _, "BPM", "BPM", "Heart rate (current)")
   )
@@ -264,6 +268,10 @@ object Const {
     val averageMovingSpeedWorkout = "SPEED_WORKOUT_AVG_MOVE"
     val maxSpeedWorkout = "SPEED_WORKOUT_MAX"
     val distanceWorkout = "DISTANCE_WORKOUT"
+    val distanceUphillWorkout = "DISTANCE_WORKOUT_UPHILL"
+    val distanceDownhillWorkout = "DISTANCE_WORKOUT_DOWNHILL"
+    val elevationUphillWorkout = "ELEVATION_WORKOUT_UPHILL"
+    val elevationDownhillWorkout = "ELEVATION_WORKOUT_DOWNHILL"
     val cadenceCurrent = "BIKE_CAD_CURRENT"
     val heartRateCurrent = "HR_CURRENT"
 
@@ -288,8 +296,13 @@ object Icons {
   def clock = Bitmap("/w8A//8PAAD/P8A/wP/ADz/wA//wDzz8D//Dw/8APzzw/8DAD/z/A/8D/AP8/wAA8P//APD/").frame(w = 18, h = 12).key("icon")
   def speed = Bitmap("////////A/z//wD/8//D/w//D/8/PD/8/8DD8P8D/wD/D/wP8D/A/wD/D/8P////////////").frame(w = 18, h = 12).key("icon")
   def distance = Bitmap("////8P///wD///8A/P//AMD//wMA//8DAPD/DwDA////A/z////w////D//////8////////").frame(w = 18, h = 12).key("icon")
+  def distanceUphill = Bitmap("/w8A/P//A8D///8A/P//AMP//wD//PAA//8AAP8/AAD/PwAA/z8AAPAPAAAADwAAAAAAAAAA").frame(w = 18, h = 12).key("icon")
+  def distanceDownhill = Bitmap("P/D///8/8P///z/w////P/A/8P8/8ADw/z8AAMD/DwAAwD8AAADA/w8AAAD/AAAAAA8AAAAA").frame(w = 18, h = 12).key("icon")
+  def elevationUphill = Bitmap("////D////z/Az///ADDw///wAPz/Dw8AP//wAMDADw8AA/DwAAwADA/AAMDwAAMA8A8MAADw").frame(w = 18, h = 12).key("icon")
+  def elevationDownhill = Bitmap("////D//////wz///Dz/w///wAPz/Dw8AP//wAMDADw8AAwwAAAwAAwzAAMDwAAMA8A8MAADw").frame(w = 18, h = 12).key("icon")
   def cadence = Bitmap("//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////").frame(w = 18, h = 12).key("icon")
   def heartRate = Bitmap("P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///").frame(w = 18, h = 12).key("icon")
+
   def recStopped = Bitmap("////////////PwAAwP8DAAD8PwAAwP8DAAD8PwAAwP8DAAD8PwAAwP8DAAD8////////////").frame(w = 18, h = 12).key("rec_stopped")
   def recPaused = Bitmap("/////////////8A/8P8P/AP//8A/8P8P/AP//8A/8P8P/AP//8A/8P8P/AP/////////////").frame(w = 18, h = 12).key("rec_paused")
 
