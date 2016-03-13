@@ -8,8 +8,9 @@ either [here][releases] or via [Google Play][playstore]. The goal is to
 support all of:
 
 - ☑ clock
-- ☑ current speed, heart rate, cadence
-- ☑ track recording (start/pause/resume via button; show distance, average speed)
+- ☑ current speed, heart rate, cadence, elevation
+- ☑ track recording (start/pause/resume via button; show time, distance,
+  average speed, meters climbed, etc.)
 - ☑ navigation instructions
 - ☑ SMS/call notifications
 - ☐ an interval timer for training
