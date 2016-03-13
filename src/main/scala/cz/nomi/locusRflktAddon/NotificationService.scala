@@ -9,7 +9,7 @@ import com.github.ghik.silencer.silent
 
 import android.content.{Context, Intent}
 import android.provider.Telephony.Sms.{Intents => SmsIntents}
-import android.telephony.SmsMessage
+import android.telephony.{SmsMessage, TelephonyManager}
 import android.Manifest.permission
 import android.os.Build.{VERSION_CODES => VersionCodes, VERSION => Version}
 
@@ -26,6 +26,17 @@ trait NotificationService extends RService with RflktApi {
     msgs.headOption.foreach(receivedSms)
   }
 
+  broadcastReceiver(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
+  { (context: Context, intent: Intent) =>
+    val state = Option(intent.getStringExtra(TelephonyManager.EXTRA_STATE))
+    val number = Option(intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER))
+    (state, number) match {
+      case (Some(TelephonyManager.EXTRA_STATE_RINGING), Some(num)) =>
+        receivedCall(num)
+      case _ =>
+    }
+  }
+
   private def receivedSms(msg: SmsMessage) {
     val addr = msg.getDisplayOriginatingAddress()
     val body = msg.getDisplayMessageBody()
@@ -33,6 +44,14 @@ trait NotificationService extends RService with RflktApi {
     import Async.Implicits.ecSerial
     Async(findContactName(addr)) { name =>
       setNotification(fixNumber(name), body)
+      setRflktPage(display.Const.Page.notification, timeout = Some(10))
+    }
+  }
+
+  private def receivedCall(number: String) {
+    import Async.Implicits.ecSerial
+    Async(findContactName(number)) { name =>
+      setNotification("Incoming call", fixNumber(name))
       setRflktPage(display.Const.Page.notification, timeout = Some(10))
     }
   }

@@ -11,8 +11,7 @@ support all of:
 - ☑ current speed, heart rate, cadence
 - ☑ track recording (start/pause/resume via button; show distance, average speed)
 - ☑ navigation instructions
-- ☑ SMS notifications
-- ☐ call notifications
+- ☑ SMS/call notifications
 - ☐ an interval timer for training
 - ☐ music player control
 
