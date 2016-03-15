@@ -24,9 +24,13 @@ support all of:
 # What it looks like?
 
 ![overview](
-https://cloud.githubusercontent.com/assets/300342/13191955/07d7ea46-d768-11e5-93ac-fba1159539d2.jpg
+https://cloud.githubusercontent.com/assets/300342/13775985/e6b5a47c-eaa7-11e5-95e2-f13bad4aef10.jpg
+) ![distance](
+https://cloud.githubusercontent.com/assets/300342/13775986/e6d4ea30-eaa7-11e5-8f7a-ea8a634f1811.jpg
+) ![elevation](
+https://cloud.githubusercontent.com/assets/300342/13775987/e6f4dfca-eaa7-11e5-883d-aba393be6772.jpg
 ) ![navigation](
-https://cloud.githubusercontent.com/assets/300342/13191956/07d9238e-d768-11e5-8405-1127e4695b56.jpg
+https://cloud.githubusercontent.com/assets/300342/13775991/e713f932-eaa7-11e5-8600-63d80401db94.jpg
 )
 
 # Building
