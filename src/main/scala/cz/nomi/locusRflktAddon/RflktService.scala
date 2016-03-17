@@ -396,7 +396,7 @@ trait ForegroundService extends RService {
 
   private lazy val notificationBuilder = new NotificationCompat.Builder(this)
     .setSmallIcon(R.drawable.ic_notification)
-    .setContentTitle("Locus Wahoo RFLKT addon")
+    .setContentTitle(getString(R.string.app_name))
     .setContentText("ready")
     .setContentIntent(pendingMainIntent)
     .addAction(android.R.drawable.ic_menu_delete, "Quit", pendingQuitIntent)
