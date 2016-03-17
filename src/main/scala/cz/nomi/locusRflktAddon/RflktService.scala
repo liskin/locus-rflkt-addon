@@ -145,6 +145,11 @@ trait RflktService extends ForegroundService with RflktApi {
         if (state == SensorConnectionState.CONNECTED) {
           lastSensor(defaultSharedPreferences) =
             s.getConnectionParams.serialize
+          getCapConfirm().foreach { confirm =>
+            val state = confirm.getState()
+            if (state != ConfirmConnection.State.ACCEPTED && !state.isBusy())
+              requestConfirmation()
+          }
         }
       }
 
@@ -165,9 +170,13 @@ trait RflktService extends ForegroundService with RflktApi {
 
     override def onUserAccept() {
       logger.info(s"onUserAccept")
-      loadConfig()
-      getCapRflkt().foreach(_.sendSetBacklightPercent(0))
-      refreshUi("loading config")
+      getCapRflkt().foreach { rflkt =>
+        rflkt.sendSetBacklightPercent(0)
+        if (rflkt.getLastLoadConfigResult() != LoadConfigResult.SUCCESS) {
+          loadConfig()
+          refreshUi("loading config")
+        }
+      }
     }
   }
 
