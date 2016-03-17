@@ -135,7 +135,11 @@ case class Group(private val elements: DisplayElement[_]*)
 case class Bitmap(private val value: String)
   extends w.DisplayElementBitmap with DisplayElement[Bitmap]
 {
-  // FIXME: setTransparentColor
+  populateFromJson(
+    new JSONObject(Map(
+      "transparentColor" -> "white"
+    ).asJava)
+  )
   setValue(value)
 }
 

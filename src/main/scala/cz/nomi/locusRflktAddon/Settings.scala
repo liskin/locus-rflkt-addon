@@ -5,8 +5,6 @@
 
 package cz.nomi.locusRflktAddon
 
-import scala.collection.mutable.ListBuffer
-
 import android.content.{Context, SharedPreferences}
 import android.preference._
 import android.support.v7.app.AppCompatActivity
@@ -76,35 +74,60 @@ object PageSettings extends SettingCategory with SettingValue[Seq[ConfPage]] {
 
   lazy val title = "RFLKT pages"
 
-  lazy val pages = (1 to 4).map(new SettingPage(_))
-
-  lazy val showNavPage =
-    SwitchPref("navigationPage.enabled", "Navigation page",
-      "(loading pages faster if disabled)", true)
-
-  lazy val showNotifPage =
-    SwitchPref("notificationPage.enabled", "Notification page",
-      "(loading pages faster if disabled)", true)
+  lazy val pages =
+    (1 to 4).map(new SettingWidgetPage(_)) :+
+    new SettingNavPage :+
+    new SettingNotifPage
 
   override def addPreferences(pf: PreferenceFragment,
       group: PreferenceGroup): Seq[Preference] =
     super.addPreferences(pf, group) ++
-    pages.map(_.addToGroup(pf, group)) :+
-    showNavPage.addToGroup(pf, group) :+
-    showNotifPage.addToGroup(pf, group)
+    pages.map(_.addToGroup(pf, group))
 
-  def getValue(pref: SharedPreferences): Seq[ConfPage] = {
-    var confPages = ListBuffer.empty[ConfPage]
-    confPages ++= pages.map(_.getValue(pref)).flatten
-    if (showNavPage.getValue(pref))
-      confPages += new ConfPageNav(P.navigation)
-    if (showNotifPage.getValue(pref))
-      confPages += new ConfPageNotif(P.notification)
-    confPages
-  }
+  def getValue(pref: SharedPreferences): Seq[ConfPage] =
+    pages.map(_.getValue(pref)).flatten
 }
 
-class SettingPage(number: Int) extends SettingScreen with SettingValue[Option[ConfPage]] {
+class SettingNavPage extends SettingScreen with SettingValue[Option[ConfPageNav]] {
+  lazy val title = "Navigation page"
+
+  lazy val enabled =
+    SwitchPref("navigationPage.enabled", "Enabled",
+      "(loading pages faster if disabled)", true)
+  lazy val notReduced =
+    SwitchPref("navigationPage.notReduced", "Full icons",
+      "(loading pages faster if disabled)", false)
+
+  override def addPreferences(pf: PreferenceFragment,
+      group: PreferenceGroup): Seq[Preference] = {
+    val sup = super.addPreferences(pf, group)
+    val switch = enabled.addToGroup(pf, group)
+    val other = notReduced.addToGroup(pf, group)
+    switch.setDisableDependentsState(false)
+    other.setDependency(switch.getKey())
+    sup :+ switch :+ other
+  }
+
+  def getValue(pref: SharedPreferences): Option[ConfPageNav] =
+    if (enabled.getValue(pref))
+      Some(new ConfPageNav(!notReduced.getValue(pref)))
+    else
+      None
+}
+
+class SettingNotifPage extends Setting with SettingValue[Option[ConfPageNotif]] {
+  lazy val enabled =
+    SwitchPref("notificationPage.enabled", "Notification page",
+      "(loading pages faster if disabled)", true)
+
+  def addToGroup(pf: PreferenceFragment, root: PreferenceGroup): Preference =
+    enabled.addToGroup(pf, root)
+
+  def getValue(pref: SharedPreferences): Option[ConfPageNotif] =
+    if (enabled.getValue(pref)) Some(new ConfPageNotif()) else None
+}
+
+class SettingWidgetPage(number: Int) extends SettingScreen with SettingValue[Option[ConfPage]] {
   lazy val title = s"Page $number"
 
   lazy val enabled =

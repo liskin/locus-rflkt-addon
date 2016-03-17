@@ -49,6 +49,7 @@ trait RflktApi {
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
   def setRflktPage(page: String, timeout: Option[Int] = None): Unit
   def onButtonPressed(fun: String, typ: ButtonPressType): Unit
+  def onLoadComplete(conf: DisplayConfiguration): Unit
 }
 
 object RflktApi {
@@ -192,6 +193,7 @@ trait RflktService extends ForegroundService with RflktApi {
     override def onDisplayOptionsReceived(x1: DisplayDateFormat, x2: DisplayTimeFormat, x3: DisplayDayOfWeek, x4: DisplayWatchFaceStyle) {}
     override def onLoadComplete() {
       logger.info(s"onLoadComplete")
+      RflktService.this.onLoadComplete(getCapRflktReady().get.getDisplayConfiguration())
       refreshUi("everything okay")
     }
     override def onLoadFailed(result: LoadConfigResult) {
@@ -301,8 +303,6 @@ trait RflktService extends ForegroundService with RflktApi {
         PageSettings.getValue(sp)
       )
       rflkt.loadConfig(conf)
-      availableElements = Set(
-        conf.getPages().flatMap(_.getAllElements().map(_.getUpdateKey())): _*)
     }
 
   def setRflkt(vars: (String, RflktApi.Val)*) =
@@ -335,6 +335,11 @@ trait RflktService extends ForegroundService with RflktApi {
         backlight()
       case _ =>
     }
+  }
+
+  def onLoadComplete(conf: DisplayConfiguration) {
+    availableElements = Set(
+      conf.getPages().flatMap(_.getAllElements().map(_.getUpdateKey())): _*)
   }
 
   private var backlightTimer: Option[CountDownTimer] = None

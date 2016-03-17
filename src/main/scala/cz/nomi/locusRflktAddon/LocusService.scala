@@ -14,6 +14,7 @@ import LocusUtils.LocusVersion
 import locus.api.objects.extra.ExtraData
 
 import com.wahoofitness.connector.capabilities.Rflkt.ButtonPressType
+import com.wahoofitness.common.display.DisplayConfiguration
 
 import Log._
 import Broadcasts._
@@ -54,7 +55,7 @@ trait LocusService extends RService with RflktApi {
 
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
     import LocusUtils.LocusVersion
-    import RflktApi.{Val, Vis}
+    import RflktApi.{Val, Vis, Str}
     import display.Const.{Widget => W}
 
     def onIncorrectData() {
@@ -129,10 +130,21 @@ trait LocusService extends RService with RflktApi {
     }
 
     private def setNavIcon(group: String, action: Option[Int]): Seq[(String, Val)] = {
-      val visibleIcon = action.map(LocusService.actionIcons)
-      LocusService.navIcons.map { icon =>
-        (s"$group.$icon", Vis(visibleIcon.exists(_ == icon)))
+      val (actionIcons, navIcons) = if (navReduced)
+        (LocusService.reducedActionIcons, LocusService.reducedNavIcons)
+      else
+        (LocusService.fullActionIcons, LocusService.fullNavIcons)
+
+      val visibleIcon = action.map(actionIcons)
+      val icons = navIcons.toSeq.map { icon =>
+        s"$group.$icon" -> Vis(visibleIcon.exists(_ == icon))
       }
+      val roundabout = Seq(
+        s"$group.roundabout" -> Vis(visibleIcon.exists(_ == "nav_roundabout")),
+        s"$group.roundabout" -> Str(action.flatMap(LocusService.roundaboutExit.get).getOrElse(""))
+      )
+
+      icons ++ roundabout
     }
   }
 
@@ -157,12 +169,23 @@ trait LocusService extends RService with RflktApi {
         super.onButtonPressed(fun, typ)
     }
   }
+
+  private var navReduced: Boolean = false
+
+  abstract override def onLoadComplete(conf: DisplayConfiguration) {
+    super.onLoadComplete(conf)
+
+    import display.Const.{Page => P, Custom => C}
+    navReduced = Option(conf.getPage(P.navigation))
+      .flatMap(p => Option(p.getCustom(C.reduced)))
+      .map(_.toBoolean).getOrElse(false)
+  }
 }
 
 object LocusService {
   import ExtraData._
 
-  private lazy val actionIcons: Map[Int, String] = Map(
+  lazy val fullActionIcons: Map[Int, String] = Map(
     VALUE_RTE_ACTION_NO_MANEUVER -> "nav_unknown",
     VALUE_RTE_ACTION_CONTINUE_STRAIGHT -> "nav_straight",
     VALUE_RTE_ACTION_NO_MANEUVER_NAME_CHANGE -> "nav_unknown",
@@ -201,5 +224,56 @@ object LocusService {
     VALUE_RTE_ACTION_PASS_PLACE -> "nav_waypoint"
   )
 
-  private lazy val navIcons: Seq[String] = actionIcons.values.toSeq.distinct
+  lazy val reducedActionIcons: Map[Int, String] = Map(
+    VALUE_RTE_ACTION_NO_MANEUVER -> "nav_unknown",
+    VALUE_RTE_ACTION_CONTINUE_STRAIGHT -> "nav_straight",
+    VALUE_RTE_ACTION_NO_MANEUVER_NAME_CHANGE -> "nav_unknown",
+    VALUE_RTE_ACTION_LEFT_SLIGHT -> "nav_left_1",
+    VALUE_RTE_ACTION_LEFT -> "nav_left_2",
+    VALUE_RTE_ACTION_LEFT_SHARP -> "nav_left_2",
+    VALUE_RTE_ACTION_RIGHT_SLIGHT -> "nav_right_1",
+    VALUE_RTE_ACTION_RIGHT -> "nav_right_2",
+    VALUE_RTE_ACTION_RIGHT_SHARP -> "nav_right_2",
+    VALUE_RTE_ACTION_STAY_LEFT -> "nav_left_1",
+    VALUE_RTE_ACTION_STAY_RIGHT -> "nav_right_1",
+    VALUE_RTE_ACTION_STAY_STRAIGHT -> "nav_straight",
+    VALUE_RTE_ACTION_U_TURN -> "nav_turnaround",
+    VALUE_RTE_ACTION_U_TURN_LEFT -> "nav_turnaround",
+    VALUE_RTE_ACTION_U_TURN_RIGHT -> "nav_turnaround",
+    VALUE_RTE_ACTION_EXIT_LEFT -> "nav_left_1",
+    VALUE_RTE_ACTION_EXIT_RIGHT -> "nav_right_1",
+    VALUE_RTE_ACTION_RAMP_ON_LEFT -> "nav_left_1",
+    VALUE_RTE_ACTION_RAMP_ON_RIGHT -> "nav_right_1",
+    VALUE_RTE_ACTION_RAMP_STRAIGHT -> "nav_straight",
+    VALUE_RTE_ACTION_MERGE_LEFT -> "nav_left_1",
+    VALUE_RTE_ACTION_MERGE_RIGHT -> "nav_right_1",
+    VALUE_RTE_ACTION_MERGE -> "nav_straight",
+    VALUE_RTE_ACTION_ENTER_STATE -> "nav_unknown",
+    VALUE_RTE_ACTION_ARRIVE_DEST -> "nav_finish",
+    VALUE_RTE_ACTION_ARRIVE_DEST_LEFT -> "nav_finish",
+    VALUE_RTE_ACTION_ARRIVE_DEST_RIGHT -> "nav_finish",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_1 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_2 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_3 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_4 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_5 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_6 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_7 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_8 -> "nav_roundabout",
+    VALUE_RTE_ACTION_PASS_PLACE -> "nav_finish"
+  )
+
+  lazy val roundaboutExit: Map[Int, String] = Map(
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_1 -> "1",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_2 -> "2",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_3 -> "3",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_4 -> "4",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_5 -> "5",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_6 -> "6",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_7 -> "7",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_8 -> "8"
+  )
+
+  lazy val fullNavIcons: Set[String] = fullActionIcons.values.toSet
+  lazy val reducedNavIcons: Set[String] = reducedActionIcons.values.toSet
 }

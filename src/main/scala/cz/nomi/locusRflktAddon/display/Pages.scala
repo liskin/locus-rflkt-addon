@@ -7,11 +7,13 @@ package cz.nomi.locusRflktAddon.display
 
 import com.wahoofitness.common.{display => w}
 
+import cz.nomi.locusRflktAddon.LocusService
+
 object Pages {
   import w.DisplayAlignment._
   import w.DisplayButtonPosition._
   import w.DisplayFont._
-  import Const.{Widget => W}
+  import Const.{Widget => W, Page => P, Custom => C}
 
   private def emptyGroup: Group = Group()
 
@@ -136,17 +138,23 @@ object Pages {
     Group(rect, value).key(W.clock).frame(w = 128, h = 22)
   }
 
-  private def navAction: Group = {
+  private def navAction(reduced: Boolean): Group = {
     val rect = Rect().frame(w = 49, h = 33)
-    val icons = Icons.navigation.map(_.inside(rect))
-    Group((rect :: icons): _*).frame(w = 49, h = 33)
+    val num = Text("8").frame(x = 1, y = 6, w = 47, h = 0)
+      .font(SYSTEM19).align(CENTER).key("roundabout").hidden
+    val iconSet = if (reduced) LocusService.reducedNavIcons
+                  else LocusService.fullNavIcons
+    val icons = Icons.navigation
+      .filter(i => iconSet(i.getKey()))
+      .map(_.inside(rect))
+    Group((rect :: num :: icons): _*).frame(w = 49, h = 33)
   }
 
   private def navDist: Group = {
     val rect = Rect().frame(w = 80, h = 33)
     val units = Text("km").frame(x = 58, y = 21, w = 20, h = 0)
       .constant.font(SYSTEM10).align(RIGHT).key("units")
-    val value = Text("--").frame(x = 0, y = 8, w = 58, h = 0)
+    val value = Text("--").frame(x = 0, y = 6, w = 58, h = 0)
       .font(SYSTEM19).align(RIGHT).key("value")
     Group(rect, units, value).frame(w = 80, h = 33)
   }
@@ -158,17 +166,17 @@ object Pages {
     Group(rect, value).frame(w = 128, h = 22)
   }
 
-  private def pageNav = Page(
+  private def pageNav(c: ConfPageNav) = Page(
     navClock.frame(0, 0, 128, 22),
 
-    navAction.key(W.nav1Action).frame(0, 21, 49, 33),
+    navAction(c.reduced).key(W.nav1Action).frame(0, 21, 49, 33),
     navDist.key(W.nav1Dist).frame(48, 21, 80, 33),
     navName.key(W.nav1Name).frame(0, 53, 128, 22),
 
-    navAction.key(W.nav2Action).frame(0, 74, 49, 33),
+    navAction(c.reduced).key(W.nav2Action).frame(0, 74, 49, 33),
     navDist.key(W.nav2Dist).frame(48, 74, 80, 33),
     navName.key(W.nav2Name).frame(0, 106, 128, 22)
-  )
+  ).custom(C.reduced, c.reduced.toString)
 
   private def notifHeader: Group = {
     val rect = Rect().frame(w = 128, h = 27)
@@ -198,13 +206,13 @@ object Pages {
     def key: String
   }
 
-  class ConfPageNav(
-    val key: String
-  ) extends ConfPage
+  class ConfPageNav(val reduced: Boolean) extends ConfPage {
+    val key = P.navigation
+  }
 
-  class ConfPageNotif(
-    val key: String
-  ) extends ConfPage
+  class ConfPageNotif extends ConfPage {
+    val key = P.notification
+  }
 
   class ConfPage1x3(
     val key: String,
@@ -236,7 +244,7 @@ object Pages {
   private def page(c: ConfPage): Page = (c match {
     case c: ConfPage1x3 => page1x3(c)
     case c: ConfPage2x2 => page2x2(c)
-    case _: ConfPageNav => pageNav
+    case c: ConfPageNav => pageNav(c)
     case _: ConfPageNotif => pageNotif
   }).key(c.key)
 
@@ -292,6 +300,10 @@ object Const {
     val navigation = "NAVIGATION"
     val notification = "NOTIFICATION"
   }
+
+  object Custom {
+    val reduced = "reduced"
+  }
 }
 
 object Icons {
@@ -334,6 +346,7 @@ object Icons {
     Bitmap("//////////////////////8A/P///////////z8A/////////////w/A////////////DwAA/P////////8DAAAAAP///////w8A8P8DAPz/////PwD8////APD/////A/D/////A/D///8/wP8DAAD/D/D///8D/P/A////D/D//z/A/z/w////D/D//w/8/w/8////D/z//8D//wP/////D/w/APD//wAA/P//AwAPAPz/P8AP/P//A8ADAP//D/wP/P8/APD/wP////8D//8P/P//wP/////A///A//8/wP8/8D/w/w/w//8/wP8/8AP//wD///8/wP8/APD/D/D///8/AP////8/AP////8/APz///8A8P//////AAD/PwDA////////AwAAAAD//////////wAAwP///////////w/A/////////////wPw/////////////wD8/////////////////////wM=").key("nav_roundabout_5"),
     Bitmap("//////////////////////8A/P///////////z8A/////////////w/A////////////DwAA/P////////8DAAAAAP///////w8A8P8DAPz/////PwD8////APD/////A/D/A/D/A/D///8/wP8/APD/D/D///8D/P8DP/D/D/D//z/A/z/wP/D/D/D//w/8/w/8////D/z//8D//wP/////D/w/APD//wAA////AwAPAPz/PwAA////A8ADAP//D8AA//8/APD/wP//A/wA//8P/P//wP//wP/A///A//8/wP8/wA/w/w/w//8/wP8/wAD//wD///8/wP8/APD/D/D///8/AP8/AP8/AP////8/APz///8A8P//////AAD/PwDA////////AwAAAAD//////////wAAwP///////////w/A/////////////wPw/////////////wD8/////////////////////wM=").key("nav_roundabout_6"),
     Bitmap("//////////////////////8A/P///////////z8A/////////////w/A////////////DwAA/P////////8DAAAAAP///////w8A8P8DAPz/////PwD8////APD/////A/D/////A/D///8/wP8DAAD/D/D///8D/P8AAMD/D/D//z/A////P/D/D/D//w/8////A///D/z//8D/////wP//D/w/APD///8P/P//AwAPAPz///8D////A8ADAP///z/w//8/APD/wP///w/8//8P/P//wP///8D////A//8/wP//P/D//w/w//8/wP//A////wD///8/wP//wP//D/D///8/AP8/8P8/AP////8/APz///8A8P//////AAD/PwDA////////AwAAAAD//////////wAAwP///////////w/A/////////////wPw/////////////wD8/////////////////////wM=").key("nav_roundabout_7"),
-    Bitmap("//////////////////////8A/P///////////z8A/////////////w/A////////////DwAA/P////////8DAAAAAP///////w8A8P8DAPz/////PwD8////APD/////A/D/A/D/A/D///8/wP8PAMD/D/D///8D/P8AP8D/D/D//z/A/z/wP/D/D/D//w/8/w/8D/z/D/z//8D//wP8AP//D/w/APD//wMA8P//AwAPAPz//w/A////A8ADAP//PwAA//8/APD/wP//A/wA//8P/P//wP//wP/A///A//8/wP8/8D/w/w/w//8/wP8P8AP8/wD///8/wP8PAMD/D/D///8/AP8/AP8/AP////8/APz///8A8P//////AAD/PwDA////////AwAAAAD//////////wAAwP///////////w/A/////////////wPw/////////////wD8/////////////////////wM=").key("nav_roundabout_8")
+    Bitmap("//////////////////////8A/P///////////z8A/////////////w/A////////////DwAA/P////////8DAAAAAP///////w8A8P8DAPz/////PwD8////APD/////A/D/A/D/A/D///8/wP8PAMD/D/D///8D/P8AP8D/D/D//z/A/z/wP/D/D/D//w/8/w/8D/z/D/z//8D//wP8AP//D/w/APD//wMA8P//AwAPAPz//w/A////A8ADAP//PwAA//8/APD/wP//A/wA//8P/P//wP//wP/A///A//8/wP8/8D/w/w/w//8/wP8P8AP8/wD///8/wP8PAMD/D/D///8/AP8/AP8/AP////8/APz///8A8P//////AAD/PwDA////////AwAAAAD//////////wAAwP///////////w/A/////////////wPw/////////////wD8/////////////////////wM=").key("nav_roundabout_8"),
+    Bitmap("////////////////////////////////////DwAAAPz/////P/8PAAAAAMD/////Dz8A8P//AwD/////AwDw////PwD8////AMD//////wD8//8/APz//////wP8//8PAPz//////wP8//8DAPz//////wP8/////////////wP8/////////////wP//8D//////////8D/D/D/////////P8D/A///////////P/D/wP//////////D/w/8P//////////A/8P8P////////8/wP8P/P////////8P/P8D//////////////8A//////////////8A////////AAD///8A////////AMD///8A////////APD///8A/P////8PAPz///8A8P///z8AAP////8DAP//PwDww/////8PAAAAAMD/8///////AAAAwP///////////////////////////////////wM=").key("nav_roundabout")
   ).map(_.frame(w = 47, h = 31).hidden)
 }
