@@ -44,10 +44,11 @@ trait RflktApi {
   def describeFirst(): Option[String]
   def connectFirst(): Unit
   def disconnect(): Unit
+  def stopUnneeded(): Unit
+
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
   def setRflktPage(page: String, timeout: Option[Int] = None): Unit
   def onButtonPressed(fun: String, typ: ButtonPressType): Unit
-  def stopUnneeded(): Unit
 }
 
 object RflktApi {
@@ -56,10 +57,9 @@ object RflktApi {
   case class Vis(v: Boolean) extends Val
 }
 
-trait RflktService extends RService with RflktApi {
+trait RflktService extends ForegroundService with RflktApi {
   private var hwCon: HardwareConnector = null
   private var curSensor: Option[SensorConnection] = None
-  private var stayForeground: Boolean = false
   private var status: String = ""
   private var availableElements: Set[String] = Set()
 
@@ -71,67 +71,6 @@ trait RflktService extends RService with RflktApi {
     hwCon.stopDiscovery()
     hwCon.shutdown()
   }
-
-  broadcastReceiver(actionStop) { (context: Context, intent: Intent) =>
-    logger.info(s"RflktService: actionStop received")
-    stopSelf()
-  }
-
-  override def onStartCommand(intent: Intent, flags: Int, startId: Int): Int = {
-    super.onStartCommand(intent, flags, startId)
-
-    /* Maybe not a good idea if we ever really get killed in a
-     * low-memory situation, but then the service doesn't reconnect when
-     * restarted so not sticky is fine for now.  A better solution would
-     * be to remember what state we should be in and if restarted after
-     * a disconnect, just stopSelf(). */
-    Service.START_NOT_STICKY
-  }
-
-  override def onTaskRemoved(rootIntent: Intent) {
-    super.onTaskRemoved(rootIntent)
-    stopUnneeded()
-  }
-
-  def stopUnneeded() {
-    if (!stayForeground)
-      stopSelf()
-  }
-
-  private lazy val notificationBuilder = new NotificationCompat.Builder(this)
-    .setSmallIcon(R.drawable.ic_notification)
-    .setContentTitle("Locus Wahoo RFLKT addon")
-    .setContentText("ready")
-    .setContentIntent(pendingMainIntent)
-    .addAction(android.R.drawable.ic_menu_delete, "Quit", pendingQuitIntent)
-
-  private lazy val mainIntent = new Intent(this, classOf[Main])
-
-  private lazy val pendingMainIntent =
-    PendingIntent.getActivity(this, 0, mainIntent, Intent.FLAG_ACTIVITY_NEW_TASK)
-
-  private lazy val quitIntent = new Intent(actionStop).setPackage(packageName)
-
-  private lazy val pendingQuitIntent =
-    PendingIntent.getBroadcast(this, 0, quitIntent, 0)
-
-  private def startForeground() {
-    stayForeground = true
-    startForeground(Gen.Id.notification, notificationBuilder.build())
-  }
-
-  private def stopForeground() {
-    stayForeground = false
-    stopForeground(true)
-  }
-
-  private def updateNotification(text: String) {
-    getNotificationManager().notify(Gen.Id.notification,
-      notificationBuilder.setContentText(text).build())
-  }
-
-  private def getNotificationManager(): NotificationManager =
-    getSystemService(Context.NOTIFICATION_SERVICE).asInstanceOf[NotificationManager]
 
   private object Hardware extends HardwareConnector.Listener {
     override def connectedSensor(s: SensorConnection) {
@@ -316,6 +255,10 @@ trait RflktService extends RService with RflktApi {
     stopForeground()
   }
 
+  def stopUnneeded() {
+    stopUnlessForeground()
+  }
+
   private lazy val refreshUiIntent = new Intent(localActionRefreshUi)
 
   private def refreshUi(newStatus: String = status) {
@@ -425,4 +368,69 @@ trait RflktService extends RService with RflktApi {
   private def lastSensorOption: Option[ConnectionParams] =
     Option(lastSensor(defaultSharedPreferences))
       .filter(_.nonEmpty).map(ConnectionParams.deserialize)
+}
+
+trait ForegroundService extends RService {
+  private var stayForeground: Boolean = false
+
+  broadcastReceiver(actionStop) { (context: Context, intent: Intent) =>
+    logger.info(s"ForegroundService: actionStop received")
+    stopSelf()
+  }
+
+  override def onStartCommand(intent: Intent, flags: Int, startId: Int): Int = {
+    super.onStartCommand(intent, flags, startId)
+
+    /* Maybe not a good idea if we ever really get killed in a
+     * low-memory situation, but then the service doesn't reconnect when
+     * restarted so not sticky is fine for now.  A better solution would
+     * be to remember what state we should be in and if restarted after
+     * a disconnect, just stopSelf(). */
+    Service.START_NOT_STICKY
+  }
+
+  override def onTaskRemoved(rootIntent: Intent) {
+    super.onTaskRemoved(rootIntent)
+    stopUnlessForeground()
+  }
+
+  private lazy val notificationBuilder = new NotificationCompat.Builder(this)
+    .setSmallIcon(R.drawable.ic_notification)
+    .setContentTitle("Locus Wahoo RFLKT addon")
+    .setContentText("ready")
+    .setContentIntent(pendingMainIntent)
+    .addAction(android.R.drawable.ic_menu_delete, "Quit", pendingQuitIntent)
+
+  private lazy val mainIntent = new Intent(this, classOf[Main])
+
+  private lazy val pendingMainIntent =
+    PendingIntent.getActivity(this, 0, mainIntent, Intent.FLAG_ACTIVITY_NEW_TASK)
+
+  private lazy val quitIntent = new Intent(actionStop).setPackage(packageName)
+
+  private lazy val pendingQuitIntent =
+    PendingIntent.getBroadcast(this, 0, quitIntent, 0)
+
+  protected def startForeground() {
+    stayForeground = true
+    startForeground(Gen.Id.notification, notificationBuilder.build())
+  }
+
+  protected def stopForeground() {
+    stayForeground = false
+    stopForeground(true)
+  }
+
+  protected def stopUnlessForeground() {
+    if (!stayForeground)
+      stopSelf()
+  }
+
+  protected def updateNotification(text: String) {
+    getNotificationManager().notify(Gen.Id.notification,
+      notificationBuilder.setContentText(text).build())
+  }
+
+  private def getNotificationManager(): NotificationManager =
+    getSystemService(Context.NOTIFICATION_SERVICE).asInstanceOf[NotificationManager]
 }
