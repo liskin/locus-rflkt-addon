@@ -213,14 +213,14 @@ object LocusService {
     VALUE_RTE_ACTION_ARRIVE_DEST -> "nav_finish",
     VALUE_RTE_ACTION_ARRIVE_DEST_LEFT -> "nav_finish",
     VALUE_RTE_ACTION_ARRIVE_DEST_RIGHT -> "nav_finish",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_1 -> "nav_roundabout_1",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_2 -> "nav_roundabout_2",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_3 -> "nav_roundabout_3",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_4 -> "nav_roundabout_4",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_5 -> "nav_roundabout_5",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_6 -> "nav_roundabout_6",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_7 -> "nav_roundabout_7",
-    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_8 -> "nav_roundabout_8",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_1 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_2 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_3 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_4 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_5 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_6 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_7 -> "nav_roundabout",
+    VALUE_RTE_ACTION_ROUNDABOUT_EXIT_8 -> "nav_roundabout",
     VALUE_RTE_ACTION_PASS_PLACE -> "nav_waypoint"
   )
 
