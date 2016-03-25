@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.{AppCompatButton => Button}
 import android.view.ViewGroup.LayoutParams.{MATCH_PARENT, WRAP_CONTENT}
 import android.view.MenuItem
+import android.net.Uri
 
 import macroid._
 import macroid.FullDsl._
@@ -53,6 +54,7 @@ class Main extends AppCompatActivity with RActivity {
 
   service.onServiceConnected {
     refreshButton()
+    checkLocus()
   }
 
   localBroadcastReceiver(localActionRefreshUi) { (context: Context, intent: Intent) =>
@@ -79,6 +81,32 @@ class Main extends AppCompatActivity with RActivity {
         )
       }
     }
+  }
+
+  private def checkLocus() {
+    if (service(_.isLocusInstalled).get) {
+      if (!service(_.isLocusPeriodicUpdatesEnabled).get) {
+        val msg = "Periodic updates must be enabled in Settings → Miscellaneous."
+        (dialog(s"$msg\n\nbring me to Locus Map") <~
+          title("Periodic updates disabled") <~
+          positiveOk(locusSettings) <~
+          speak).run
+      }
+    } else {
+      (dialog("bring me to Google Play") <~
+        title("Locus Map not installed") <~
+        positiveOk(locusGooglePlay) <~
+        speak).run
+    }
+  }
+
+  private def locusGooglePlay: Ui[_] = Ui {
+    startActivity(new Intent(Intent.ACTION_VIEW,
+      Uri.parse("market://details?id=menion.android.locus.pro")));
+  }
+
+  private def locusSettings: Ui[_] = Ui {
+    service(_.launchLocus())
   }
 
   private var menuItemDiscovery: MenuItem = _

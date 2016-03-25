@@ -34,23 +34,28 @@ trait LocusService extends RService with RflktApi {
     PeriodicUpdatesHandler.getInstance.onReceive(context, intent, OnUpdate)
   }
 
-  private lazy val locusVer: LocusVersion = {
-    val ver = LocusUtils.getActiveVersion(this)
-    val locusInfo = ActionTools.getLocusInfo(this, ver)
-    if (!locusInfo.isPeriodicUpdatesEnabled) {
-      notice("periodic updates in Locus disabled :-(")
-    }
-    ver
+  private lazy val locusVer: Option[LocusVersion] =
+    Option(LocusUtils.getActiveVersion(this))
+
+  def isLocusInstalled: Boolean = locusVer.isDefined
+
+  def isLocusPeriodicUpdatesEnabled: Boolean =
+    locusVer.map(
+      ActionTools.getLocusInfo(this, _).isPeriodicUpdatesEnabled
+    ).getOrElse(false)
+
+  def launchLocus() = locusVer.foreach { lv =>
+    startActivity(getPackageManager().getLaunchIntentForPackage(lv.getPackageName()))
   }
 
   private def enablePeriodicUpdatesReceiver() {
     logger.info("enablePeriodicUpdatesReceiver")
-    ActionTools.enablePeriodicUpdatesReceiver(this, locusVer, classOf[PeriodicUpdateReceiver])
+    locusVer.foreach(ActionTools.enablePeriodicUpdatesReceiver(this, _, classOf[PeriodicUpdateReceiver]))
   }
 
   private def disablePeriodicUpdatesReceiver() {
     logger.info("disablePeriodicUpdatesReceiver")
-    ActionTools.disablePeriodicUpdatesReceiver(this, locusVer, classOf[PeriodicUpdateReceiver])
+    locusVer.foreach(ActionTools.disablePeriodicUpdatesReceiver(this, _, classOf[PeriodicUpdateReceiver]))
   }
 
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
@@ -154,9 +159,9 @@ trait LocusService extends RService with RflktApi {
     lastUpdate match {
       case Some(u) if u.isTrackRecRecording()
                    && !u.getTrackRecordContainer().isTrackRecPaused() =>
-        ActionTools.actionTrackRecordPause(this, locusVer)
+        locusVer.foreach(ActionTools.actionTrackRecordPause(this, _))
       case _ =>
-        ActionTools.actionTrackRecordStart(this, locusVer)
+        locusVer.foreach(ActionTools.actionTrackRecordStart(this, _))
     }
   }
 
