@@ -37,15 +37,6 @@ import Preferences._
 import Const._
 
 trait RflktApi {
-  def enableDiscovery(enable: Boolean): Unit
-  def isDiscovering(): Boolean
-  def isDisconnected(): Boolean
-  def getStatus(): String
-  def describeFirst(): Option[String]
-  def connectFirst(): Unit
-  def disconnect(): Unit
-  def stopUnneeded(): Unit
-
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
   def setRflktPage(page: String, timeout: Option[Int] = None): Unit
   def onButtonPressed(fun: String, typ: ButtonPressType): Unit
