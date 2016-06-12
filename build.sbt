@@ -34,6 +34,7 @@ lazy val root = project.in(file("."))
     "locus"
   ),
 
+  proguardVersion := "5.2.1",
   proguardOptions in Android ++= Seq("-keepattributes Signature"),
   proguardConfig in Android := {
     // This is probably wrong
