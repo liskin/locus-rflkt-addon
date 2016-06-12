@@ -18,7 +18,7 @@ import display.Pages.{ConfPage, ConfPageNav, ConfPageNotif,
 class Settings extends AppCompatActivity
   with RActivity with BackToParentActivity
 {
-  import macroid.Tweak
+  import macroid._
 
   onCreate {
     logger.info("Settings: onCreate")
@@ -28,7 +28,7 @@ class Settings extends AppCompatActivity
       import macroid.FullDsl._
       import macroid.contrib.LpTweaks.matchWidth
 
-      getUi {
+      Ui.get {
         l[LinearLayout](
           w[TextView] <~ text("(need reconnect to take effect)") <~ matchWidth <~ center <~ padding(all = 3 dp),
           f[SettingsFragment].framed(Gen.Id.settings, Gen.Tag.settings)

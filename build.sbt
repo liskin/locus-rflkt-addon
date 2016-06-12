@@ -35,7 +35,7 @@ lazy val root = project.in(file("."))
   ),
 
   proguardVersion := "5.2.1",
-  proguardOptions in Android ++= Seq("-keepattributes Signature"),
+  proguardOptions in Android ++= Seq("-keepattributes Signature", "-ignorewarnings"),
   proguardConfig in Android := {
     // This is probably wrong
     // (https://github.com/pfn/android-sdk-plugin/issues/242) but it
@@ -53,7 +53,7 @@ lazy val root = project.in(file("."))
 
   resolvers += "jcenter" at "http://jcenter.bintray.com",
 
-  libraryDependencies += aar("org.macroid" %% "macroid" % "2.0.0-20150427"),
+  libraryDependencies += aar("org.macroid" %% "macroid" % "2.0.0-M5"),
   libraryDependencies += "com.android.support" % "appcompat-v7" % "23.1.1",
   libraryDependencies += "org.log4s" %% "log4s" % "1.2.1",
   libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.18",

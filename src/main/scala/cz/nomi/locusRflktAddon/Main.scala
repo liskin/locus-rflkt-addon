@@ -37,7 +37,7 @@ class Main extends AppCompatActivity with RActivity {
     setTitle(getString(R.string.main_label))
 
     setContentView {
-      getUi {
+      Ui.get {
         l[LinearLayout](
           w[Button] <~ matchWidth <~ wire(connectButton) <~ On.click { Ui {
             service(_.connectFirst()).get
@@ -62,7 +62,7 @@ class Main extends AppCompatActivity with RActivity {
   }
 
   private def refreshButton() {
-    runUi {
+    Ui.run {
       if (service(_.isDisconnected()).getOrElse(true)) {
         Ui.sequence(
           service(_.describeFirst()).flatten match {

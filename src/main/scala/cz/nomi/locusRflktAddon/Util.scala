@@ -17,7 +17,7 @@ import android.view.{Menu, MenuItem}
 import android.support.v7.app.AppCompatActivity
 import android.support.v4.app.NavUtils
 
-import macroid.{Contexts, ContextWrapper, IdGeneration}
+import macroid.{Contexts, ContextWrapper, IdGenerator}
 
 object Log {
   val logger = org.log4s.getLogger("LocusRflktAddon")
@@ -320,7 +320,10 @@ trait BackToParentActivity extends RActivity { this: AppCompatActivity =>
   }
 }
 
-object Gen extends IdGeneration
+object Gen {
+  object Id extends IdGenerator(1000)
+  val Tag = macroid.Tag
+}
 
 object Async {
   object Implicits {
