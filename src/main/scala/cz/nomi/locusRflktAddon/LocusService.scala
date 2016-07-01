@@ -99,7 +99,10 @@ trait LocusService extends RService with RflktApi {
       val distanceDownhill = trackRecord.map(_.getDistanceDownhill() / 1000)
       val elevationUphill = trackRecord.map(_.getAltitudeUphill())
       val elevationDownhill = trackRecord.map(_.getAltitudeDownhill())
+
       val trackStats = Option(update.getTrackRecStats())
+      val avgCadence = trackStats.map(_.getCadenceAverage()).filter(_ != 0)
+      val avgHrm = trackStats.map(_.getHrmAverage()).filter(_ != 0)
       val distance = trackStats.map(_.getEleTotalAbsDistance() / 1000)
       val workout = Seq(
         s"${W.statusWorkout}.rec_stopped" -> Vis(trackRecord.isEmpty),
@@ -107,6 +110,8 @@ trait LocusService extends RService with RflktApi {
         s"${W.timeWorkout}.value" -> formatDuration(time),
         s"${W.timeMovingWorkout}.value" -> formatDuration(timeMoving),
         s"${W.averageSpeedWorkout}.value" -> formatFloatFixed(avgSpeed),
+        s"${W.averageCadenceWorkout}.value" -> formatInt(avgCadence),
+        s"${W.averageHrmWorkout}.value" -> formatInt(avgHrm),
         s"${W.averageMovingSpeedWorkout}.value" -> formatFloatFixed(avgMovingSpeed),
         s"${W.maxSpeedWorkout}.value" -> formatFloatFixed(maxSpeed),
         s"${W.distanceWorkout}.value" -> formatFloatFixed(distance),
