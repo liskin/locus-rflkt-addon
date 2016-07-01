@@ -95,11 +95,12 @@ trait LocusService extends RService with RflktApi {
       val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
       val avgMovingSpeed = trackRecord.map(_.getSpeedAvgMove()).filter(_ != 0).map(_ * 36 / 10)
       val maxSpeed = trackRecord.map(_.getSpeedMax()).filter(_ != 0).map(_ * 36 / 10)
-      val distance = trackRecord.map(_.getDistance() / 1000)
       val distanceUphill = trackRecord.map(_.getDistanceUphill() / 1000)
       val distanceDownhill = trackRecord.map(_.getDistanceDownhill() / 1000)
       val elevationUphill = trackRecord.map(_.getAltitudeUphill())
       val elevationDownhill = trackRecord.map(_.getAltitudeDownhill())
+      val trackStats = Option(update.getTrackRecStats())
+      val distance = trackStats.map(_.getEleTotalAbsDistance() / 1000)
       val workout = Seq(
         s"${W.statusWorkout}.rec_stopped" -> Vis(trackRecord.isEmpty),
         s"${W.statusWorkout}.rec_paused" -> Vis(trackRecord.exists(_.isTrackRecPaused())),
@@ -108,7 +109,7 @@ trait LocusService extends RService with RflktApi {
         s"${W.averageSpeedWorkout}.value" -> formatFloatFixed(avgSpeed),
         s"${W.averageMovingSpeedWorkout}.value" -> formatFloatFixed(avgMovingSpeed),
         s"${W.maxSpeedWorkout}.value" -> formatFloatFixed(maxSpeed),
-        s"${W.distanceWorkout}.value" -> formatDoubleFixed(distance),
+        s"${W.distanceWorkout}.value" -> formatFloatFixed(distance),
         s"${W.distanceUphillWorkout}.value" -> formatDoubleFixed(distanceUphill),
         s"${W.distanceDownhillWorkout}.value" -> formatDoubleFixed(distanceDownhill),
         s"${W.elevationUphillWorkout}.value" -> formatFloatRound(elevationUphill),
