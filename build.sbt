@@ -14,7 +14,7 @@ lazy val commonSettings = Def.settings(
 )
 
 lazy val root = project.in(file("."))
-.androidBuildWith(noAnalytics, locusApiAndroid)
+.androidBuildWith(noAnalytics)
 .settings(
   name := "locus-rflkt-addon",
 
@@ -59,6 +59,7 @@ lazy val root = project.in(file("."))
   libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.18",
   libraryDependencies += "de.psdev.licensesdialog" % "licensesdialog" % "1.8.0",
   libraryDependencies += "com.github.ghik" % "silencer-lib" % "0.3",
+  libraryDependencies += "com.asamm" % "locus-api-android" % "0.2.4",
 
   addCompilerPlugin("com.github.ghik" % "silencer-plugin" % "0.3")
 )
@@ -72,26 +73,6 @@ lazy val noAnalytics = project.in(file("deps/NoAnalytics/NoAnalytics"))
   buildJar
 )
 
-lazy val locusApi = project.in(file("deps/locus-api"))
-.androidBuildWith()
-.settings(
-  name := "locus-api",
-  commonSettings,
-  antLayoutDetector in Android := (),
-  projectLayout in Android := new ProjectLayout.Ant(baseDirectory.value),
-  buildJar,
-  noManifest,
-  lintEnabled in Android := false // FIXME
-)
-
-lazy val locusApiAndroid = project.in(file("deps/locus-api-android"))
-.androidBuildWith(locusApi)
-.settings(
-  name := "locus-api-android",
-  commonSettings,
-  antLayoutDetector in Android := (),
-  buildJar
-)
 
 lazy val noManifest = Def.settings(
   projectLayout in Android :=

@@ -2,11 +2,3 @@
 	path = deps/NoAnalytics
 	url = https://github.com/mar-v-in/NoAnalytics.git
 	ignore = untracked
-[submodule "deps/locus-api"]
-	path = deps/locus-api
-	url = hg::https://bitbucket.org/asamm/locus-api
-	ignore = untracked
-[submodule "deps/locus-api-android"]
-	path = deps/locus-api-android
-	url = hg::https://bitbucket.org/asamm/locus-api-android
-	ignore = untracked
