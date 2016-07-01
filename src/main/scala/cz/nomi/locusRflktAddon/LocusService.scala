@@ -95,6 +95,8 @@ trait LocusService extends RService with RflktApi {
       val avgSpeed = trackStats.map(_.getSpeedAverage(false)).filter(_ != 0).map(_ * 36 / 10)
       val avgMovingSpeed = trackStats.map(_.getSpeedAverage(true)).filter(_ != 0).map(_ * 36 / 10)
       val maxSpeed = trackStats.map(_.getSpeedMax()).filter(_ != 0).map(_ * 36 / 10)
+      val avgHeartRate = trackStats.map(_.getHrmAverage()).filter(_ != 0)
+      val avgCadence = trackStats.map(_.getCadenceAverage()).filter(_ != 0)
       val distance = trackStats.map(_.getTrackLength(true) / 1000)
       val distanceUphill = trackStats.map(_.getElePositiveDistance() / 1000)
       val distanceDownhill = trackStats.map(_.getEleNegativeDistance() / 1000)
@@ -108,6 +110,8 @@ trait LocusService extends RService with RflktApi {
         s"${W.averageSpeedWorkout}.value" -> formatFloatFixed(avgSpeed),
         s"${W.averageMovingSpeedWorkout}.value" -> formatFloatFixed(avgMovingSpeed),
         s"${W.maxSpeedWorkout}.value" -> formatFloatFixed(maxSpeed),
+        s"${W.averageCadenceWorkout}.value" -> formatInt(avgCadence),
+        s"${W.averageHeartRateWorkout}.value" -> formatInt(avgHeartRate),
         s"${W.distanceWorkout}.value" -> formatDoubleFixed(distance),
         s"${W.distanceUphillWorkout}.value" -> formatFloatFixed(distanceUphill),
         s"${W.distanceDownhillWorkout}.value" -> formatFloatFixed(distanceDownhill),

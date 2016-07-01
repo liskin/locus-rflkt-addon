@@ -59,7 +59,9 @@ object Pages {
     UnitWidget(W.elevationUphillWorkout, Icons.elevationUphill _, "M", "M", "Elevation – uphill (workout)"),
     UnitWidget(W.elevationDownhillWorkout, Icons.elevationDownhill _, "M", "M", "Elevation – downhill (workout)"),
     UnitWidget(W.cadenceCurrent, Icons.cadence _, "RPM", "RPM", "Cadence (current)"),
-    UnitWidget(W.heartRateCurrent, Icons.heartRate _, "BPM", "BPM", "Heart rate (current)")
+    UnitWidget(W.heartRateCurrent, Icons.heartRate _, "BPM", "BPM", "Heart rate (current)"),
+    UnitWidget(W.averageCadenceWorkout, Icons.cadence _, "AVG", "AVG RPM", "Average cadence (workout)"),
+    UnitWidget(W.averageHeartRateWorkout, Icons.heartRate _, "AVG", "AVG BPM", "Average heart rate (workout)")
   )
 
   private def unitGroup2x2(key: String, icon: => Bitmap, unit: String)(): Group = {
@@ -284,6 +286,8 @@ object Const {
     val elevationDownhillWorkout = "ELEVATION_WORKOUT_DOWNHILL"
     val cadenceCurrent = "BIKE_CAD_CURRENT"
     val heartRateCurrent = "HR_CURRENT"
+    val averageCadenceWorkout = "CADENCE_WORKOUT_AVG"
+    val averageHeartRateWorkout = "HR_WORKOUT_AVG"
 
     val nav1Action = "NAV1_ACTION"
     val nav1Dist = "NAV1_DIST"
