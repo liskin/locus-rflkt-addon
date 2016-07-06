@@ -19,7 +19,7 @@ lazy val root = project.in(file("."))
   name := "locus-rflkt-addon",
 
   commonSettings,
-  protifySettings,
+  //protifySettings,
 
   updateCheck in Android := {}, // disable update check
   proguardCache in Android ++= Seq(
