@@ -89,28 +89,28 @@ trait LocusService extends RService with RflktApi {
         s"${W.heartRateCurrent}.value" -> formatInt(curHeartRate)
       )
 
-      val trackRecord = Option(update.getTrackRecordContainer())
-      val time = trackRecord.map(_.getTime() / 1000)
-      val timeMoving = trackRecord.map(_.getTimeMove() / 1000)
-      val avgSpeed = trackRecord.map(_.getSpeedAvg()).filter(_ != 0).map(_ * 36 / 10)
-      val avgMovingSpeed = trackRecord.map(_.getSpeedAvgMove()).filter(_ != 0).map(_ * 36 / 10)
-      val maxSpeed = trackRecord.map(_.getSpeedMax()).filter(_ != 0).map(_ * 36 / 10)
-      val distance = trackRecord.map(_.getDistance() / 1000)
-      val distanceUphill = trackRecord.map(_.getDistanceUphill() / 1000)
-      val distanceDownhill = trackRecord.map(_.getDistanceDownhill() / 1000)
-      val elevationUphill = trackRecord.map(_.getAltitudeUphill())
-      val elevationDownhill = trackRecord.map(_.getAltitudeDownhill())
+      val trackStats = Option(update.getTrackRecStats())
+      val time = trackStats.map(_.getTrackTime(false) / 1000)
+      val timeMoving = trackStats.map(_.getTrackTime(true) / 1000)
+      val avgSpeed = trackStats.map(_.getSpeedAverage(false)).filter(_ != 0).map(_ * 36 / 10)
+      val avgMovingSpeed = trackStats.map(_.getSpeedAverage(true)).filter(_ != 0).map(_ * 36 / 10)
+      val maxSpeed = trackStats.map(_.getSpeedMax()).filter(_ != 0).map(_ * 36 / 10)
+      val distance = trackStats.map(_.getTrackLength(true) / 1000)
+      val distanceUphill = trackStats.map(_.getElePositiveDistance() / 1000)
+      val distanceDownhill = trackStats.map(_.getEleNegativeDistance() / 1000)
+      val elevationUphill = trackStats.map(_.getElePositiveHeight())
+      val elevationDownhill = trackStats.map(_.getEleNegativeHeight())
       val workout = Seq(
-        s"${W.statusWorkout}.rec_stopped" -> Vis(trackRecord.isEmpty),
-        s"${W.statusWorkout}.rec_paused" -> Vis(trackRecord.exists(_.isTrackRecPaused())),
+        s"${W.statusWorkout}.rec_stopped" -> Vis(!update.isTrackRecRecording()),
+        s"${W.statusWorkout}.rec_paused" -> Vis(update.isTrackRecPaused()),
         s"${W.timeWorkout}.value" -> formatDuration(time),
         s"${W.timeMovingWorkout}.value" -> formatDuration(timeMoving),
         s"${W.averageSpeedWorkout}.value" -> formatFloatFixed(avgSpeed),
         s"${W.averageMovingSpeedWorkout}.value" -> formatFloatFixed(avgMovingSpeed),
         s"${W.maxSpeedWorkout}.value" -> formatFloatFixed(maxSpeed),
         s"${W.distanceWorkout}.value" -> formatDoubleFixed(distance),
-        s"${W.distanceUphillWorkout}.value" -> formatDoubleFixed(distanceUphill),
-        s"${W.distanceDownhillWorkout}.value" -> formatDoubleFixed(distanceDownhill),
+        s"${W.distanceUphillWorkout}.value" -> formatFloatFixed(distanceUphill),
+        s"${W.distanceDownhillWorkout}.value" -> formatFloatFixed(distanceDownhill),
         s"${W.elevationUphillWorkout}.value" -> formatFloatRound(elevationUphill),
         s"${W.elevationDownhillWorkout}.value" -> formatFloatRound(elevationDownhill)
       )
@@ -158,7 +158,7 @@ trait LocusService extends RService with RflktApi {
   private def toggleRecording() {
     lastUpdate match {
       case Some(u) if u.isTrackRecRecording()
-                   && !u.getTrackRecordContainer().isTrackRecPaused() =>
+                   && !u.isTrackRecPaused() =>
         locusVer.foreach(ActionTools.actionTrackRecordPause(this, _))
       case _ =>
         locusVer.foreach(ActionTools.actionTrackRecordStart(this, _))
