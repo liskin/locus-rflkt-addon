@@ -35,7 +35,7 @@ https://cloud.githubusercontent.com/assets/300342/13775991/e713f932-eaa7-11e5-86
 
 # Building
 
-    $ GIT_ALLOW_PROTOCOL=file:git:http:https:ssh:hg git clone --recursive https://github.com/liskin/locus-rflkt-addon.git
+    $ git clone --recursive https://github.com/liskin/locus-rflkt-addon.git
     $ cd locus-rflkt-addon
     $ sbt
     > android:package
