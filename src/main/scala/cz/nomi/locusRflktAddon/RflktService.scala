@@ -54,6 +54,7 @@ trait RflktService extends ForegroundService with RflktApi {
   private var curSensor: Option[SensorConnection] = None
   private var status: String = ""
   private var availableElements: Set[String] = Set()
+  private val rflktVars: collection.mutable.Map[String, RflktApi.Val] = collection.mutable.Map.empty
 
   onRegister {
     hwCon = new HardwareConnector(this, Hardware)
@@ -305,17 +306,21 @@ trait RflktService extends ForegroundService with RflktApi {
       rflkt.loadConfig(conf)
     }
 
-  def setRflkt(vars: (String, RflktApi.Val)*) =
-    getCapRflktReady() foreach { rflkt =>
-      logger.info(s"setRflkt: setting")
-      vars foreach {
-        case (k, RflktApi.Str(v)) if availableElements(k) =>
-          rflkt.setValue(k, v.take(14))
-        case (k, RflktApi.Vis(v)) if availableElements(k) =>
-          rflkt.setVisisble(k, v)
-        case _ =>
-      }
+  def setRflkt(vars: (String, RflktApi.Val)*) {
+    rflktVars ++= vars
+    getCapRflktReady().foreach(doSetRflkt(_, vars: _*))
+  }
+
+  private def doSetRflkt(rflkt: Rflkt, vars: (String, RflktApi.Val)*) {
+    logger.info(s"setRflkt: setting")
+    vars foreach {
+      case (k, RflktApi.Str(v)) if availableElements(k) =>
+        rflkt.setValue(k, v.take(14))
+      case (k, RflktApi.Vis(v)) if availableElements(k) =>
+        rflkt.setVisisble(k, v)
+      case _ =>
     }
+  }
 
   def setRflktPage(page: String, timeout: Option[Int]) =
     getCapRflktReady() foreach { rflkt =>
@@ -340,6 +345,7 @@ trait RflktService extends ForegroundService with RflktApi {
   def onLoadComplete(conf: DisplayConfiguration) {
     availableElements = Set(
       conf.getPages().flatMap(_.getAllElements().map(_.getUpdateKey())): _*)
+    getCapRflktReady().foreach(doSetRflkt(_, rflktVars.toSeq: _*))
   }
 
   private var backlightTimer: Option[CountDownTimer] = None
