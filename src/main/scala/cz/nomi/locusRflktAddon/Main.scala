@@ -189,7 +189,7 @@ class Main extends AppCompatActivity with RActivity {
 }
 
 class MainService extends LocalService[MainService]
-  with RflktService with LocusService with NotificationService
+  with RflktService with LocusService with NotificationService with BatteryService
 {
   onRegister {
     logger.info(s"MainService: onCreate")

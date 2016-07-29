@@ -61,7 +61,8 @@ object Pages {
     UnitWidget(W.cadenceCurrent, Icons.cadence _, "RPM", "RPM", "Cadence (current)"),
     UnitWidget(W.heartRateCurrent, Icons.heartRate _, "BPM", "BPM", "Heart rate (current)"),
     UnitWidget(W.averageCadenceWorkout, Icons.cadence _, "AVG", "AVG RPM", "Average cadence (workout)"),
-    UnitWidget(W.averageHeartRateWorkout, Icons.heartRate _, "AVG", "AVG BPM", "Average heart rate (workout)")
+    UnitWidget(W.averageHeartRateWorkout, Icons.heartRate _, "AVG", "AVG BPM", "Average heart rate (workout)"),
+    UnitWidget(W.battery, Icons.battery _, "%", "%", "Battery level")
   )
 
   private def unitGroup2x2(key: String, icon: => Bitmap, unit: String)(): Group = {
@@ -298,6 +299,8 @@ object Const {
 
     val notifHeader = "NOTIFICATION_HEADER"
     def notifLine(i: Int) = s"NOTIFICATION_LINE$i"
+
+    val battery = "BATTERY_LEVEL"
   }
 
   object Page {
@@ -321,6 +324,7 @@ object Icons {
   def elevationDownhill = Bitmap("////D//////wz///Dz/w///wAPz/Dw8AP//wAMDADw8AAwwAAAwAAwzAAMDwAAMA8A8MAADw").frame(w = 18, h = 12).key("icon")
   def cadence = Bitmap("//8A////8A///8P/8/8///z8//PDz/8/D/z8/zPw8///ww///w8D/////P//PwD8////////").frame(w = 18, h = 12).key("icon")
   def heartRate = Bitmap("P8AP8P8AMAD8AwAAAD8AAADwAwAAAP8AAAD8PwAA8P8PAMD//wMA////APz//z/w////z///").frame(w = 18, h = 12).key("icon")
+  def battery = Bitmap("/z/A//8PAAD///z/8//P/z////z/8//PADD//wwA8//P/z///wwA8//PADD///z/8/8PAAD/").frame(w = 18, h = 12).key("icon")
 
   def recStopped = Bitmap("////////////PwAAwP8DAAD8PwAAwP8DAAD8PwAAwP8DAAD8PwAAwP8DAAD8////////////").frame(w = 18, h = 12).key("rec_stopped")
   def recPaused = Bitmap("/////////////8A/8P8P/AP//8A/8P8P/AP//8A/8P8P/AP//8A/8P8P/AP/////////////").frame(w = 18, h = 12).key("rec_paused")
