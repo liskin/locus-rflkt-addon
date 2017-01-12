@@ -168,10 +168,6 @@ class Main extends AppCompatActivity with RActivity {
       "https://github.com/pocorall/scaloid",
       "Copyright 2014 Sung-Ho Lee and Scaloid contributors",
       new ApacheSoftwareLicense20()))
-    notices.addNotice(new Notice("NoAnalytics",
-      "https://github.com/mar-v-in/NoAnalytics",
-      "Copyright 2012-2014 μg Project Team",
-      new ApacheSoftwareLicense20()))
 
     new LicensesDialogFragment.Builder(this)
       .setNotices(notices)

@@ -15,7 +15,6 @@ lazy val commonSettings = Def.settings(
 
 lazy val root = project.in(file("."))
 .enablePlugins(AndroidApp)
-.dependsOn(noAnalytics)
 .settings(
   name := "locus-rflkt-addon",
 
@@ -63,12 +62,4 @@ lazy val root = project.in(file("."))
   libraryDependencies += "com.asamm" % "locus-api-android" % "0.2.7",
 
   addCompilerPlugin("com.github.ghik" % "silencer-plugin" % "0.4")
-)
-
-lazy val noAnalytics = project.in(file("deps/NoAnalytics/NoAnalytics"))
-.enablePlugins(AndroidJar)
-.settings(
-  name := "NoAnalytics",
-  commonSettings,
-  antLayoutDetector in Android := ()
 )

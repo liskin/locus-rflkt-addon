@@ -1,4 +1,0 @@
-[submodule "deps/NoAnalytics"]
-	path = deps/NoAnalytics
-	url = https://github.com/mar-v-in/NoAnalytics.git
-	ignore = untracked
