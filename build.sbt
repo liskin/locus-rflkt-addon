@@ -4,8 +4,8 @@
  */
 
 lazy val commonSettings = Def.settings(
-  platformTarget in Android := "android-22",
-  targetSdkVersion in Android := "22",
+  platformTarget in Android := "android-23",
+  targetSdkVersion in Android := "23",
   minSdkVersion in Android := "18",
 
   javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
@@ -54,7 +54,7 @@ lazy val root = project.in(file("."))
   resolvers += "jcenter" at "http://jcenter.bintray.com",
 
   libraryDependencies += aar("org.macroid" %% "macroid" % "2.0.0-M5"),
-  libraryDependencies += "com.android.support" % "appcompat-v7" % "22.2.1",
+  libraryDependencies += "com.android.support" % "appcompat-v7" % "23.4.0",
   libraryDependencies += "org.log4s" %% "log4s" % "1.2.1",
   libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.18",
   libraryDependencies += "de.psdev.licensesdialog" % "licensesdialog" % "1.8.0",
