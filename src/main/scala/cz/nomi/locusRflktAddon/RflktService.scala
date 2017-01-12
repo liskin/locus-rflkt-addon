@@ -61,21 +61,13 @@ trait RflktService extends ForegroundService with RflktApi {
   }
 
   onUnregister {
-    hwCon.stopDiscovery()
+    hwCon.stopDiscovery(Discovery)
     hwCon.shutdown()
   }
 
   private object Hardware extends HardwareConnector.Listener {
-    override def connectedSensor(s: SensorConnection) {
-      logger.info(s"connectedSensor: $s")
-    }
-
-    override def disconnectedSensor(s: SensorConnection) {
-      logger.info(s"disconnectedSensor: $s")
-    }
-
-    override def connectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
-      logger.info(s"connectorStateChanged: $nt, $state")
+    override def onHardwareConnectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
+      logger.info(s"onHardwareConnectorStateChanged: $nt, $state")
     }
 
     override def onFirmwareUpdateRequired(s: SensorConnection, current: String, recommended: String) {
@@ -85,7 +77,7 @@ trait RflktService extends ForegroundService with RflktApi {
 
   private object Discovery extends DiscoveryListener {
     override def onDeviceDiscovered(params: ConnectionParams) {
-      if (!params.hasCapability(CapabilityType.Rflkt))
+      if (!params.hasCapability(RflktService.this, CapabilityType.Rflkt))
         return
 
       logger.info(s"onDeviceDiscovered: $params")
@@ -94,7 +86,7 @@ trait RflktService extends ForegroundService with RflktApi {
     }
 
     override def onDiscoveredDeviceLost(params: ConnectionParams) {
-      if (!params.hasCapability(CapabilityType.Rflkt))
+      if (!params.hasCapability(RflktService.this, CapabilityType.Rflkt))
         return
 
       logger.info(s"onDiscoveredDeviceLost: $params")
@@ -205,6 +197,7 @@ trait RflktService extends ForegroundService with RflktApi {
       logger.info(s"onLoadProgressChanged: $progress")
       refreshUi(s"loading config... $progress/100")
     }
+    override def onNotificationDisplayReceived(enabled: Boolean) {}
     override def onPageIndexReceived(index: Int) {}
   }
 
@@ -216,7 +209,7 @@ trait RflktService extends ForegroundService with RflktApi {
         hwCon.startDiscovery(Discovery)
       case false =>
         logger.info(s"stopDiscovery")
-        hwCon.stopDiscovery()
+        hwCon.stopDiscovery(Discovery)
     }
   }
 
@@ -228,7 +221,7 @@ trait RflktService extends ForegroundService with RflktApi {
 
   private def getFirst(): Option[ConnectionParams] = {
     val rflkts = hwCon.getDiscoveredConnectionParams()
-      .filter(_.hasCapability(CapabilityType.Rflkt))
+      .filter(_.hasCapability(this, CapabilityType.Rflkt))
     rflkts.headOption orElse lastSensorOption
   }
 
@@ -249,7 +242,7 @@ trait RflktService extends ForegroundService with RflktApi {
       startForeground()
       enableBluetooth()
       hwCon.requestSensorConnection(p, Connection)
-      hwCon.stopDiscovery()
+      hwCon.stopDiscovery(Discovery)
     }
   }
 
