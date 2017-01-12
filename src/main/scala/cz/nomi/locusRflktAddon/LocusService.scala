@@ -78,7 +78,7 @@ trait LocusService extends RService with RflktApi {
       )
 
       val loc = update.getLocMyLocation()
-      val curSpeed = Option(loc.getSpeedToDisplay()).filter(_ != 0).map(_ * 36 / 10)
+      val curSpeed = Option(loc.getSpeedOptimal()).filter(_ != 0).map(_ * 36 / 10)
       val curElevation = Option(loc.getAltitude()).filter(_ != 0)
       val curHeartRate = Option(loc.getSensorHeartRate()).filter(_ != 0)
       val curCadence = Option(loc.getSensorCadence()).filter(_ != 0)

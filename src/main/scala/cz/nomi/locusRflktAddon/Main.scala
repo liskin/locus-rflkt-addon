@@ -158,12 +158,9 @@ class Main extends AppCompatActivity with RActivity {
     notices.addNotice(new Notice(getString(R.string.app_name),
       "https://github.com/liskin/locus-rflkt-addon",
       "Copyright (C) 2016 Tomáš Janoušek", new OurLicense()))
-    notices.addNotice(new Notice("LocusAPI",
-      "https://bitbucket.org/asamm/locus-api/",
+    notices.addNotice(new Notice("Locus API",
+      "https://github.com/asamm/locus-api",
       "Copyright Asamm Software, s.r.o.", new GnuLesserGeneralPublicLicense3()))
-    notices.addNotice(new Notice("LocusAddonPublicLib",
-      "https://bitbucket.org/asamm/locus-api-android/",
-      "Copyright Asamm Software, s.r.o.", new GnuGeneralPublicLicense30()))
     notices.addNotice(new Notice("macroid",
       "https://github.com/47deg/macroid",
       "Copyright Nick Stanchenko and contributors", new MITLicense()))

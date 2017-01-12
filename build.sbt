@@ -59,7 +59,7 @@ lazy val root = project.in(file("."))
   libraryDependencies += "org.slf4j" % "slf4j-android" % "1.7.22",
   libraryDependencies += "de.psdev.licensesdialog" % "licensesdialog" % "1.8.1",
   libraryDependencies += "com.github.ghik" % "silencer-lib" % "0.4",
-  libraryDependencies += "com.asamm" % "locus-api-android" % "0.2.4",
+  libraryDependencies += "com.asamm" % "locus-api-android" % "0.2.7",
 
   addCompilerPlugin("com.github.ghik" % "silencer-plugin" % "0.4")
 )
