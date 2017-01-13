@@ -37,6 +37,7 @@ import Log._
 import Broadcasts._
 import Preferences._
 import Const._
+import Dialog._
 
 trait RflktApi {
   def setRflkt(vars: (String, RflktApi.Val)*): Unit
@@ -218,13 +219,11 @@ trait RflktService extends ForegroundService with RflktApi {
           case DISCOVERY_ALREADY_IN_PROGRESS =>
             // ok
           case HARDWARE_NOT_ENABLED =>
-            notice("Bluetooth is disabled")
             enableBluetooth()
           case LOCATION_SERVICES_DISABLED =>
-            notice("Location is disabled")
-            enableLocation()
+            enableLocationDialog(act)
           case INSUFFICIENT_PERMISSIONS =>
-            ActivityCompat.requestPermissions(act, Array(permission.ACCESS_FINE_LOCATION), 0)
+            locationPermissionDialog(act)
           case notSuccess =>
             // other error
             notice(notSuccess.toString)
@@ -294,10 +293,32 @@ trait RflktService extends ForegroundService with RflktApi {
     startActivity(intent)
   }
 
+  private def enableLocationDialog(act: Activity) {
+    dlg(act)(
+      "Location is disabled",
+      "Bluetooth discovery needs location, please enable it."
+    ) {
+      enableLocation()
+    }
+  }
+
   private def enableLocation() {
     val intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
+  }
+
+  private def locationPermissionDialog(act: Activity) {
+    dlg(act)(
+      "Location permission missing",
+      "Bluetooth discovery needs location, please grant the permission."
+    ) {
+      requestLocationPermission(act)
+    }
+  }
+
+  private def requestLocationPermission(act: Activity) {
+    ActivityCompat.requestPermissions(act, Array(permission.ACCESS_FINE_LOCATION), 0)
   }
 
   private def getCap[T](typ: CapabilityType): Option[T] =

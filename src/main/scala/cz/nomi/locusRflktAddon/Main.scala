@@ -20,6 +20,7 @@ import macroid.contrib.LpTweaks.matchWidth
 import Log._
 import Broadcasts._
 import Const._
+import Dialog._
 
 class Main extends AppCompatActivity with RActivity {
   private val service = new LocalServiceConnection[MainService]
@@ -87,27 +88,35 @@ class Main extends AppCompatActivity with RActivity {
   private def checkLocus() {
     if (service(_.isLocusInstalled).get) {
       if (!service(_.isLocusPeriodicUpdatesEnabled).get) {
-        val msg = "Periodic updates must be enabled in Settings → Miscellaneous."
-        (dialog(s"$msg\n\nbring me to Locus Map") <~
-          title("Periodic updates disabled") <~
-          positiveOk(locusSettings) <~
-          speak).run
+        locusPeriodicUpdatesDialog()
       }
     } else {
-      (dialog("bring me to Google Play") <~
-        title("Locus Map not installed") <~
-        positiveOk(locusGooglePlay) <~
-        speak).run
+      locusGooglePlay()
     }
   }
 
-  private def locusGooglePlay: Ui[_] = Ui {
-    startActivity(new Intent(Intent.ACTION_VIEW,
-      Uri.parse("market://details?id=menion.android.locus.pro")));
+  private def locusGooglePlay() {
+    dlg(this)(
+      "Locus Map not installed",
+      """This app is an add-on for Locus Map and will not be useful without it.
+        |You need to install Locus Map and get familiar with it first.
+        |
+        |Bring me to Google Play.""".stripMargin
+    ) {
+      startActivity(new Intent(Intent.ACTION_VIEW,
+        Uri.parse("market://details?id=menion.android.locus.pro")));
+    }
   }
 
-  private def locusSettings: Ui[_] = Ui {
-    service(_.launchLocus())
+  private def locusPeriodicUpdatesDialog() {
+    dlg(this)(
+      "Periodic updates disabled",
+      """Periodic updates must be enabled in Settings → Miscellaneous.
+        |
+        |Bring me to Locus Map.""".stripMargin
+    ) {
+      service(_.launchLocus())
+    }
   }
 
   private var menuItemDiscovery: Option[MenuItem] = None

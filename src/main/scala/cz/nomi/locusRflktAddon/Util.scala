@@ -199,6 +199,16 @@ trait Notice {
   }
 }
 
+object Dialog {
+  import macroid._
+  import macroid.FullDsl._
+
+  def dlg(act: Activity)(tit: String, msg: String)(action: => Unit) {
+    implicit val ctxWrapper = ContextWrapper(act)
+    (dialog(msg) <~ title(tit) <~ positiveOk(Ui(action)) <~ speak).run
+  }
+}
+
 trait OptionsMenu {
   protected var onCreateOptionsMenuBodies: List[Menu => Unit] = Nil
   protected var onPrepareOptionsMenuBodies: List[Menu => Unit] = Nil
