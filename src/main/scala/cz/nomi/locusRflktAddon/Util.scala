@@ -199,7 +199,7 @@ trait Notice {
   }
 }
 
-object Dialog {
+object Dialogs {
   import macroid._
   import macroid.FullDsl._
 

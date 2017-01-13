@@ -37,7 +37,7 @@ import Log._
 import Broadcasts._
 import Preferences._
 import Const._
-import Dialog._
+import Dialogs._
 
 trait RflktApi {
   def setRflkt(vars: (String, RflktApi.Val)*): Unit

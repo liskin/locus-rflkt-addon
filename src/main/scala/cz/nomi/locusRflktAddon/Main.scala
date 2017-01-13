@@ -20,7 +20,7 @@ import macroid.contrib.LpTweaks.matchWidth
 import Log._
 import Broadcasts._
 import Const._
-import Dialog._
+import Dialogs._
 
 class Main extends AppCompatActivity with RActivity {
   private val service = new LocalServiceConnection[MainService]
