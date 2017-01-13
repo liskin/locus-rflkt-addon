@@ -41,6 +41,7 @@ class Main extends AppCompatActivity with RActivity {
         l[LinearLayout](
           w[Button] <~ matchWidth <~ wire(connectButton) <~ On.click { Ui {
             service(_.connectFirst()).get
+            refreshMenuItemDiscovery()
           }},
           w[Button] <~ matchWidth <~ wire(disconnectButton) <~ On.click { Ui {
             service(_.disconnect()).get
@@ -109,15 +110,23 @@ class Main extends AppCompatActivity with RActivity {
     service(_.launchLocus())
   }
 
-  private var menuItemDiscovery: MenuItem = _
+  private var menuItemDiscovery: Option[MenuItem] = None
+
+  private def refreshMenuItemDiscovery() {
+    menuItemDiscovery foreach { mi =>
+      mi.setChecked(service(_.isDiscovering()).getOrElse(false))
+    }
+  }
 
   onCreateOptionsMenu { menu =>
-    menuItemDiscovery =
+    menuItemDiscovery = Some {
       onMenuClick(menu.add("Discovery").setCheckable(true)) { mi =>
         service { s =>
-          s.enableDiscovery(!s.isDiscovering())
+          s.enableDiscovery(this, !s.isDiscovering())
         }.get
+        refreshMenuItemDiscovery()
       }
+    }
 
     onMenuClick {
       menu.add("preferences")
@@ -135,9 +144,7 @@ class Main extends AppCompatActivity with RActivity {
     }
   }
 
-  onPrepareOptionsMenu { menu =>
-    menuItemDiscovery.setChecked(service(_.isDiscovering()).getOrElse(false))
-  }
+  onPrepareOptionsMenu { menu => refreshMenuItemDiscovery() }
 
   broadcastReceiver(actionStop) { (context: Context, intent: Intent) =>
     logger.info(s"Main: actionStop received")

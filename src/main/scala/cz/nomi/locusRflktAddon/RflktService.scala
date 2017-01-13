@@ -7,11 +7,12 @@ package cz.nomi.locusRflktAddon
 
 import scala.collection.JavaConversions._
 
-import android.app.{NotificationManager, PendingIntent, Service}
+import android.app.{NotificationManager, PendingIntent, Service, Activity}
 import android.content.{Intent, Context}
-import android.support.v4.app.NotificationCompat
+import android.support.v4.app.{NotificationCompat, ActivityCompat}
 import android.bluetooth.BluetoothAdapter
 import android.os.CountDownTimer
+import android.Manifest.permission
 
 import java.util.UUID
 
@@ -23,6 +24,7 @@ import connector.conn.connections
 import connections.SensorConnection
 import connections.params.{ConnectionParams, BTLEConnectionParams}
 import connector.listeners.discovery.DiscoveryListener
+import connector.listeners.discovery.DiscoveryResult
 import connector.capabilities
 import capabilities.Capability.CapabilityType
 import capabilities.ConfirmConnection
@@ -201,12 +203,33 @@ trait RflktService extends ForegroundService with RflktApi {
     override def onPageIndexReceived(index: Int) {}
   }
 
-  def enableDiscovery(enable: Boolean) {
-    enableBluetooth()
+  def enableDiscovery(act: Activity, enable: Boolean) {
     enable match {
       case true =>
+        import DiscoveryResult.DiscoveryResultCode._
+
         logger.info(s"startDiscovery")
-        hwCon.startDiscovery(Discovery)
+
+        val res = hwCon.startDiscovery(Discovery, NetworkType.BTLE).getResult(NetworkType.BTLE)
+        logger.info(s"startDiscovery: $res")
+        res match {
+          case SUCCESS =>
+            // ok
+          case DISCOVERY_ALREADY_IN_PROGRESS =>
+            // ok
+          case HARDWARE_NOT_ENABLED =>
+            notice("Bluetooth is disabled")
+            enableBluetooth()
+          case LOCATION_SERVICES_DISABLED =>
+            notice("Location is disabled")
+            enableLocation()
+          case INSUFFICIENT_PERMISSIONS =>
+            ActivityCompat.requestPermissions(act, Array(permission.ACCESS_FINE_LOCATION), 0)
+          case notSuccess =>
+            // other error
+            notice(notSuccess.toString)
+        }
+
       case false =>
         logger.info(s"stopDiscovery")
         hwCon.stopDiscovery(Discovery)
@@ -240,7 +263,7 @@ trait RflktService extends ForegroundService with RflktApi {
   def connectFirst() {
     getFirst().foreach { p =>
       startForeground()
-      enableBluetooth()
+      if (needEnableBluetooth()) enableBluetooth()
       hwCon.requestSensorConnection(p, Connection)
       hwCon.stopDiscovery(Discovery)
     }
@@ -262,12 +285,19 @@ trait RflktService extends ForegroundService with RflktApi {
     sendLocalBroadcast(refreshUiIntent)
   }
 
+  private def needEnableBluetooth(): Boolean =
+    hwCon.getHardwareConnectorState(NetworkType.BTLE) == HardwareConnectorState.HARDWARE_NOT_ENABLED
+
   private def enableBluetooth() {
-    if (hwCon.getHardwareConnectorState(NetworkType.BTLE) == HardwareConnectorState.HARDWARE_NOT_ENABLED) {
-      val intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-      startActivity(intent)
-    }
+    val intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(intent)
+  }
+
+  private def enableLocation() {
+    val intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(intent)
   }
 
   private def getCap[T](typ: CapabilityType): Option[T] =
