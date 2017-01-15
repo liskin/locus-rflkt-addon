@@ -35,7 +35,11 @@ lazy val root = project.in(file("."))
   ),
 
   proguardVersion := "5.3.2",
-  proguardOptions in Android ++= Seq("-keepattributes Signature", "-ignorewarnings"),
+  proguardOptions in Android ++= Seq(
+    "-keepattributes Signature",
+    "-ignorewarnings",
+    "-keep class com.dsi.ant.**"
+  ),
   proguardConfig in Android := {
     // This is probably wrong
     // (https://github.com/pfn/android-sdk-plugin/issues/242) but it
