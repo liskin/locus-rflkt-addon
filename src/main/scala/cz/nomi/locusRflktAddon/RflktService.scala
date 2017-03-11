@@ -386,10 +386,35 @@ trait RflktService extends ForegroundService with RflktApi {
     }
   }
 
+  private var loadTimer: Option[CountDownTimer] = None
+
   def onLoadComplete(conf: DisplayConfiguration) {
     availableElements = Set(
       conf.getPages().flatMap(_.getAllElements().map(_.getUpdateKey())): _*)
+
+    // set variables to their saved state (so that we don't have to wait for a
+    // periodic update)
     getCapRflktReady().foreach(doSetRflkt(_, rflktVars.toSeq: _*))
+
+    // reset everything to work around bug in wahoo_fitness_android_api_1.7.1.5
+    loadTimer.foreach(_.cancel())
+    loadTimer = Some {
+      new CountDownTimer(5000, 5000) {
+        def onTick(millisLeft: Long) {}
+        def onFinish() {
+          getCapRflktReady() foreach { rflkt =>
+            def resetVars(str: String, vis: Boolean) = rflktVars map {
+              case (k, RflktApi.Str(_)) => (k, RflktApi.Str(str))
+              case (k, RflktApi.Vis(_)) => (k, RflktApi.Vis(vis))
+            }
+            doSetRflkt(rflkt, resetVars("x", true).toSeq: _*)
+            doSetRflkt(rflkt, resetVars("", false).toSeq: _*)
+            doSetRflkt(rflkt, rflktVars.toSeq: _*)
+          }
+          loadTimer = None
+        }
+      }.start()
+    }
   }
 
   private var backlightTimer: Option[CountDownTimer] = None
