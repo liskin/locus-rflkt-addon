@@ -27,6 +27,7 @@ class Main extends AppCompatActivity with RActivity {
 
   private var connectButton = slot[Button]
   private var disconnectButton = slot[Button]
+  private var resetDisplayButton = slot[Button]
 
   onCreate {
     logger.info(s"Main: onCreate")
@@ -46,7 +47,10 @@ class Main extends AppCompatActivity with RActivity {
           }},
           w[Button] <~ matchWidth <~ wire(disconnectButton) <~ On.click { Ui {
             service(_.disconnect()).get
-          }} <~ text("disconnect")
+          }} <~ text("disconnect"),
+          w[Button] <~ matchWidth <~ wire(resetDisplayButton) <~ On.click { Ui {
+            service(_.resetDisplay()).get
+          }} <~ text("reset display")
         ) <~ vertical
       }
     }
@@ -73,13 +77,15 @@ class Main extends AppCompatActivity with RActivity {
             case Some(d) =>
               connectButton <~ text(s"connect to $d") <~ enable
           },
-          disconnectButton <~ disable
+          disconnectButton <~ disable,
+          resetDisplayButton <~ disable
         )
       } else {
         val status = service(_.getStatus()).get
         Ui.sequence(
           connectButton <~ text(status) <~ disable,
-          disconnectButton <~ enable
+          disconnectButton <~ enable,
+          resetDisplayButton <~ enable
         )
       }
     }

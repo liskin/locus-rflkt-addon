@@ -402,18 +402,22 @@ trait RflktService extends ForegroundService with RflktApi {
       new CountDownTimer(5000, 5000) {
         def onTick(millisLeft: Long) {}
         def onFinish() {
-          getCapRflktReady() foreach { rflkt =>
-            def resetVars(str: String, vis: Boolean) = rflktVars map {
-              case (k, RflktApi.Str(_)) => (k, RflktApi.Str(str))
-              case (k, RflktApi.Vis(_)) => (k, RflktApi.Vis(vis))
-            }
-            doSetRflkt(rflkt, resetVars("x", true).toSeq: _*)
-            doSetRflkt(rflkt, resetVars("", false).toSeq: _*)
-            doSetRflkt(rflkt, rflktVars.toSeq: _*)
-          }
+          resetDisplay()
           loadTimer = None
         }
       }.start()
+    }
+  }
+
+  def resetDisplay() {
+    getCapRflktReady() foreach { rflkt =>
+      def resetVars(str: String, vis: Boolean) = rflktVars map {
+        case (k, RflktApi.Str(_)) => (k, RflktApi.Str(str))
+        case (k, RflktApi.Vis(_)) => (k, RflktApi.Vis(vis))
+      }
+      doSetRflkt(rflkt, resetVars("x", true).toSeq: _*)
+      doSetRflkt(rflkt, resetVars("", false).toSeq: _*)
+      doSetRflkt(rflkt, rflktVars.toSeq: _*)
     }
   }
 
