@@ -180,6 +180,7 @@ object Pages {
     navDist.key(W.nav2Dist).frame(48, 74, 80, 33),
     navName.key(W.nav2Name).frame(0, 106, 128, 22)
   ).custom(C.reduced, c.reduced.toString)
+  .custom(C.autoSwitch, c.autoSwitch.toString)
 
   private def notifHeader: Group = {
     val rect = Rect().frame(w = 128, h = 27)
@@ -209,7 +210,7 @@ object Pages {
     def key: String
   }
 
-  class ConfPageNav(val reduced: Boolean) extends ConfPage {
+  class ConfPageNav(val reduced: Boolean, val autoSwitch: Boolean) extends ConfPage {
     val key = P.navigation
   }
 
@@ -310,6 +311,7 @@ object Const {
 
   object Custom {
     val reduced = "reduced"
+    val autoSwitch = "autoSwitch"
   }
 }
 
