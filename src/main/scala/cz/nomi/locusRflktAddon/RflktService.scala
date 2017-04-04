@@ -64,13 +64,21 @@ trait RflktService extends ForegroundService with RflktApi {
   }
 
   onUnregister {
-    hwCon.stopDiscovery(Discovery)
+    hwCon.stopDiscovery()
     hwCon.shutdown()
   }
 
   private object Hardware extends HardwareConnector.Listener {
-    override def onHardwareConnectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
-      logger.info(s"onHardwareConnectorStateChanged: $nt, $state")
+    override def connectedSensor(s: SensorConnection) {
+      logger.info(s"connectedSensor: $s")
+    }
+
+    override def disconnectedSensor(s: SensorConnection) {
+      logger.info(s"disconnectedSensor: $s")
+    }
+
+    override def connectorStateChanged(nt: NetworkType, state: HardwareConnectorState) {
+      logger.info(s"connectorStateChanged: $nt, $state")
     }
 
     override def onFirmwareUpdateRequired(s: SensorConnection, current: String, recommended: String) {
@@ -80,7 +88,7 @@ trait RflktService extends ForegroundService with RflktApi {
 
   private object Discovery extends DiscoveryListener {
     override def onDeviceDiscovered(params: ConnectionParams) {
-      if (!params.hasCapability(RflktService.this, CapabilityType.Rflkt))
+      if (!params.hasCapability(CapabilityType.Rflkt))
         return
 
       logger.info(s"onDeviceDiscovered: $params")
@@ -89,7 +97,7 @@ trait RflktService extends ForegroundService with RflktApi {
     }
 
     override def onDiscoveredDeviceLost(params: ConnectionParams) {
-      if (!params.hasCapability(RflktService.this, CapabilityType.Rflkt))
+      if (!params.hasCapability(CapabilityType.Rflkt))
         return
 
       logger.info(s"onDiscoveredDeviceLost: $params")
@@ -200,7 +208,6 @@ trait RflktService extends ForegroundService with RflktApi {
       logger.info(s"onLoadProgressChanged: $progress")
       refreshUi(s"loading config... $progress/100")
     }
-    override def onNotificationDisplayReceived(enabled: Boolean) {}
     override def onPageIndexReceived(index: Int) {}
   }
 
@@ -211,7 +218,7 @@ trait RflktService extends ForegroundService with RflktApi {
 
         logger.info(s"startDiscovery")
 
-        val res = hwCon.startDiscovery(Discovery, NetworkType.BTLE).getResult(NetworkType.BTLE)
+        val res = hwCon.startDiscovery(Discovery).getBtleDiscoveryResultCode()
         logger.info(s"startDiscovery: $res")
         res match {
           case SUCCESS =>
@@ -220,10 +227,15 @@ trait RflktService extends ForegroundService with RflktApi {
             // ok
           case HARDWARE_NOT_ENABLED =>
             enableBluetooth()
+          case FAILED =>
+            enableLocationDialog(act)
+            locationPermissionDialog(act)
+          /*
           case LOCATION_SERVICES_DISABLED =>
             enableLocationDialog(act)
           case INSUFFICIENT_PERMISSIONS =>
             locationPermissionDialog(act)
+          */
           case notSuccess =>
             // other error
             notice(notSuccess.toString)
@@ -231,7 +243,7 @@ trait RflktService extends ForegroundService with RflktApi {
 
       case false =>
         logger.info(s"stopDiscovery")
-        hwCon.stopDiscovery(Discovery)
+        hwCon.stopDiscovery()
     }
   }
 
@@ -243,7 +255,7 @@ trait RflktService extends ForegroundService with RflktApi {
 
   private def getFirst(): Option[ConnectionParams] = {
     val rflkts = hwCon.getDiscoveredConnectionParams()
-      .filter(_.hasCapability(this, CapabilityType.Rflkt))
+      .filter(_.hasCapability(CapabilityType.Rflkt))
     rflkts.headOption orElse lastSensorOption
   }
 
@@ -264,7 +276,7 @@ trait RflktService extends ForegroundService with RflktApi {
       startForeground()
       if (needEnableBluetooth()) enableBluetooth()
       hwCon.requestSensorConnection(p, Connection)
-      hwCon.stopDiscovery(Discovery)
+      hwCon.stopDiscovery()
     }
   }
 
@@ -386,39 +398,10 @@ trait RflktService extends ForegroundService with RflktApi {
     }
   }
 
-  private var loadTimer: Option[CountDownTimer] = None
-
   def onLoadComplete(conf: DisplayConfiguration) {
     availableElements = Set(
       conf.getPages().flatMap(_.getAllElements().map(_.getUpdateKey())): _*)
-
-    // set variables to their saved state (so that we don't have to wait for a
-    // periodic update)
     getCapRflktReady().foreach(doSetRflkt(_, rflktVars.toSeq: _*))
-
-    // reset everything to work around bug in wahoo_fitness_android_api_1.7.1.5
-    loadTimer.foreach(_.cancel())
-    loadTimer = Some {
-      new CountDownTimer(5000, 5000) {
-        def onTick(millisLeft: Long) {}
-        def onFinish() {
-          resetDisplay()
-          loadTimer = None
-        }
-      }.start()
-    }
-  }
-
-  def resetDisplay() {
-    getCapRflktReady() foreach { rflkt =>
-      def resetVars(str: String, vis: Boolean) = rflktVars map {
-        case (k, RflktApi.Str(_)) => (k, RflktApi.Str(str))
-        case (k, RflktApi.Vis(_)) => (k, RflktApi.Vis(vis))
-      }
-      doSetRflkt(rflkt, resetVars("x", true).toSeq: _*)
-      doSetRflkt(rflkt, resetVars("", false).toSeq: _*)
-      doSetRflkt(rflkt, rflktVars.toSeq: _*)
-    }
   }
 
   private var backlightTimer: Option[CountDownTimer] = None

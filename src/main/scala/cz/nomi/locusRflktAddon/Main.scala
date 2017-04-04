@@ -27,7 +27,6 @@ class Main extends AppCompatActivity with RActivity {
 
   private var connectButton = slot[Button]
   private var disconnectButton = slot[Button]
-  private var resetDisplayButton = slot[Button]
 
   onCreate {
     logger.info(s"Main: onCreate")
@@ -47,10 +46,7 @@ class Main extends AppCompatActivity with RActivity {
           }},
           w[Button] <~ matchWidth <~ wire(disconnectButton) <~ On.click { Ui {
             service(_.disconnect()).get
-          }} <~ text("disconnect"),
-          w[Button] <~ matchWidth <~ wire(resetDisplayButton) <~ On.click { Ui {
-            service(_.resetDisplay()).get
-          }} <~ text("reset display")
+          }} <~ text("disconnect")
         ) <~ vertical
       }
     }
@@ -77,15 +73,13 @@ class Main extends AppCompatActivity with RActivity {
             case Some(d) =>
               connectButton <~ text(s"connect to $d") <~ enable
           },
-          disconnectButton <~ disable,
-          resetDisplayButton <~ disable
+          disconnectButton <~ disable
         )
       } else {
         val status = service(_.getStatus()).get
         Ui.sequence(
           connectButton <~ text(status) <~ disable,
-          disconnectButton <~ enable,
-          resetDisplayButton <~ enable
+          disconnectButton <~ enable
         )
       }
     }
@@ -189,6 +183,10 @@ class Main extends AppCompatActivity with RActivity {
     notices.addNotice(new Notice("scaloid",
       "https://github.com/pocorall/scaloid",
       "Copyright 2014 Sung-Ho Lee and Scaloid contributors",
+      new ApacheSoftwareLicense20()))
+    notices.addNotice(new Notice("NoAnalytics",
+      "https://github.com/mar-v-in/NoAnalytics",
+      "Copyright 2012-2014 μg Project Team",
       new ApacheSoftwareLicense20()))
 
     new LicensesDialogFragment.Builder(this)
