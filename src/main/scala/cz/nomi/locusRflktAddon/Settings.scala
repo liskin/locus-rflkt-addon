@@ -97,20 +97,29 @@ class SettingNavPage extends SettingScreen with SettingValue[Option[ConfPageNav]
   lazy val notReduced =
     SwitchPref("navigationPage.notReduced", "Full icons",
       "(loading pages faster if disabled)", false)
+  lazy val autoSwitch =
+    SwitchPref("navigationPage.autoSwitch", "Autoswitch",
+      "(show navigation 100 meters before turn)", true)
 
   override def addPreferences(pf: PreferenceFragment,
       group: PreferenceGroup): Seq[Preference] = {
     val sup = super.addPreferences(pf, group)
     val switch = enabled.addToGroup(pf, group)
-    val other = notReduced.addToGroup(pf, group)
+    val other = Seq(
+      notReduced.addToGroup(pf, group),
+      autoSwitch.addToGroup(pf, group)
+    )
     switch.setDisableDependentsState(false)
-    other.setDependency(switch.getKey())
-    sup :+ switch :+ other
+    other.foreach(_.setDependency(switch.getKey()))
+    sup ++: switch +: other
   }
 
   def getValue(pref: SharedPreferences): Option[ConfPageNav] =
     if (enabled.getValue(pref))
-      Some(new ConfPageNav(!notReduced.getValue(pref)))
+      Some(new ConfPageNav(
+        reduced = !notReduced.getValue(pref),
+        autoSwitch = autoSwitch.getValue(pref)
+      ))
     else
       None
 }

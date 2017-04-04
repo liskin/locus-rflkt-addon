@@ -136,6 +136,10 @@ trait LocusService extends RService with RflktApi {
       ) ++ nav1Icon ++ nav2Icon
 
       setRflkt((clock ++ current ++ workout ++ nav): _*)
+
+      if (navAutoSwitch && nav1Dist.exists(_ <= 0.1)) {
+        setRflktPage(display.Const.Page.navigation, timeout = Some(10))
+      }
     }
 
     private def setNavIcon(group: String, action: Option[Int]): Seq[(String, Val)] = {
@@ -180,13 +184,16 @@ trait LocusService extends RService with RflktApi {
   }
 
   private var navReduced: Boolean = false
+  private var navAutoSwitch: Boolean = false
 
   abstract override def onLoadComplete(conf: DisplayConfiguration) {
     super.onLoadComplete(conf)
 
     import display.Const.{Page => P, Custom => C}
-    navReduced = Option(conf.getPage(P.navigation))
-      .flatMap(p => Option(p.getCustom(C.reduced)))
+    val navPage = Option(conf.getPage(P.navigation))
+    navReduced = navPage.flatMap(p => Option(p.getCustom(C.reduced)))
+      .map(_.toBoolean).getOrElse(false)
+    navAutoSwitch = navPage.flatMap(p => Option(p.getCustom(C.autoSwitch)))
       .map(_.toBoolean).getOrElse(false)
   }
 }
