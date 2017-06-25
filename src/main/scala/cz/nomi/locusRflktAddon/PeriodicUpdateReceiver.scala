@@ -8,10 +8,11 @@ package cz.nomi.locusRflktAddon
 import android.content.{BroadcastReceiver, Context, Intent}
 
 import Log._
+import Broadcasts._
 
 class PeriodicUpdateReceiver extends BroadcastReceiver {
-
   override def onReceive(context: Context, intent: Intent) {
     logger.info(s"PeriodicUpdateReceiver.onReceive called")
+    sendLocalBroadcast(intent)(context)
   }
 }
