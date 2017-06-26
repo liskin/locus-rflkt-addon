@@ -20,6 +20,14 @@ import Log._
 import Broadcasts._
 
 trait LocusService extends RService with RflktApi {
+  onRegister {
+    enablePeriodicUpdatesReceiver()
+  }
+
+  onUnregister {
+    disablePeriodicUpdatesReceiver()
+  }
+
   localBroadcastReceiver(LocusConst.ACTION_PERIODIC_UPDATE)
   { (context: Context, intent: Intent) =>
     logger.info(s"periodic update received")
@@ -38,6 +46,16 @@ trait LocusService extends RService with RflktApi {
 
   def launchLocus() = locusVer.foreach { lv =>
     startActivity(getPackageManager().getLaunchIntentForPackage(lv.getPackageName()))
+  }
+
+  private def enablePeriodicUpdatesReceiver() {
+    logger.info("enablePeriodicUpdatesReceiver")
+    locusVer.foreach(ActionTools.enablePeriodicUpdatesReceiver(this, _, classOf[PeriodicUpdateReceiver]))
+  }
+
+  private def disablePeriodicUpdatesReceiver() {
+    logger.info("disablePeriodicUpdatesReceiver")
+    locusVer.foreach(ActionTools.disablePeriodicUpdatesReceiver(this, _, classOf[PeriodicUpdateReceiver]))
   }
 
   private object OnUpdate extends PeriodicUpdatesHandler.OnUpdate {
