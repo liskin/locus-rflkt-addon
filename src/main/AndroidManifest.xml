@@ -6,8 +6,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="cz.nomi.locusRflktAddon"
-          android:versionCode="13"
-          android:versionName="0.13">
+          android:versionCode="14"
+          android:versionName="0.13+">
 
   <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="18" />
 
