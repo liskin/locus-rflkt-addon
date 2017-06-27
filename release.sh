@@ -2,6 +2,8 @@
 
 set -ex
 
+unset _JAVA_OPTIONS
+
 readonly manifest="src/main/AndroidManifest.xml"
 readonly code=$(Xtract /manifest/@android:versionCode "$manifest")
 readonly nextcode=$(("$code" + 1))
